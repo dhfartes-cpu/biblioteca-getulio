@@ -11,20 +11,20 @@
     h1, h2, h3, .font-display { font-family: 'Fredoka', sans-serif; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+<body class="bg-amber-50/40 text-slate-800 min-h-screen flex flex-col">
 
-  <!-- Cabeçalho -->
-  <header class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white shadow-lg">
+  <!-- Cabeçalho Colorido e Dinâmico -->
+  <header class="bg-gradient-to-r from-violet-600 via-pink-600 to-amber-500 text-white shadow-xl">
     <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3 text-center sm:text-left">
-        <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-sm text-3xl">📚</div>
+        <div class="bg-white/25 p-3 rounded-2xl backdrop-blur-md text-3xl shadow-inner">📚</div>
         <div>
           <h1 class="text-3xl font-bold tracking-tight">Biblioteca</h1>
-          <p class="text-indigo-100 text-sm font-medium">EMEF Presidente Getúlio Vargas</p>
+          <p class="text-pink-100 text-sm font-medium">EMEF Presidente Getúlio Vargas</p>
         </div>
       </div>
 
-      <button onclick="abrirModalCadastro()" class="bg-emerald-400 hover:bg-emerald-300 active:scale-95 text-slate-900 font-bold px-5 py-3 rounded-xl shadow-md transition transform flex items-center gap-2 cursor-pointer">
+      <button onclick="abrirModalCadastro()" class="bg-amber-300 hover:bg-amber-200 active:scale-95 text-slate-900 font-bold px-5 py-3 rounded-2xl shadow-lg transition transform flex items-center gap-2 cursor-pointer border border-amber-400">
         <span class="text-xl">+</span> Cadastrar Livro
       </button>
     </div>
@@ -32,15 +32,15 @@
 
   <!-- Barra de Busca e Filtros -->
   <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
-    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-8 flex flex-col md:flex-row gap-3">
+    <div class="bg-white p-4 rounded-3xl shadow-sm border border-pink-100 mb-8 flex flex-col md:flex-row gap-3">
       <input 
         type="text" 
         id="campoBusca" 
         oninput="filtrarLivros()" 
         placeholder="Buscar por título, autor ou categoria..." 
-        class="flex-1 px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700"
+        class="flex-1 px-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500 text-slate-700 bg-slate-50/50"
       />
-      <select id="filtroStatus" onchange="filtrarLivros()" class="px-4 py-3 rounded-xl border border-slate-300 bg-white font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      <select id="filtroStatus" onchange="filtrarLivros()" class="px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-pink-500">
         <option value="todos">Todos os livros</option>
         <option value="disponivel">Disponíveis</option>
         <option value="emprestado">Emprestados / Reservados</option>
@@ -50,16 +50,16 @@
     <!-- Cabeçalho do Acervo -->
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-2xl font-bold text-slate-800">Acervo Disponível na Escola</h2>
-      <span id="contadorLivros" class="bg-indigo-100 text-indigo-800 text-sm font-bold px-3 py-1 rounded-full">Carregando...</span>
+      <span id="contadorLivros" class="bg-violet-100 text-violet-800 text-sm font-bold px-3.5 py-1 rounded-full shadow-sm">Carregando...</span>
     </div>
 
     <!-- Grade de Livros -->
     <div id="listaLivros" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Os cards dos livros serão inseridos aqui via JavaScript -->
+      <!-- Cards injetados via JS -->
     </div>
 
     <!-- Estado Vazio -->
-    <div id="estadoVazio" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300">
+    <div id="estadoVazio" class="hidden text-center py-16 bg-white rounded-3xl border border-dashed border-violet-200 shadow-sm">
       <div class="text-5xl mb-3">📖</div>
       <h3 class="text-xl font-bold text-slate-700">Nenhum livro encontrado</h3>
       <p class="text-slate-500 mt-1">Clique em "+ Cadastrar Livro" no topo para adicionar o primeiro exemplar ao acervo.</p>
@@ -68,7 +68,7 @@
 
   <!-- Modal: Cadastrar Livro -->
   <div id="modalCadastro" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-pink-100">
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-2xl font-bold text-slate-800">Novo Livro</h3>
         <button onclick="fecharModalCadastro()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold cursor-pointer">&times;</button>
@@ -77,16 +77,21 @@
       <form id="formCadastro" onsubmit="salvarLivro(event)" class="space-y-4">
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Título do Livro *</label>
-          <input type="text" id="tituloLivro" required placeholder="Ex: O Pequeno Príncipe" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <input type="text" id="tituloLivro" required placeholder="Ex: O Pequeno Príncipe" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-pink-500 focus:outline-none">
         </div>
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Autor(a) *</label>
-          <input type="text" id="autorLivro" required placeholder="Ex: Antoine de Saint-Exupéry" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <input type="text" id="autorLivro" required placeholder="Ex: Antoine de Saint-Exupéry" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-pink-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Link da Imagem da Capa (Opcional)</label>
+          <input type="url" id="capaLivro" placeholder="https://exemplo.com/capa.jpg" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-pink-500 focus:outline-none text-xs">
+          <p class="text-[11px] text-slate-400 mt-1">Cole o link de uma imagem da internet ou deixe em branco para gerar uma capa padrão.</p>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-sm font-semibold text-slate-700 mb-1">Categoria</label>
-            <select id="categoriaLivro" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <select id="categoriaLivro" class="w-full px-3 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm">
               <option value="Literatura Infantil">Literatura Infantil</option>
               <option value="Literatura Juvenil">Literatura Juvenil</option>
               <option value="Romance / Ficção">Romance / Ficção</option>
@@ -96,14 +101,14 @@
             </select>
           </div>
           <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1">Código / Prateleira</label>
-            <input type="text" id="codigoLivro" placeholder="Ex: PRAT-04" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Prateleira</label>
+            <input type="text" id="codigoLivro" placeholder="Ex: PRAT-04" class="w-full px-3 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm">
           </div>
         </div>
 
         <div class="flex justify-end gap-2 pt-3">
-          <button type="button" onclick="fecharModalCadastro()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">Cancelar</button>
-          <button type="submit" id="btnSalvarLivro" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl shadow cursor-pointer">Salvar no Acervo</button>
+          <button type="button" onclick="fecharModalCadastro()" class="px-4 py-2.5 rounded-2xl font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">Cancelar</button>
+          <button type="submit" id="btnSalvarLivro" class="bg-violet-600 hover:bg-violet-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md cursor-pointer">Salvar no Acervo</button>
         </div>
       </form>
     </div>
@@ -111,27 +116,27 @@
 
   <!-- Modal: Reservar / Emprestar Livro -->
   <div id="modalReserva" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-pink-100">
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-2xl font-bold text-slate-800">Reservar Livro</h3>
         <button onclick="fecharModalReserva()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
-      <p id="nomeLivroReserva" class="text-indigo-600 font-semibold mb-4"></p>
+      <p id="nomeLivroReserva" class="text-violet-600 font-semibold mb-4"></p>
 
       <form id="formReserva" onsubmit="confirmarReserva(event)" class="space-y-4">
         <input type="hidden" id="idLivroReserva">
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Nome do Aluno(a) ou Professor(a) *</label>
-          <input type="text" id="nomeLeitor" required placeholder="Nome completo" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <input type="text" id="nomeLeitor" required placeholder="Nome completo" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-pink-500 focus:outline-none">
         </div>
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Turma / Setor *</label>
-          <input type="text" id="turmaLeitor" required placeholder="Ex: 7º Ano B ou Professores" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <input type="text" id="turmaLeitor" required placeholder="Ex: 7º Ano B ou Professores" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-pink-500 focus:outline-none">
         </div>
 
         <div class="flex justify-end gap-2 pt-3">
-          <button type="button" onclick="fecharModalReserva()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">Cancelar</button>
-          <button type="submit" id="btnConfirmarReserva" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-5 py-2.5 rounded-xl shadow cursor-pointer">Confirmar Reserva</button>
+          <button type="button" onclick="fecharModalReserva()" class="px-4 py-2.5 rounded-2xl font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">Cancelar</button>
+          <button type="submit" id="btnConfirmarReserva" class="bg-pink-600 hover:bg-pink-700 text-white font-bold px-5 py-2.5 rounded-2xl shadow-md cursor-pointer">Confirmar Reserva</button>
         </div>
       </form>
     </div>
@@ -140,7 +145,6 @@
   <script>
     let acervoGlobal = [];
 
-    // Carregar livros ao abrir a página
     document.addEventListener('DOMContentLoaded', carregarLivros);
 
     async function carregarLivros() {
@@ -190,12 +194,21 @@
       lista.forEach(livro => {
         const disponivel = livro.disponivel !== false;
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition';
+        card.className = 'bg-white rounded-3xl p-5 shadow-sm border border-violet-100 flex flex-col justify-between hover:shadow-md transition';
+
+        // Tratamento da imagem da capa
+        let capaHtml = '';
+        if (livro.capa && livro.capa.trim() !== '') {
+          capaHtml = `<div class="w-full h-40 bg-slate-100 rounded-2xl mb-4 overflow-hidden flex items-center justify-center border border-slate-100"><img src="${livro.capa}" alt="Capa" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='📚'"></div>`;
+        } else {
+          capaHtml = `<div class="w-full h-32 bg-gradient-to-br from-violet-500 to-pink-500 rounded-2xl mb-4 flex items-center justify-center text-white text-3xl font-bold shadow-inner">${(livro.titulo || 'L')[0].toUpperCase()}</div>`;
+        }
 
         card.innerHTML = `
           <div>
-            <div class="flex items-center justify-between gap-2 mb-3">
-              <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700">
+            ${capaHtml}
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-violet-50 text-violet-700">
                 ${livro.categoria || 'Geral'}
               </span>
               <span class="text-xs font-bold px-2.5 py-1 rounded-full ${disponivel ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
@@ -204,14 +217,14 @@
             </div>
             <h3 class="text-lg font-bold text-slate-800 leading-snug mb-1">${livro.titulo}</h3>
             <p class="text-sm text-slate-600 mb-2">por <span class="font-medium">${livro.autor}</span></p>
-            ${livro.codigo ? `<p class="text-xs text-slate-400">Localização: ${livro.codigo}</p>` : ''}
-            ${!disponivel && livro.leitor ? `<p class="mt-2 text-xs bg-amber-50 text-amber-900 p-2 rounded-lg border border-amber-200">Com: <strong>${livro.leitor}</strong> (${livro.turma || ''})</p>` : ''}
+            ${livro.codigo ? `<p class="text-xs text-slate-400">Local: ${livro.codigo}</p>` : ''}
+            ${!disponivel && livro.leitor ? `<p class="mt-2 text-xs bg-amber-50 text-amber-900 p-2.5 rounded-xl border border-amber-200">Com: <strong>${livro.leitor}</strong> (${livro.turma || ''})</p>` : ''}
           </div>
 
           <div class="mt-5 pt-4 border-t border-slate-100 flex gap-2">
             ${disponivel
-              ? `<button onclick="abrirModalReserva('${livro.id}', '${livro.titulo.replace(/'/g, "\\'")}')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-3 rounded-xl text-sm transition cursor-pointer">Reservar</button>`
-              : `<button onclick="devolverLivro('${livro.id}')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-3 rounded-xl text-sm transition cursor-pointer">Registrar Devolução</button>`
+              ? `<button onclick="abrirModalReserva('${livro.id}', '${livro.titulo.replace(/'/g, "\\'")}')" class="flex-1 bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2.5 px-3 rounded-2xl text-sm transition cursor-pointer shadow-sm">Reservar</button>`
+              : `<button onclick="devolverLivro('${livro.id}')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2.5 px-3 rounded-2xl text-sm transition cursor-pointer shadow-sm">Registrar Devolução</button>`
             }
           </div>
         `;
@@ -219,7 +232,6 @@
       });
     }
 
-    // Controles dos Modais
     function abrirModalCadastro() {
       const m = document.getElementById('modalCadastro');
       m.classList.remove('hidden');
@@ -246,7 +258,6 @@
       document.getElementById('formReserva').reset();
     }
 
-    // Ações com a API
     async function salvarLivro(e) {
       e.preventDefault();
       const btn = document.getElementById('btnSalvarLivro');
@@ -257,6 +268,7 @@
         acao: 'cadastrar',
         titulo: document.getElementById('tituloLivro').value.trim(),
         autor: document.getElementById('autorLivro').value.trim(),
+        capa: document.getElementById('capaLivro').value.trim(),
         categoria: document.getElementById('categoriaLivro').value,
         codigo: document.getElementById('codigoLivro').value.trim()
       };
@@ -271,7 +283,7 @@
         fecharModalCadastro();
         await carregarLivros();
       } catch (err) {
-        alert('Erro ao cadastrar livro. Verifique a conexão com a API.');
+        alert('Erro ao cadastrar livro.');
       } finally {
         btn.disabled = false;
         btn.textContent = 'Salvar no Acervo';
