@@ -9,108 +9,90 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
-    // GET: Lista todos os livros ou reservas cadastradas
+    // GET: Lista livros, alunos ou espaços
     if (req.method === 'GET') {
-      const { tipo } = req.query; // 'livros' ou 'reservas'
+      const { tipo } = req.query; // 'livros', 'alunos', 'espacos'
       
-      if (tipo === 'reservas') {
-        const reservasKeys = await kv.keys('reserva:*');
-        const reservas = [];
-        for (const key of reservasKeys) {
-          const item = await kv.get(key);
-          reservas.push(item);
-        }
-        return res.status(200).json(reservas);
-      }
+      let prefixo = 'livro:*';
+      if (tipo === 'alunos') prefixo = 'aluno:*';
+      if (tipo === 'espacos') prefixo = 'espaco:*';
 
-      // Padrão: Retorna os livros
-      const livrosKeys = await kv.keys('livro:*');
-      const livros = [];
-      for (const key of livrosKeys) {
+      const keys = await kv.keys(prefixo);
+      const itens = [];
+      for (const key of keys) {
         const item = await kv.get(key);
-        livros.push(item);
+        itens.push(item);
       }
-      return res.status(200).json(livros);
+      return res.status(200).json(itens);
     }
 
-    // POST: Cadastra livro, reserva ou devolve
+    // POST: Ações de cadastro, empréstimo, devolução e exclusão
     if (req.method === 'POST') {
-      const { acao, titulo, autor, capa, categoria, codigo, leitor, turma, id } = req.body;
+      const { acao, id, titulo, autor, capa, categoria, codigo, leitor, turma, contato, prof, data, horario, email } = req.body;
 
-      // 1. Cadastrar livro (suporta tanto 'cadastrar' quanto 'cadastrar_livro')
-      if (acao === 'cadastrar' || acao === 'cadastrar_livro') {
-        if (!titulo || !autor) {
-          return res.status(400).json({ erro: 'Título e Autor são obrigatórios!' });
-        }
-        const livroId = Date.now().toString();
-        const novoLivro = {
-          id: livroId,
-          titulo,
-          autor,
-          capa: capa || '',
-          categoria: categoria || 'Geral',
-          codigo: codigo || '',
-          disponivel: true
-        };
-        
+      // 1. Cadastrar Livro
+      if (acao === 'cadastrar') {
+        const livroId = id || Date.now().toString();
+        const novoLivro = { id: livroId, titulo, autor, capa: capa || '', categoria: categoria || 'Geral', codigo: codigo || '', disponivel: true };
         await kv.set(`livro:${livroId}`, novoLivro);
-        return res.status(200).json({ mensagem: 'Livro cadastrado com sucesso!', livro: novoLivro });
+        return res.status(200).json({ mensagem: 'Livro salvo!', livro: novoLivro });
       }
 
-      // 2. Reservar / Emprestar livro
+      // 2. Emprestar / Reservar Livro
       if (acao === 'reservar') {
-        const livroId = id || req.body.livroId;
-        const nomeLeitor = leitor || req.body.nomeAluno;
-        const turmaLeitor = turma || req.body.turma;
-
-        if (!nomeLeitor || !turmaLeitor || !livroId) {
-          return res.status(400).json({ erro: 'Nome, turma e ID do livro são obrigatórios!' });
-        }
-
-        const livroKey = `livro:${livroId}`;
+        const livroKey = `livro:${id}`;
         const livro = await kv.get(livroKey);
-
-        if (!livro) {
-          return res.status(404).json({ erro: 'Livro não encontrado!' });
-        }
+        if (!livro) return res.status(404).json({ erro: 'Livro não encontrado' });
 
         livro.disponivel = false;
-        livro.leitor = nomeLeitor;
-        livro.turma = turmaLeitor;
+        livro.leitor = leitor;
+        livro.turma = turma;
         livro.dataReserva = new Date().toISOString();
-
         await kv.set(livroKey, livro);
-        return res.status(200).json({ mensagem: 'Livro reservado com sucesso!', livro });
+        return res.status(200).json({ mensagem: 'Empréstimo registrado!', livro });
       }
 
-      // 3. Devolver livro
+      // 3. Devolver Livro
       if (acao === 'devolver') {
-        const livroId = id;
-        if (!livroId) {
-          return res.status(400).json({ erro: 'ID do livro é obrigatório para devolução!' });
-        }
-
-        const livroKey = `livro:${livroId}`;
+        const livroKey = `livro:${id}`;
         const livro = await kv.get(livroKey);
-
-        if (!livro) {
-          return res.status(404).json({ erro: 'Livro não encontrado!' });
-        }
+        if (!livro) return res.status(404).json({ erro: 'Livro não encontrado' });
 
         livro.disponivel = true;
         delete livro.leitor;
         delete livro.turma;
         delete livro.dataReserva;
-
         await kv.set(livroKey, livro);
-        return res.status(200).json({ mensagem: 'Livro devolvido ao acervo!', livro });
+        return res.status(200).json({ mensagem: 'Devolução registrada!', livro });
       }
 
-      return res.status(400).json({ erro: 'Ação inválida!' });
+      // 4. Cadastrar Aluno
+      if (acao === 'cadastrar_aluno') {
+        const alunoId = Date.now().toString();
+        const novoAluno = { id: alunoId, nome: leitor || req.body.nome, turma, contato: contato || '' };
+        await kv.set(`aluno:${alunoId}`, novoAluno);
+        return res.status(200).json({ mensagem: 'Aluno salvo!', aluno: novoAluno });
+      }
+
+      // 5. Agendar Espaço Físico
+      if (acao === 'agendar_espaco') {
+        const espacoId = Date.now().toString();
+        const novoEspaco = { id: espacoId, prof, turma, data, horario };
+        await kv.set(`espaco:${espacoId}`, novoEspaco);
+        return res.status(200).json({ mensagem: 'Espaço agendado!', espaco: novoEspaco });
+      }
+
+      // 6. Excluir Item (Livro, Aluno ou Espaço)
+      if (acao === 'excluir') {
+        const { tipoItem, itemId } = req.body;
+        await kv.del(`${tipoItem}:${itemId}`);
+        return res.status(200).json({ mensagem: 'Excluído com sucesso!' });
+      }
+
+      return res.status(400).json({ erro: 'Ação inválida' });
     }
 
     return res.status(405).json({ erro: 'Método não permitido' });
-
   } catch (error) {
     return res.status(500).json({ erro: error.message });
   }
