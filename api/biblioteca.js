@@ -33,40 +33,77 @@ export default async function handler(req, res) {
       return res.status(200).json(livros);
     }
 
-    // POST: Cadastra um novo livro ou faz uma reserva
+    // POST: Cadastra livro, reserva ou devolve
     if (req.method === 'POST') {
-      const { acao, titulo, autor, ano, genero, isbn, nomeAluno, turma, emailAluno, livroId } = req.body;
+      const { acao, titulo, autor, capa, categoria, codigo, leitor, turma, id } = req.body;
 
-      // Ação de cadastrar livro
-      if (acao === 'cadastrar_livro') {
+      // 1. Cadastrar livro (suporta tanto 'cadastrar' quanto 'cadastrar_livro')
+      if (acao === 'cadastrar' || acao === 'cadastrar_livro') {
         if (!titulo || !autor) {
           return res.status(400).json({ erro: 'Título e Autor são obrigatórios!' });
         }
-        const id = Date.now().toString();
-        const novoLivro = { id, titulo, autor, ano, genero, isbn, status: 'DISPONIVEL' };
+        const livroId = Date.now().toString();
+        const novoLivro = {
+          id: livroId,
+          titulo,
+          autor,
+          capa: capa || '',
+          categoria: categoria || 'Geral',
+          codigo: codigo || '',
+          disponivel: true
+        };
         
-        await kv.set(`livro:${id}`, novoLivro);
+        await kv.set(`livro:${livroId}`, novoLivro);
         return res.status(200).json({ mensagem: 'Livro cadastrado com sucesso!', livro: novoLivro });
       }
 
-      // Ação de reservar livro
+      // 2. Reservar / Emprestar livro
       if (acao === 'reservar') {
-        if (!nomeAluno || !turma || !livroId) {
-          return res.status(400).json({ erro: 'Nome do aluno, turma e ID do livro são obrigatórios!' });
-        }
-        const reservaId = Date.now().toString();
-        const novaReserva = {
-          id: reservaId,
-          livroId,
-          nomeAluno,
-          turma,
-          emailAluno: emailAluno || '',
-          status: 'PENDENTE',
-          data: new Date().toISOString()
-        };
+        const livroId = id || req.body.livroId;
+        const nomeLeitor = leitor || req.body.nomeAluno;
+        const turmaLeitor = turma || req.body.turma;
 
-        await kv.set(`reserva:${reservaId}`, novaReserva);
-        return res.status(200).json({ mensagem: 'Reserva realizada com sucesso!', reserva: novaReserva });
+        if (!nomeLeitor || !turmaLeitor || !livroId) {
+          return res.status(400).json({ erro: 'Nome, turma e ID do livro são obrigatórios!' });
+        }
+
+        const livroKey = `livro:${livroId}`;
+        const livro = await kv.get(livroKey);
+
+        if (!livro) {
+          return res.status(404).json({ erro: 'Livro não encontrado!' });
+        }
+
+        livro.disponivel = false;
+        livro.leitor = nomeLeitor;
+        livro.turma = turmaLeitor;
+        livro.dataReserva = new Date().toISOString();
+
+        await kv.set(livroKey, livro);
+        return res.status(200).json({ mensagem: 'Livro reservado com sucesso!', livro });
+      }
+
+      // 3. Devolver livro
+      if (acao === 'devolver') {
+        const livroId = id;
+        if (!livroId) {
+          return res.status(400).json({ erro: 'ID do livro é obrigatório para devolução!' });
+        }
+
+        const livroKey = `livro:${livroId}`;
+        const livro = await kv.get(livroKey);
+
+        if (!livro) {
+          return res.status(404).json({ erro: 'Livro não encontrado!' });
+        }
+
+        livro.disponivel = true;
+        delete livro.leitor;
+        delete livro.turma;
+        delete livro.dataReserva;
+
+        await kv.set(livroKey, livro);
+        return res.status(200).json({ mensagem: 'Livro devolvido ao acervo!', livro });
       }
 
       return res.status(400).json({ erro: 'Ação inválida!' });
