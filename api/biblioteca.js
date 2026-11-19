@@ -8,11 +8,14 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
+  // PIN da Bibliotecária (configure ADMIN_PIN na Vercel ou use 1234 como padrão)
+  const PIN_CORRETO = process.env.ADMIN_PIN || '1234';
+
   try {
-    // GET: Lista livros, alunos ou espaços
+    // GET: Lista livros, alunos ou horários/reservas do espaço
     if (req.method === 'GET') {
-      const { tipo } = req.query; // 'livros', 'alunos', 'espacos'
-      
+      const { tipo } = req.query;
+
       let prefixo = 'livro:*';
       if (tipo === 'alunos') prefixo = 'aluno:*';
       if (tipo === 'espacos') prefixo = 'espaco:*';
@@ -21,19 +24,31 @@ export default async function handler(req, res) {
       const itens = [];
       for (const key of keys) {
         const item = await kv.get(key);
-        itens.push(item);
+        if (item) itens.push(item);
       }
       return res.status(200).json(itens);
     }
 
-    // POST: Ações de cadastro, empréstimo, devolução e exclusão
+    // POST: Operações de cadastro, empréstimo, agenda e exclusão
     if (req.method === 'POST') {
-      const { acao, id, titulo, autor, capa, categoria, codigo, leitor, turma, contato, prof, data, horario, email } = req.body;
+      const {
+        acao, id, titulo, autor, capa, categoria, codigo,
+        leitor, turma, contato, prof, data, horario, pin, tipoItem, itemId
+      } = req.body;
 
       // 1. Cadastrar Livro
       if (acao === 'cadastrar') {
+        if (!titulo || !autor) return res.status(400).json({ erro: 'Título e Autor são obrigatórios.' });
         const livroId = id || Date.now().toString();
-        const novoLivro = { id: livroId, titulo, autor, capa: capa || '', categoria: categoria || 'Geral', codigo: codigo || '', disponivel: true };
+        const novoLivro = {
+          id: livroId,
+          titulo,
+          autor,
+          capa: capa || '',
+          categoria: categoria || 'Geral',
+          codigo: codigo || '',
+          disponivel: true
+        };
         await kv.set(`livro:${livroId}`, novoLivro);
         return res.status(200).json({ mensagem: 'Livro salvo!', livro: novoLivro });
       }
@@ -69,24 +84,72 @@ export default async function handler(req, res) {
       // 4. Cadastrar Aluno
       if (acao === 'cadastrar_aluno') {
         const alunoId = Date.now().toString();
-        const novoAluno = { id: alunoId, nome: leitor || req.body.nome, turma, contato: contato || '' };
+        const novoAluno = {
+          id: alunoId,
+          nome: leitor || req.body.nome,
+          turma,
+          contato: contato || ''
+        };
         await kv.set(`aluno:${alunoId}`, novoAluno);
-        return res.status(200).json({ mensagem: 'Aluno salvo!', aluno: novoAluno });
+        return res.status(200).json({ mensagem: 'Aluno cadastrado!', aluno: novoAluno });
       }
 
-      // 5. Agendar Espaço Físico
-      if (acao === 'agendar_espaco') {
+      // 5. Bibliotecária: Liberar Horário Disponível no Espaço Físico (Exige PIN)
+      if (acao === 'liberar_horario') {
+        if (pin !== PIN_CORRETO) {
+          return res.status(403).json({ erro: 'PIN da bibliotecária incorreto!' });
+        }
         const espacoId = Date.now().toString();
-        const novoEspaco = { id: espacoId, prof, turma, data, horario };
-        await kv.set(`espaco:${espacoId}`, novoEspaco);
-        return res.status(200).json({ mensagem: 'Espaço agendado!', espaco: novoEspaco });
+        const slot = {
+          id: espacoId,
+          data,
+          horario,
+          status: 'DISPONIVEL', // DISPONIVEL | RESERVADO | BLOQUEADO
+          prof: '',
+          turma: ''
+        };
+        await kv.set(`espaco:${espacoId}`, slot);
+        return res.status(200).json({ mensagem: 'Horário liberado na agenda!', slot });
       }
 
-      // 6. Excluir Item (Livro, Aluno ou Espaço)
+      // 6. Bibliotecária: Bloquear Horário Indisponível (Exige PIN)
+      if (acao === 'bloquear_horario') {
+        if (pin !== PIN_CORRETO) {
+          return res.status(403).json({ erro: 'PIN da bibliotecária incorreto!' });
+        }
+        const espacoId = Date.now().toString();
+        const slot = {
+          id: espacoId,
+          data,
+          horario,
+          status: 'BLOQUEADO',
+          motivo: req.body.motivo || 'Indisponível / Uso Interno'
+        };
+        await kv.set(`espaco:${espacoId}`, slot);
+        return res.status(200).json({ mensagem: 'Horário marcado como indisponível!', slot });
+      }
+
+      // 7. Professor: Reservar um Horário previamente Liberado pela Biblioteca
+      if (acao === 'reservar_slot') {
+        const espacoKey = `espaco:${id}`;
+        const slot = await kv.get(espacoKey);
+        if (!slot || slot.status !== 'DISPONIVEL') {
+          return res.status(400).json({ erro: 'Este horário não está mais disponível.' });
+        }
+        slot.status = 'RESERVADO';
+        slot.prof = prof;
+        slot.turma = turma;
+        await kv.set(espacoKey, slot);
+        return res.status(200).json({ mensagem: 'Reserva confirmada!', slot });
+      }
+
+      // 8. Excluir Item (Livro, Aluno ou Horário do Espaço) — Protegido por PIN
       if (acao === 'excluir') {
-        const { tipoItem, itemId } = req.body;
+        if (pin !== PIN_CORRETO) {
+          return res.status(403).json({ erro: 'PIN incorreto! Exclusão não autorizada.' });
+        }
         await kv.del(`${tipoItem}:${itemId}`);
-        return res.status(200).json({ mensagem: 'Excluído com sucesso!' });
+        return res.status(200).json({ mensagem: 'Registro excluído com sucesso!' });
       }
 
       return res.status(400).json({ erro: 'Ação inválida' });
