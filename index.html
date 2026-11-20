@@ -12,174 +12,290 @@
     @media print {
       body * { visibility: hidden; }
       #areaImpressao, #areaImpressao * { visibility: visible; }
-      #areaImpressao { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; }
+      #areaImpressao { position: absolute; left: 0; top: 0; width: 100%; padding: 24px; }
     }
   </style>
 </head>
 <body class="bg-amber-50/40 text-slate-800 min-h-screen flex flex-col">
 
-  <!-- Cabeçalho -->
-  <header class="bg-gradient-to-r from-violet-600 via-pink-600 to-amber-500 text-white shadow-xl print:hidden">
-    <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3 text-center sm:text-left">
-        <div class="bg-white/25 p-3 rounded-2xl backdrop-blur-md text-3xl shadow-inner">📚</div>
-        <div>
-          <h1 class="text-3xl font-bold tracking-tight">Biblioteca</h1>
-          <p class="text-pink-100 text-sm font-medium">EMEF Presidente Getúlio Vargas</p>
-        </div>
+  <!-- =========================================================
+       TELA DE ENTRADA / LOGIN / CADASTRO (PORTA DE ACESSO)
+       ========================================================= -->
+  <div id="telaAuth" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-violet-700 via-pink-600 to-amber-500">
+    <div class="bg-white rounded-3xl max-w-md w-full p-7 shadow-2xl border border-white/40">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-violet-100 text-3xl mb-3 shadow-inner">📚</div>
+        <h1 class="text-3xl font-bold text-slate-800">Biblioteca</h1>
+        <p class="text-sm font-medium text-slate-500">EMEF Presidente Getúlio Vargas</p>
       </div>
-      <nav class="flex bg-white/10 p-1.5 rounded-2xl backdrop-blur-md border border-white/20 gap-1 flex-wrap justify-center">
-        <button onclick="mudarAba('acervo')" id="tabAcervo" class="px-4 py-2 rounded-xl text-sm font-bold transition bg-white text-slate-900 shadow-sm cursor-pointer">Acervo</button>
-        <button onclick="mudarAba('espaco')" id="tabEspaco" class="px-4 py-2 rounded-xl text-sm font-bold transition text-white hover:bg-white/10 cursor-pointer">Espaço Físico</button>
-        <button onclick="mudarAba('alunos')" id="tabAlunos" class="px-4 py-2 rounded-xl text-sm font-bold transition text-white hover:bg-white/10 cursor-pointer">Alunos</button>
-        <button onclick="mudarAba('relatorios')" id="tabRelatorios" class="px-4 py-2 rounded-xl text-sm font-bold transition text-white hover:bg-white/10 cursor-pointer">Empréstimos Ativos</button>
-      </nav>
-    </div>
-  </header>
 
-  <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full print:p-0">
+      <!-- Alternar Entrar vs Criar Conta -->
+      <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-2xl mb-6">
+        <button type="button" onclick="alternarModoAuth('login')" id="btnModoLogin" class="py-2 rounded-xl text-sm font-bold bg-white text-violet-700 shadow-sm cursor-pointer">Entrar</button>
+        <button type="button" onclick="alternarModoAuth('cadastro')" id="btnModoCadastro" class="py-2 rounded-xl text-sm font-bold text-slate-600 cursor-pointer">Primeiro Acesso</button>
+      </div>
 
-    <!-- ABA 1: ACERVO -->
-    <section id="secaoAcervo" class="space-y-6 print:hidden">
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="bg-white p-3 rounded-3xl shadow-sm border border-pink-100 flex-1 w-full flex flex-col md:flex-row gap-3">
-          <input type="text" id="campoBusca" oninput="filtrarLivros()" placeholder="Buscar por título, autor ou categoria..." class="flex-1 px-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-slate-50/50"/>
-          <select id="filtroStatus" onchange="filtrarLivros()" class="px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 font-medium text-slate-700">
-            <option value="todos">Todos os livros</option>
-            <option value="disponivel">Disponíveis</option>
-            <option value="emprestado">Emprestados</option>
+      <!-- FORMULÁRIO DE LOGIN -->
+      <form id="formLogin" onsubmit="fazerLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Tipo de Acesso</label>
+          <select id="loginPerfil" onchange="ajustarCamposLogin()" class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 font-semibold text-slate-700">
+            <option value="aluno">🎓 Sou Aluno(a)</option>
+            <option value="professor">🍎 Sou Professor(a)</option>
+            <option value="admin">🔐 Administração da Biblioteca</option>
           </select>
         </div>
-        <button onclick="abrirModalCadastro()" class="bg-amber-300 hover:bg-amber-200 text-slate-900 font-bold px-5 py-3.5 rounded-2xl shadow-md transition cursor-pointer border border-amber-400 whitespace-nowrap">+ Cadastrar Livro</button>
-      </div>
 
-      <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-bold text-slate-800">Acervo Disponível</h2>
-        <span id="contadorLivros" class="bg-violet-100 text-violet-800 text-sm font-bold px-3.5 py-1 rounded-full shadow-sm">Carregando...</span>
-      </div>
-
-      <div id="listaLivros" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-    </section>
-
-    <!-- ABA 2: ESPAÇO FÍSICO (CONTROLE DA BIBLIOTECÁRIA + RESERVA AUTORIZADA) -->
-    <section id="secaoEspaco" class="hidden space-y-8 print:hidden">
-      
-      <!-- Painel da Bibliotecária (Exige PIN) -->
-      <div class="bg-violet-900 text-white p-6 rounded-3xl shadow-lg max-w-3xl mx-auto">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="text-xl">🔐</span>
-          <h2 class="text-xl font-bold">Gestão da Agenda (Exclusivo Bibliotecária)</h2>
+        <div id="boxLoginEmail">
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Seu E-mail *</label>
+          <input type="email" id="loginEmail" placeholder="seuemail@exemplo.com" class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50">
         </div>
-        <p class="text-xs text-violet-200 mb-5">Defina quais datas e horários estão liberados para turmas ou bloqueados para atividades internas. Professores só podem reservar horários previamente liberados.</p>
-        
-        <form onsubmit="gerenciarAgendaEspaco(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-semibold text-violet-200 mb-1">Data *</label>
-            <input type="date" id="dataAgendaAdmin" required class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-violet-200 mb-1">Turno / Horário *</label>
-            <select id="horarioAgendaAdmin" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-white/20 text-white focus:outline-none">
-              <option value="Manhã - 1º Horário (07:30 - 09:30)">Manhã - 1º Horário (07:30 - 09:30)</option>
-              <option value="Manhã - 2º Horário (09:45 - 11:30)">Manhã - 2º Horário (09:45 - 11:30)</option>
-              <option value="Tarde - 1º Horário (13:00 - 15:00)">Tarde - 1º Horário (13:00 - 15:00)</option>
-              <option value="Tarde - 2º Horário (15:15 - 17:00)">Tarde - 2º Horário (15:15 - 17:00)</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-violet-200 mb-1">Ação na Agenda *</label>
-            <select id="acaoAgendaAdmin" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-white/20 text-white focus:outline-none">
-              <option value="liberar_horario">✅ Liberar Horário para Reservas</option>
-              <option value="bloquear_horario">🚫 Marcar como Indisponível / Ocupado</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-violet-200 mb-1">Observação / Motivo (se bloqueado)</label>
-            <input type="text" id="motivoAgendaAdmin" placeholder="Ex: Organização de acervo" class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-violet-300 focus:outline-none">
-          </div>
-          <div class="sm:col-span-2 flex justify-end pt-2">
-            <button type="submit" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-6 py-2.5 rounded-xl shadow cursor-pointer">Atualizar Agenda (Solicitar PIN)</button>
-          </div>
-        </form>
-      </div>
 
-      <!-- Grade de Horários para Professores -->
-      <div class="max-w-3xl mx-auto">
-        <h3 class="text-2xl font-bold text-slate-800 mb-2">Horários da Biblioteca</h3>
-        <p class="text-sm text-slate-500 mb-4">Clique em <strong>Reservar Horário</strong> apenas nos períodos liberados pela bibliotecária.</p>
-        <div id="listaEspacos" class="space-y-3"></div>
-      </div>
-    </section>
-
-    <!-- ABA 3: ALUNOS -->
-    <section id="secaoAlunos" class="hidden space-y-6 print:hidden">
-      <div class="bg-white p-6 rounded-3xl shadow-sm border border-violet-100 max-w-2xl mx-auto">
-        <h2 class="text-2xl font-bold text-slate-800 mb-2">Cadastro de Alunos</h2>
-        <form onsubmit="cadastrarAluno(event)" class="space-y-4">
-          <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1">Nome Completo *</label>
-            <input type="text" id="nomeAlunoReg" required placeholder="Nome do aluno" class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50">
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-semibold text-slate-700 mb-1">Turma *</label>
-              <input type="text" id="turmaAlunoReg" required placeholder="Ex: 6º Ano B" class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50">
-            </div>
-            <div>
-              <label class="block text-sm font-semibold text-slate-700 mb-1">WhatsApp / Contato</label>
-              <input type="text" id="contatoAlunoReg" placeholder="(51) 9..." class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50">
-            </div>
-          </div>
-          <button type="submit" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3.5 rounded-2xl shadow-md transition cursor-pointer">Salvar Aluno</button>
-        </form>
-      </div>
-      <div class="max-w-2xl mx-auto mt-8">
-        <h3 class="text-xl font-bold text-slate-800 mb-4">Alunos Cadastrados</h3>
-        <div id="listaAlunos" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-      </div>
-    </section>
-
-    <!-- ABA 4: RELATÓRIO DE EMPRÉSTIMOS ATIVOS -->
-    <section id="secaoRelatorios" class="hidden space-y-6 print:hidden">
-      <div class="bg-white p-6 rounded-3xl shadow-sm border border-violet-100">
-        <h2 class="text-2xl font-bold text-slate-800 mb-4">Livros Atualmente Emprestados</h2>
-        <div id="listaEmprestados" class="space-y-4"></div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- MODAL IMPRESSÃO / TERMO DE EMPRÉSTIMO -->
-  <div id="modalTermo" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl space-y-6">
-      <div id="areaImpressao" class="space-y-4 text-slate-800">
-        <div class="text-center border-b pb-4">
-          <h2 class="text-xl font-bold">EMEF Presidente Getúlio Vargas</h2>
-          <p class="text-xs text-slate-500">Biblioteca Escolar — Termo de Retirada de Livro</p>
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">PIN de Acesso *</label>
+          <input type="password" id="loginPin" required placeholder="Digite seu PIN" class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 tracking-widest">
         </div>
-        <div class="text-sm space-y-2">
-          <p><strong>Livro:</strong> <span id="termoLivro"></span></p>
-          <p><strong>Aluno(a):</strong> <span id="termoAluno"></span></p>
-          <p><strong>Turma:</strong> <span id="termoTurma"></span></p>
-          <p><strong>Data da Retirada:</strong> <span id="termoData"></span></p>
+
+        <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3.5 rounded-2xl shadow-lg transition cursor-pointer">Acessar Biblioteca</button>
+      </form>
+
+      <!-- FORMULÁRIO DE PRIMEIRO ACESSO (CADASTRO) -->
+      <form id="formCadastroUser" onsubmit="fazerCadastroUsuario(event)" class="hidden space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Eu sou *</label>
+          <select id="regPerfil" onchange="ajustarCamposCadastro()" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 font-semibold text-slate-700">
+            <option value="aluno">🎓 Aluno(a)</option>
+            <option value="professor">🍎 Professor(a) Autorizado(a)</option>
+          </select>
         </div>
-        <div class="pt-12 text-center space-y-1">
-          <div class="border-t border-slate-400 w-3/4 mx-auto pt-1"></div>
-          <p class="text-xs font-bold">Assinatura do Aluno(a) ou Responsável</p>
+
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Nome Completo *</label>
+          <input type="text" id="regNome" required placeholder="Digite seu nome completo" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 bg-slate-50">
         </div>
-      </div>
-      <div class="flex justify-end gap-3 print:hidden">
-        <button onclick="fecharTermo()" class="px-4 py-2 bg-slate-200 rounded-xl font-semibold cursor-pointer">Fechar</button>
-        <button onclick="window.print()" class="px-5 py-2 bg-violet-600 text-white font-bold rounded-xl shadow cursor-pointer">Imprimir Termo</button>
-      </div>
+
+        <div id="boxRegAlunoExtra" class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Turma *</label>
+            <input type="text" id="regTurma" placeholder="Ex: 7º Ano A" class="w-full px-3 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">WhatsApp *</label>
+            <input type="text" id="regWhatsapp" placeholder="(51) 99999-9999" class="w-full px-3 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 text-sm">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">E-mail *</label>
+          <div class="flex gap-2">
+            <input type="email" id="regEmail" required placeholder="seu@email.com" class="flex-1 px-3.5 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 text-sm">
+            <button type="button" onclick="solicitarCodigoEmail()" id="btnEnviarCod" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-3 py-2 rounded-2xl text-xs cursor-pointer whitespace-nowrap">Enviar Código</button>
+          </div>
+        </div>
+
+        <div id="boxCodigoEmail" class="hidden">
+          <label class="block text-xs font-bold uppercase text-violet-700 mb-1">Código recebido no E-mail *</label>
+          <input type="text" id="regCodigoEmail" placeholder="6 dígitos" class="w-full px-4 py-2.5 rounded-2xl border-2 border-violet-300 bg-violet-50 font-bold tracking-widest text-center">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Crie seu PIN de Acesso (4 a 6 números) *</label>
+          <input type="password" id="regPin" required placeholder="Ex: 2580" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 tracking-widest">
+        </div>
+
+        <button type="submit" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3.5 rounded-2xl shadow-lg transition cursor-pointer">Salvar Cadastro e Entrar</button>
+      </form>
     </div>
   </div>
 
-  <!-- MODAL CADASTRO DE LIVRO (COM BUSCA AUTOMÁTICA DE CAPA) -->
+  <!-- =========================================================
+       SISTEMA PRINCIPAL (APÓS LOGIN)
+       ========================================================= -->
+  <div id="appPrincipal" class="hidden flex-col min-h-screen">
+
+    <!-- Cabeçalho -->
+    <header class="bg-gradient-to-r from-violet-600 via-pink-600 to-amber-500 text-white shadow-xl print:hidden">
+      <div class="max-w-6xl mx-auto px-4 py-5 flex flex-col lg:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 text-center sm:text-left">
+          <div class="bg-white/25 p-3 rounded-2xl backdrop-blur-md text-3xl shadow-inner">📚</div>
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Biblioteca</h1>
+            <p class="text-pink-100 text-xs sm:text-sm font-medium">EMEF Presidente Getúlio Vargas</p>
+          </div>
+        </div>
+
+        <!-- Barra de Navegação Dinâmica conforme Perfil -->
+        <nav class="flex bg-white/10 p-1.5 rounded-2xl backdrop-blur-md border border-white/20 gap-1 flex-wrap justify-center">
+          <button onclick="mudarAba('acervo')" id="tabAcervo" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition bg-white text-slate-900 shadow-sm cursor-pointer">Acervo</button>
+          
+          <button onclick="mudarAba('meus')" id="tabMeus" class="hidden px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/10 cursor-pointer">Meus Empréstimos</button>
+          
+          <button onclick="mudarAba('espaco')" id="tabEspaco" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/10 cursor-pointer">Agenda e Espaço</button>
+          
+          <button onclick="mudarAba('retirados')" id="tabRetirados" class="hidden relative px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/10 cursor-pointer">
+            Livros Retirados
+            <span id="badgeAtraso" class="hidden -top-1.5 -right-1.5 absolute bg-red-600 text-white text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center animate-bounce shadow border border-white">!</span>
+          </button>
+
+          <button onclick="mudarAba('gestao')" id="tabGestao" class="hidden px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/10 cursor-pointer">Alunos e Docentes</button>
+        </nav>
+
+        <!-- Usuário Logado e Sair -->
+        <div class="flex items-center gap-3 bg-black/20 px-3.5 py-2 rounded-2xl text-xs">
+          <div>
+            <p id="userNomeHeader" class="font-bold text-white leading-tight"></p>
+            <p id="userPerfilHeader" class="text-pink-200 uppercase text-[10px] font-semibold"></p>
+          </div>
+          <button onclick="sair()" class="bg-white/20 hover:bg-white/30 px-2.5 py-1.5 rounded-xl font-bold cursor-pointer">Sair</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full print:p-0">
+
+      <!-- =====================================
+           ABA 1: ACERVO DE LIVROS
+           ===================================== -->
+      <section id="secaoAcervo" class="space-y-6 print:hidden">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="bg-white p-3 rounded-3xl shadow-sm border border-pink-100 flex-1 w-full flex flex-col md:flex-row gap-3">
+            <input type="text" id="campoBusca" oninput="filtrarLivros()" placeholder="Buscar por título, autor ou categoria..." class="flex-1 px-4 py-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-pink-500 bg-slate-50/50"/>
+            <select id="filtroStatus" onchange="filtrarLivros()" class="px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50/50 font-medium text-slate-700">
+              <option value="todos">Todos os livros</option>
+              <option value="disponivel">Disponíveis</option>
+              <option value="emprestado">Reservados / Emprestados</option>
+            </select>
+          </div>
+
+          <!-- Botão Cadastrar Livro: EXCLUSIVO ADMIN -->
+          <button id="btnNovoLivroAdmin" onclick="abrirModalCadastro()" class="hidden bg-amber-300 hover:bg-amber-200 text-slate-900 font-bold px-5 py-3.5 rounded-2xl shadow-md transition cursor-pointer border border-amber-400 whitespace-nowrap">+ Cadastrar Livro</button>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <h2 class="text-2xl font-bold text-slate-800">Acervo da Escola</h2>
+          <span id="contadorLivros" class="bg-violet-100 text-violet-800 text-sm font-bold px-3.5 py-1 rounded-full shadow-sm">0 livros</span>
+        </div>
+
+        <div id="listaLivros" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </section>
+
+      <!-- =====================================
+           ABA 2: MEUS EMPRÉSTIMOS (ALUNO / PROFESSOR)
+           ===================================== -->
+      <section id="secaoMeus" class="hidden space-y-6 print:hidden">
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-violet-100">
+          <h2 class="text-2xl font-bold text-slate-800 mb-1">Meus Livros e Prazos</h2>
+          <p class="text-sm text-slate-500 mb-6">Confira seus livros reservados ou retirados e a data limite de devolução na biblioteca.</p>
+          <div id="listaMeusEmprestimos" class="space-y-4"></div>
+        </div>
+      </section>
+
+      <!-- =====================================
+           ABA 3: AGENDA E ESPAÇO FÍSICO
+           ===================================== -->
+      <section id="secaoEspaco" class="hidden space-y-8 print:hidden">
+
+        <!-- Painel Exclusivo do Admin para Configurar Horários -->
+        <div id="painelAdminEspaco" class="hidden bg-violet-950 text-white p-6 rounded-3xl shadow-xl max-w-3xl mx-auto">
+          <h2 class="text-xl font-bold mb-1">🗓️ Configurar Disponibilidade da Biblioteca (Admin)</h2>
+          <p class="text-xs text-violet-300 mb-5">Defina as datas, turnos (Manhã/Tarde), períodos disponíveis ou feche horários para Hora do Conto e atividades internas.</p>
+
+          <form onsubmit="salvarConfiguracaoEspaco(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-violet-200 mb-1">Data *</label>
+              <input type="date" id="espData" required class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-violet-200 mb-1">Turno *</label>
+              <select id="espTurno" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/20 text-white">
+                <option value="Manhã">Manhã</option>
+                <option value="Tarde">Tarde</option>
+                <option value="Manhã e Tarde">Manhã e Tarde</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-violet-200 mb-1">Períodos / Detalhe *</label>
+              <input type="text" id="espPeriodos" required placeholder="Ex: 1º ao 3º período / Hora do Conto" class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-violet-400">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-violet-200 mb-1">Situação *</label>
+              <select id="espStatus" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/20 text-white">
+                <option value="DISPONIVEL">✅ Disponível para Reserva de Professores</option>
+                <option value="ATIVIDADE_INTERNA">📖 Hora do Conto / Atividade da Biblioteca</option>
+                <option value="FECHADO">🚫 Biblioteca Fechada / Indisponível</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold text-violet-200 mb-1">Observação (Opcional)</label>
+              <input type="text" id="espObs" placeholder="Ex: Atendimento apenas para retirada rápida de livros" class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-violet-400">
+            </div>
+            <div class="sm:col-span-2 flex justify-end">
+              <button type="submit" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-6 py-2.5 rounded-xl shadow cursor-pointer">Publicar na Agenda</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Lista de Horários (Visível para todos; botão de reservar aparece SÓ para Professores nos slots DISPONIVEIS) -->
+        <div class="max-w-3xl mx-auto">
+          <h3 class="text-2xl font-bold text-slate-800 mb-2">Cronograma e Horários da Biblioteca</h3>
+          <p id="subtituloAgenda" class="text-sm text-slate-500 mb-5"></p>
+          <div id="listaEspacos" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- =====================================
+           ABA 4: LIVROS RETIRADOS & ALERTAS (EXCLUSIVO ADMIN)
+           ===================================== -->
+      <section id="secaoRetirados" class="hidden space-y-6 print:hidden">
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-violet-100">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-6">
+            <div>
+              <h2 class="text-2xl font-bold text-slate-800">Livros Retirados e Reservas Pendentes</h2>
+              <p class="text-sm text-slate-500">Acompanhe prazos de 7 dias, dias decorridos e envie alertas de atraso por WhatsApp ou E-mail.</p>
+            </div>
+            <span id="resumoAtrasados" class="hidden bg-red-100 text-red-800 font-bold text-xs px-3.5 py-2 rounded-xl border border-red-200"></span>
+          </div>
+
+          <div id="listaRetiradosAdmin" class="space-y-4"></div>
+        </div>
+      </section>
+
+      <!-- =====================================
+           ABA 5: ALUNOS E PROFESSORES AUTORIZADOS (EXCLUSIVO ADMIN)
+           ===================================== -->
+      <section id="secaoGestao" class="hidden space-y-8 print:hidden">
+        <!-- Liberar Professores -->
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-violet-100 max-w-3xl mx-auto">
+          <h2 class="text-xl font-bold text-slate-800 mb-1">🍎 Professores Autorizados (Área / CAT)</h2>
+          <p class="text-xs text-slate-500 mb-4">Somente docentes incluídos nesta lista conseguem criar conta como Professor e reservar o espaço da biblioteca.</p>
+          <form onsubmit="adicionarProfAutorizado(event)" class="flex flex-col sm:flex-row gap-3 mb-5">
+            <input type="text" id="novoProfNome" required placeholder="Nome completo do Professor(a)" class="flex-1 px-4 py-2.5 rounded-2xl border bg-slate-50 text-sm">
+            <input type="email" id="novoProfEmail" placeholder="E-mail (opcional)" class="flex-1 px-4 py-2.5 rounded-2xl border bg-slate-50 text-sm">
+            <button type="submit" class="bg-violet-600 hover:bg-violet-700 text-white font-bold px-5 py-2.5 rounded-2xl text-sm cursor-pointer">Autorizar</button>
+          </form>
+          <div id="listaProfsAutorizados" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+        </div>
+
+        <!-- Lista de Alunos Cadastrados -->
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-pink-100 max-w-3xl mx-auto">
+          <h2 class="text-xl font-bold text-slate-800 mb-1">🎓 Alunos Cadastrados no Sistema</h2>
+          <p class="text-xs text-slate-500 mb-4">Estudantes que criaram acesso para realizar reservas no acervo.</p>
+          <div id="listaAlunosAdmin" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- =========================================================
+       MODAIS
+       ========================================================= -->
+
+  <!-- Modal Cadastrar Livro (Admin) -->
   <div id="modalCadastro" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-pink-100 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-2xl font-bold text-slate-800">Novo Livro</h3>
+        <h3 class="text-2xl font-bold text-slate-800">Novo Livro no Acervo</h3>
         <button onclick="fecharModalCadastro()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
       <form id="formCadastro" onsubmit="salvarLivro(event)" class="space-y-4">
@@ -192,13 +308,13 @@
         </div>
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Autor(a) *</label>
-          <input type="text" id="autorLivro" required placeholder="Preenchido automaticamente ou digite" class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50">
+          <input type="text" id="autorLivro" required class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50">
         </div>
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-1">Capa Encontrada (URL)</label>
-          <input type="url" id="capaLivro" placeholder="Clique em Buscar Capa acima" class="w-full px-4 py-2 rounded-2xl border bg-slate-50 text-xs mb-2">
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Capa (URL Google Books)</label>
+          <input type="url" id="capaLivro" class="w-full px-4 py-2 rounded-2xl border bg-slate-50 text-xs mb-2">
           <div id="previewCapaBox" class="hidden flex justify-center bg-slate-100 p-2 rounded-2xl border">
-            <img id="previewCapaImg" src="" alt="Prévia da Capa" class="h-32 object-contain rounded-lg shadow">
+            <img id="previewCapaImg" src="" alt="Prévia" class="h-32 object-contain rounded-lg shadow">
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
@@ -208,87 +324,313 @@
               <option value="Literatura Infantil">Literatura Infantil</option>
               <option value="Literatura Juvenil">Literatura Juvenil</option>
               <option value="Romance / Ficção">Romance / Ficção</option>
-              <option value="Didático">Didático</option>
+              <option value="HQs e Mangás">HQs e Mangás</option>
+              <option value="Didático / Pesquisa">Didático / Pesquisa</option>
               <option value="Artes e Cultura">Artes e Cultura</option>
             </select>
           </div>
           <div>
             <label class="block text-sm font-semibold text-slate-700 mb-1">Prateleira</label>
-            <input type="text" id="codigoLivro" placeholder="A-01" class="w-full px-3 py-2.5 rounded-2xl border bg-slate-50 text-sm">
+            <input type="text" id="codigoLivro" placeholder="Ex: B-04" class="w-full px-3 py-2.5 rounded-2xl border bg-slate-50 text-sm">
           </div>
         </div>
         <div class="flex justify-end gap-2 pt-3">
           <button type="button" onclick="fecharModalCadastro()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-600 cursor-pointer">Cancelar</button>
-          <button type="submit" class="bg-violet-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Salvar</button>
+          <button type="submit" class="bg-violet-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Salvar Livro</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL EMPRÉSTIMO DE LIVRO -->
+  <!-- Modal Reservar / Emprestar Livro -->
   <div id="modalReserva" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-pink-100">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-2xl font-bold text-slate-800">Empréstimo de Livro</h3>
+      <div class="flex justify-between items-center mb-3">
+        <h3 id="tituloModalReserva" class="text-xl font-bold text-slate-800">Reservar Livro</h3>
         <button onclick="fecharModalReserva()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
-      <p id="nomeLivroReserva" class="text-violet-600 font-semibold mb-4"></p>
-      <form id="formReserva" onsubmit="confirmarReserva(event)" class="space-y-4">
+      <p id="nomeLivroReserva" class="text-violet-700 font-bold mb-4"></p>
+      <form onsubmit="confirmarReservaLivro(event)" class="space-y-4">
         <input type="hidden" id="idLivroReserva">
-        <div><label class="block text-sm font-semibold text-slate-700 mb-1">Nome do Aluno(a) *</label><input type="text" id="nomeLeitor" required placeholder="Nome completo" class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50"></div>
-        <div><label class="block text-sm font-semibold text-slate-700 mb-1">Turma *</label><input type="text" id="turmaLeitor" required placeholder="Ex: 7º Ano A" class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50"></div>
-        <div class="flex justify-end gap-2 pt-3"><button type="button" onclick="fecharModalReserva()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-600 cursor-pointer">Cancelar</button><button type="submit" class="bg-pink-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Confirmar e Gerar Termo</button></div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Nome do Leitor(a) *</label>
+          <input type="text" id="resNomeLeitor" required class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Turma *</label>
+            <input type="text" id="resTurmaLeitor" required class="w-full px-3 py-2.5 rounded-2xl border bg-slate-50 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Prazo (Dias)</label>
+            <select id="resPrazoDias" class="w-full px-3 py-2.5 rounded-2xl border bg-slate-50 text-sm font-bold">
+              <option value="7">7 dias (Padrão)</option>
+              <option value="5">5 dias</option>
+              <option value="2">2 dias</option>
+              <option value="14">14 dias (Docente)</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">WhatsApp</label>
+            <input type="text" id="resWhatsappLeitor" class="w-full px-3 py-2.5 rounded-2xl border bg-slate-50 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">E-mail</label>
+            <input type="email" id="resEmailLeitor" class="w-full px-3 py-2.5 rounded-2xl border bg-slate-50 text-sm">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-3">
+          <button type="button" onclick="fecharModalReserva()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-600 cursor-pointer">Cancelar</button>
+          <button type="submit" class="bg-pink-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Confirmar</button>
+        </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL RESERVA DE HORÁRIO LIBERADO (PROFESSOR) -->
+  <!-- Modal Professor Reservar Espaço -->
   <div id="modalSlot" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-violet-100">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-bold text-slate-800">Reservar Horário na Biblioteca</h3>
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="text-xl font-bold text-slate-800">Reservar Espaço da Biblioteca</h3>
         <button onclick="fecharModalSlot()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
-      <p id="infoSlotReserva" class="text-sm text-violet-700 font-semibold mb-4"></p>
+      <p id="infoSlotReserva" class="text-sm text-violet-700 font-bold mb-4"></p>
       <form onsubmit="confirmarReservaSlot(event)" class="space-y-4">
         <input type="hidden" id="idSlotReserva">
-        <div><label class="block text-sm font-semibold text-slate-700 mb-1">Nome do Professor(a) *</label><input type="text" id="profSlot" required placeholder="Seu nome" class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50"></div>
-        <div><label class="block text-sm font-semibold text-slate-700 mb-1">Turma / Atividade *</label><input type="text" id="turmaSlot" required placeholder="Ex: 8º Ano B - Leitura" class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50"></div>
-        <div class="flex justify-end gap-2 pt-3"><button type="button" onclick="fecharModalSlot()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-600 cursor-pointer">Cancelar</button><button type="submit" class="bg-violet-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Confirmar Reserva</button></div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Professor(a) *</label>
+          <input type="text" id="profSlot" required class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50">
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Turma *</label>
+          <input type="text" id="turmaSlot" required placeholder="Ex: 8º Ano B" class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50">
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Objetivo / Atividade</label>
+          <input type="text" id="atividadeSlot" placeholder="Ex: Pesquisa sobre Arte Contemporânea" class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50">
+        </div>
+        <div class="flex justify-end gap-2 pt-3">
+          <button type="button" onclick="fecharModalSlot()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-600 cursor-pointer">Cancelar</button>
+          <button type="submit" class="bg-violet-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Confirmar Reserva</button>
+        </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Modal Impressão Termo de Assinatura -->
+  <div id="modalTermo" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl space-y-6">
+      <div id="areaImpressao" class="space-y-4 text-slate-800">
+        <div class="text-center border-b pb-4">
+          <h2 class="text-xl font-bold">EMEF Presidente Getúlio Vargas</h2>
+          <p class="text-xs text-slate-500">Biblioteca Escolar — Comprovante e Termo de Retirada</p>
+        </div>
+        <div class="text-sm space-y-2">
+          <p><strong>Livro:</strong> <span id="termoLivro"></span></p>
+          <p><strong>Leitor(a):</strong> <span id="termoAluno"></span></p>
+          <p><strong>Turma:</strong> <span id="termoTurma"></span></p>
+          <p><strong>Data da Retirada:</strong> <span id="termoData"></span></p>
+          <p><strong>Devolução Prevista:</strong> <span id="termoDevolucao" class="font-bold"></span></p>
+        </div>
+        <p class="text-xs text-slate-500 pt-2">Comprometo-me a zelar pela conservação do exemplar e devolvê-lo dentro do prazo estipulado pela biblioteca.</p>
+        <div class="pt-12 text-center space-y-1">
+          <div class="border-t border-slate-400 w-3/4 mx-auto pt-1"></div>
+          <p class="text-xs font-bold">Assinatura do Aluno(a) ou Responsável</p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-3 print:hidden">
+        <button onclick="document.getElementById('modalTermo').classList.add('hidden')" class="px-4 py-2 bg-slate-200 rounded-xl font-semibold cursor-pointer">Fechar</button>
+        <button onclick="window.print()" class="px-5 py-2 bg-violet-600 text-white font-bold rounded-xl shadow cursor-pointer">🖨️ Imprimir Termo</button>
+      </div>
     </div>
   </div>
 
   <script>
+    let usuarioAtual = null;
+    let adminPinSessao = '';
     let acervoGlobal = [];
 
     document.addEventListener('DOMContentLoaded', () => {
-      carregarTudo();
+      const salvo = sessionStorage.getItem('bib_user');
+      const pinSalvo = sessionStorage.getItem('bib_admin_pin');
+      if (salvo) {
+        usuarioAtual = JSON.parse(salvo);
+        adminPinSessao = pinSalvo || '';
+        iniciarSessaoUI();
+      }
     });
+
+    // =========================================================
+    // AUTENTICAÇÃO E CADASTRO
+    // =========================================================
+    function alternarModoAuth(modo) {
+      if (modo === 'login') {
+        document.getElementById('formLogin').classList.remove('hidden');
+        document.getElementById('formCadastroUser').classList.add('hidden');
+        document.getElementById('btnModoLogin').className = 'py-2 rounded-xl text-sm font-bold bg-white text-violet-700 shadow-sm cursor-pointer';
+        document.getElementById('btnModoCadastro').className = 'py-2 rounded-xl text-sm font-bold text-slate-600 cursor-pointer';
+      } else {
+        document.getElementById('formLogin').classList.add('hidden');
+        document.getElementById('formCadastroUser').classList.remove('hidden');
+        document.getElementById('btnModoCadastro').className = 'py-2 rounded-xl text-sm font-bold bg-white text-pink-600 shadow-sm cursor-pointer';
+        document.getElementById('btnModoLogin').className = 'py-2 rounded-xl text-sm font-bold text-slate-600 cursor-pointer';
+      }
+    }
+
+    function ajustarCamposLogin() {
+      const p = document.getElementById('loginPerfil').value;
+      document.getElementById('boxLoginEmail').style.display = p === 'admin' ? 'none' : 'block';
+    }
+
+    function ajustarCamposCadastro() {
+      const p = document.getElementById('regPerfil').value;
+      document.getElementById('boxRegAlunoExtra').style.display = p === 'professor' ? 'none' : 'grid';
+    }
+
+    async function solicitarCodigoEmail() {
+      const email = document.getElementById('regEmail').value.trim();
+      const nome = document.getElementById('regNome').value.trim();
+      if (!email) return alert('Digite seu e-mail primeiro.');
+
+      const btn = document.getElementById('btnEnviarCod');
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+
+      try {
+        const res = await fetch('/api/biblioteca', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ acao: 'enviar_codigo_email', email, nome })
+        });
+        const data = await res.json();
+        if (data.enviado) {
+          document.getElementById('boxCodigoEmail').classList.remove('hidden');
+          alert('Código enviado! Verifique sua caixa de entrada ou spam.');
+        } else if (data.modoSemChave) {
+          alert(data.mensagem);
+        } else {
+          alert(data.erro || 'Erro ao enviar código.');
+        }
+      } catch (e) {
+        alert('Erro de conexão.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Enviar Código';
+      }
+    }
+
+    async function fazerCadastroUsuario(e) {
+      e.preventDefault();
+      const payload = {
+        acao: 'registrar_usuario',
+        perfil: document.getElementById('regPerfil').value,
+        nome: document.getElementById('regNome').value.trim(),
+        turma: document.getElementById('regTurma').value.trim(),
+        whatsapp: document.getElementById('regWhatsapp').value.trim(),
+        email: document.getElementById('regEmail').value.trim(),
+        codigoEmail: document.getElementById('regCodigoEmail').value.trim(),
+        pin: document.getElementById('regPin').value.trim()
+      };
+
+      const res = await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok) return alert(data.erro || 'Erro no cadastro.');
+
+      usuarioAtual = data.usuario;
+      sessionStorage.setItem('bib_user', JSON.stringify(usuarioAtual));
+      iniciarSessaoUI();
+    }
+
+    async function fazerLogin(e) {
+      e.preventDefault();
+      const perfil = document.getElementById('loginPerfil').value;
+      const email = document.getElementById('loginEmail').value.trim();
+      const pin = document.getElementById('loginPin').value.trim();
+
+      const res = await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ acao: 'login', perfil, email, pin })
+      });
+      const data = await res.json();
+      if (!res.ok) return alert(data.erro || 'Dados inválidos.');
+
+      usuarioAtual = data.usuario;
+      sessionStorage.setItem('bib_user', JSON.stringify(usuarioAtual));
+      if (perfil === 'admin') {
+        adminPinSessao = pin;
+        sessionStorage.setItem('bib_admin_pin', pin);
+      }
+      iniciarSessaoUI();
+    }
+
+    function sair() {
+      sessionStorage.clear();
+      location.reload();
+    }
+
+    function iniciarSessaoUI() {
+      document.getElementById('telaAuth').classList.add('hidden');
+      document.getElementById('appPrincipal').classList.remove('hidden');
+      document.getElementById('appPrincipal').classList.add('flex');
+
+      document.getElementById('userNomeHeader').textContent = usuarioAtual.nome;
+      document.getElementById('userPerfilHeader').textContent =
+        usuarioAtual.perfil === 'admin' ? 'Administrador' :
+        usuarioAtual.perfil === 'professor' ? 'Professor(a)' : `Aluno(a) • ${usuarioAtual.turma}`;
+
+      // Controle rigoroso de permissões na interface
+      if (usuarioAtual.perfil === 'admin') {
+        document.getElementById('btnNovoLivroAdmin').classList.remove('hidden');
+        document.getElementById('tabRetirados').classList.remove('hidden');
+        document.getElementById('tabGestao').classList.remove('hidden');
+        document.getElementById('painelAdminEspaco').classList.remove('hidden');
+        document.getElementById('subtituloAgenda').textContent = 'Gerencie abaixo os horários publicados para os professores.';
+      } else {
+        document.getElementById('tabMeus').classList.remove('hidden');
+        document.getElementById('subtituloAgenda').textContent =
+          usuarioAtual.perfil === 'professor'
+            ? 'Clique em Reservar nos horários liberados pela bibliotecária.'
+            : 'Consulte abaixo os dias e turnos em que a biblioteca está aberta para atendimento.';
+      }
+
+      carregarTudo();
+    }
 
     function carregarTudo() {
       carregarLivros();
-      carregarAlunos();
       carregarEspacos();
+      if (usuarioAtual.perfil === 'admin') {
+        carregarGestaoAdmin();
+      }
     }
 
     function mudarAba(aba) {
-      ['Acervo', 'Espaco', 'Alunos', 'Relatorios'].forEach(a => {
-        document.getElementById(`secao${a}`).classList.add('hidden');
-        document.getElementById(`tab${a}`).className = 'px-4 py-2 rounded-xl text-sm font-bold transition text-white hover:bg-white/10 cursor-pointer';
+      ['Acervo', 'Meus', 'Espaco', 'Retirados', 'Gestao'].forEach(a => {
+        const sec = document.getElementById(`secao${a}`);
+        const tab = document.getElementById(`tab${a}`);
+        if (sec) sec.classList.add('hidden');
+        if (tab) tab.className = tab.className.replace('bg-white text-slate-900 shadow-sm', 'text-white hover:bg-white/10');
       });
-      const nomeAba = aba.charAt(0).toUpperCase() + aba.slice(1);
-      document.getElementById(`secao${nomeAba}`).classList.remove('hidden');
-      document.getElementById(`tab${nomeAba}`).className = 'px-4 py-2 rounded-xl text-sm font-bold transition bg-white text-slate-900 shadow-sm cursor-pointer';
+
+      const nome = aba.charAt(0).toUpperCase() + aba.slice(1);
+      document.getElementById(`secao${nome}`).classList.remove('hidden');
+      const tabAtiva = document.getElementById(`tab${nome}`);
+      tabAtiva.className = tabAtiva.className.replace('text-white hover:bg-white/10', 'bg-white text-slate-900 shadow-sm');
     }
 
-    // BUSCA AUTOMÁTICA DE CAPA VIA GOOGLE BOOKS API
+    // =========================================================
+    // ACERVO E BUSCA AUTOMÁTICA DE CAPAS
+    // =========================================================
     async function buscarCapaAutomatica() {
       const titulo = document.getElementById('tituloLivro').value.trim();
-      if (!titulo) {
-        alert('Digite o título do livro primeiro para buscar a capa.');
-        return;
-      }
+      if (!titulo) return alert('Digite o título do livro primeiro.');
       const btn = document.getElementById('btnBuscarCapa');
       btn.textContent = 'Buscando...';
       btn.disabled = true;
@@ -296,26 +638,24 @@
       try {
         const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(titulo)}&maxResults=1`);
         const data = await res.json();
-
         if (data.items && data.items.length > 0) {
           const info = data.items[0].volumeInfo;
           if (info.authors && !document.getElementById('autorLivro').value) {
             document.getElementById('autorLivro').value = info.authors.join(', ');
           }
           if (info.imageLinks && info.imageLinks.thumbnail) {
-            // Converte para HTTPS para evitar bloqueio de segurança do navegador
             const urlSegura = info.imageLinks.thumbnail.replace('http://', 'https://');
             document.getElementById('capaLivro').value = urlSegura;
             document.getElementById('previewCapaImg').src = urlSegura;
             document.getElementById('previewCapaBox').classList.remove('hidden');
           } else {
-            alert('Livro encontrado, mas sem imagem de capa disponível no Google Books.');
+            alert('Livro encontrado, mas sem capa cadastrada no Google Books.');
           }
         } else {
-          alert('Nenhuma capa encontrada automaticamente para este título.');
+          alert('Capa não encontrada automaticamente.');
         }
-      } catch (err) {
-        alert('Erro ao consultar o catálogo de capas online.');
+      } catch (e) {
+        alert('Erro ao buscar capa.');
       } finally {
         btn.textContent = '🔍 Buscar Capa';
         btn.disabled = false;
@@ -323,19 +663,23 @@
     }
 
     async function carregarLivros() {
-      try {
-        const res = await fetch('/api/biblioteca');
-        acervoGlobal = await res.json();
-        filtrarLivros();
-        renderizarEmprestados();
-      } catch (err) { console.error(err); }
+      const res = await fetch('/api/biblioteca');
+      acervoGlobal = await res.json();
+      filtrarLivros();
+      if (usuarioAtual.perfil === 'admin') {
+        renderizarRetiradosAdmin();
+      } else {
+        renderizarMeusEmprestimos();
+      }
     }
 
     function filtrarLivros() {
       const termo = document.getElementById('campoBusca').value.toLowerCase();
       const status = document.getElementById('filtroStatus').value;
       const filtrados = acervoGlobal.filter(l => {
-        const t = (l.titulo || '').toLowerCase().includes(termo) || (l.autor || '').toLowerCase().includes(termo);
+        const t = (l.titulo || '').toLowerCase().includes(termo) ||
+                  (l.autor || '').toLowerCase().includes(termo) ||
+                  (l.categoria || '').toLowerCase().includes(termo);
         const disp = l.disponivel !== false;
         const st = status === 'todos' || (status === 'disponivel' && disp) || (status === 'emprestado' && !disp);
         return t && st;
@@ -345,135 +689,99 @@
 
     function renderizarLivros(lista) {
       const container = document.getElementById('listaLivros');
-      document.getElementById('contadorLivros').textContent = `${lista.length} livros`;
+      document.getElementById('contadorLivros').textContent = `${lista.length} ${lista.length === 1 ? 'livro' : 'livros'}`;
+      const isAdmin = usuarioAtual.perfil === 'admin';
+
       container.innerHTML = lista.map(livro => {
         const disp = livro.disponivel !== false;
-        let capa = livro.capa
+        const capa = livro.capa
           ? `<div class="w-full h-44 bg-slate-100 rounded-2xl mb-4 overflow-hidden flex items-center justify-center p-2"><img src="${livro.capa}" class="h-full object-contain rounded-lg shadow-sm" onerror="this.parentElement.innerHTML='📚'"></div>`
-          : `<div class="w-full h-32 bg-gradient-to-br from-violet-500 to-pink-500 rounded-2xl mb-4 flex items-center justify-center text-white text-3xl font-bold">${(livro.titulo||'L')[0].toUpperCase()}</div>`;
+          : `<div class="w-full h-32 bg-gradient-to-br from-violet-500 to-pink-500 rounded-2xl mb-4 flex items-center justify-center text-white text-3xl font-bold">${(livro.titulo || 'L')[0].toUpperCase()}</div>`;
+
         return `
           <div class="bg-white rounded-3xl p-5 shadow-sm border border-violet-100 flex flex-col justify-between">
             <div>
               ${capa}
               <div class="flex justify-between items-center mb-2">
                 <span class="text-xs font-bold px-2.5 py-1 rounded-xl bg-violet-50 text-violet-700">${livro.categoria || 'Geral'}</span>
-                <span class="text-xs font-bold px-2.5 py-1 rounded-full ${disp ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${disp ? '● Disponível' : '● Emprestado'}</span>
+                <span class="text-xs font-bold px-2.5 py-1 rounded-full ${disp ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                  ${disp ? '● Disponível' : (livro.statusEmprestimo === 'RESERVADO' ? '● Reservado' : '● Emprestado')}
+                </span>
               </div>
               <h3 class="text-lg font-bold text-slate-800">${livro.titulo}</h3>
-              <p class="text-sm text-slate-600 mb-2">por ${livro.autor}</p>
-              ${!disp ? `<p class="text-xs bg-amber-50 p-2 rounded-xl text-amber-900 mt-2">Com: <strong>${livro.leitor}</strong> (${livro.turma})</p>` : ''}
+              <p class="text-sm text-slate-600 mb-1">por ${livro.autor}</p>
+              ${livro.codigo ? `<p class="text-xs text-slate-400">Prateleira: ${livro.codigo}</p>` : ''}
+              ${!disp && livro.dataDevolucao ? `<p class="text-xs text-amber-800 bg-amber-50 p-2 rounded-xl mt-2">Previsão de entrega: <strong>${new Date(livro.dataDevolucao).toLocaleDateString('pt-BR')}</strong></p>` : ''}
             </div>
+
             <div class="mt-4 pt-3 border-t flex gap-2">
               ${disp
-                ? `<button onclick="abrirReserva('${livro.id}', '${livro.titulo.replace(/'/g, "\\'")}')" class="flex-1 bg-violet-600 text-white py-2 rounded-xl text-sm font-bold cursor-pointer">Emprestar</button>`
-                : `<button onclick="devolver('${livro.id}')" class="flex-1 bg-amber-500 text-white py-2 rounded-xl text-sm font-bold cursor-pointer">Devolver</button>`
+                ? `<button onclick="abrirReservaLivro('${livro.id}', '${livro.titulo.replace(/'/g, "\\'")}')" class="flex-1 bg-violet-600 hover:bg-violet-700 text-white py-2.5 rounded-xl text-sm font-bold cursor-pointer">
+                    ${isAdmin ? 'Registrar Retirada' : 'Reservar para Retirar'}
+                  </button>`
+                : `<button disabled class="flex-1 bg-slate-100 text-slate-400 py-2.5 rounded-xl text-sm font-bold cursor-not-allowed">Indisponível</button>`
               }
-              <button onclick="excluirComPin('livro', '${livro.id}')" class="px-3 bg-rose-100 text-rose-700 hover:bg-rose-200 rounded-xl text-sm cursor-pointer" title="Excluir Livro (Exige PIN)">🗑️</button>
+              ${isAdmin ? `<button onclick="excluirAdmin('livro', '${livro.id}')" class="px-3 bg-rose-100 text-rose-700 hover:bg-rose-200 rounded-xl text-sm cursor-pointer" title="Excluir Livro">🗑️</button>` : ''}
             </div>
           </div>
         `;
-      }).join('') || '<p class="text-center col-span-3 text-slate-400 py-10">Nenhum livro cadastrado.</p>';
+      }).join('') || '<p class="text-center col-span-3 text-slate-400 py-10">Nenhum livro encontrado.</p>';
     }
 
     async function salvarLivro(e) {
       e.preventDefault();
-      await fetch('/api/biblioteca', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-        acao: 'cadastrar',
-        titulo: document.getElementById('tituloLivro').value,
-        autor: document.getElementById('autorLivro').value,
-        capa: document.getElementById('capaLivro').value,
-        categoria: document.getElementById('categoriaLivro').value,
-        codigo: document.getElementById('codigoLivro').value
-      })});
+      const res = await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          acao: 'cadastrar',
+          adminPin: adminPinSessao,
+          titulo: document.getElementById('tituloLivro').value.trim(),
+          autor: document.getElementById('autorLivro').value.trim(),
+          capa: document.getElementById('capaLivro').value.trim(),
+          categoria: document.getElementById('categoriaLivro').value,
+          codigo: document.getElementById('codigoLivro').value.trim()
+        })
+      });
+      if (!res.ok) return alert('Erro ao cadastrar livro.');
       fecharModalCadastro();
       carregarLivros();
     }
 
-    async function confirmarReserva(e) {
-      e.preventDefault();
-      const id = document.getElementById('idLivroReserva').value;
-      const leitor = document.getElementById('nomeLeitor').value;
-      const turma = document.getElementById('turmaLeitor').value;
+    function abrirReservaLivro(id, titulo) {
+      document.getElementById('idLivroReserva').value = id;
+      document.getElementById('nomeLivroReserva').textContent = `Livro: ${titulo}`;
 
-      await fetch('/api/biblioteca', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-        acao: 'reservar', id, leitor, turma
-      })});
-
-      fecharModalReserva();
-      carregarLivros();
-
-      document.getElementById('termoLivro').textContent = document.getElementById('nomeLivroReserva').textContent.replace('Livro: ', '');
-      document.getElementById('termoAluno').textContent = leitor;
-      document.getElementById('termoTurma').textContent = turma;
-      document.getElementById('termoData').textContent = new Date().toLocaleDateString('pt-BR');
-      document.getElementById('modalTermo').classList.remove('hidden');
-      document.getElementById('modalTermo').classList.add('flex');
-    }
-
-    async function devolver(id) {
-      if (!confirm('Confirmar devolução do livro?')) return;
-      await fetch('/api/biblioteca', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'devolver', id }) });
-      carregarLivros();
-    }
-
-    // EXCLUSÃO PROTEGIDA POR PIN DA BIBLIOTECÁRIA
-    async function excluirComPin(tipoItem, itemId) {
-      const pin = prompt('🔐 Digite o PIN da Bibliotecária para confirmar a exclusão:');
-      if (!pin) return;
-
-      const res = await fetch('/api/biblioteca', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ acao: 'excluir', tipoItem, itemId, pin })
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.erro || 'PIN incorreto!');
-        return;
+      // Preenche automaticamente se for aluno ou professor logado
+      if (usuarioAtual.perfil !== 'admin') {
+        document.getElementById('resNomeLeitor').value = usuarioAtual.nome;
+        document.getElementById('resTurmaLeitor').value = usuarioAtual.turma || 'Docente';
+        document.getElementById('resWhatsappLeitor').value = usuarioAtual.whatsapp || '';
+        document.getElementById('resEmailLeitor').value = usuarioAtual.email || '';
+        document.getElementById('resPrazoDias').value = usuarioAtual.perfil === 'professor' ? '14' : '7';
+      } else {
+        document.getElementById('resNomeLeitor').value = '';
+        document.getElementById('resTurmaLeitor').value = '';
+        document.getElementById('resWhatsappLeitor').value = '';
+        document.getElementById('resEmailLeitor').value = '';
       }
-      carregarTudo();
+
+      document.getElementById('modalReserva').classList.remove('hidden');
+      document.getElementById('modalReserva').classList.add('flex');
     }
 
-    // GESTÃO DE ALUNOS
-    async function cadastrarAluno(e) {
+    async function confirmarReservaLivro(e) {
       e.preventDefault();
-      await fetch('/api/biblioteca', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-        acao: 'cadastrar_aluno',
-        leitor: document.getElementById('nomeAlunoReg').value,
-        turma: document.getElementById('turmaAlunoReg').value,
-        contato: document.getElementById('contatoAlunoReg').value
-      })});
-      e.target.reset();
-      carregarAlunos();
-      alert('Aluno cadastrado!');
-    }
-
-    async function carregarAlunos() {
-      const res = await fetch('/api/biblioteca?tipo=alunos');
-      const alunos = await res.json();
-      document.getElementById('listaAlunos').innerHTML = alunos.map(a => `
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-center">
-          <div>
-            <p class="font-bold text-slate-800">${a.nome}</p>
-            <p class="text-xs text-slate-500">Turma: ${a.turma} ${a.contato ? '• ' + a.contato : ''}</p>
-          </div>
-          <button onclick="excluirComPin('aluno', '${a.id}')" class="px-2.5 py-1.5 bg-rose-100 text-rose-700 hover:bg-rose-200 rounded-xl text-sm cursor-pointer" title="Excluir Aluno (Exige PIN)">🗑️</button>
-        </div>
-      `).join('') || '<p class="text-xs text-slate-400">Nenhum aluno cadastrado.</p>';
-    }
-
-    // AGENDA DO ESPAÇO FÍSICO (CONTROLE DA BIBLIOTECÁRIA)
-    async function gerenciarAgendaEspaco(e) {
-      e.preventDefault();
-      const pin = prompt('🔐 Digite o PIN da Bibliotecária para alterar a agenda:');
-      if (!pin) return;
-
+      const isAdmin = usuarioAtual.perfil === 'admin';
       const payload = {
-        acao: document.getElementById('acaoAgendaAdmin').value,
-        data: document.getElementById('dataAgendaAdmin').value,
-        horario: document.getElementById('horarioAgendaAdmin').value,
-        motivo: document.getElementById('motivoAgendaAdmin').value,
-        pin
+        acao: 'reservar',
+        id: document.getElementById('idLivroReserva').value,
+        leitor: document.getElementById('resNomeLeitor').value.trim(),
+        turma: document.getElementById('resTurmaLeitor').value.trim(),
+        whatsappLeitor: document.getElementById('resWhatsappLeitor').value.trim(),
+        emailLeitor: document.getElementById('resEmailLeitor').value.trim(),
+        prazoDias: document.getElementById('resPrazoDias').value,
+        statusEmprestimo: isAdmin ? 'RETIRADO' : 'RESERVADO'
       };
 
       const res = await fetch('/api/biblioteca', {
@@ -481,52 +789,213 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      const result = await res.json();
-      if (!res.ok) {
-        alert(result.erro || 'PIN incorreto!');
-        return;
+      const data = await res.json();
+      if (!res.ok) return alert(data.erro || 'Erro ao reservar.');
+
+      fecharModalReserva();
+      carregarLivros();
+
+      if (isAdmin) {
+        abrirTermoImpressao(data.livro);
+      } else {
+        alert('Reserva confirmada! Passe na biblioteca para retirar seu exemplar e assinar o termo.');
       }
-      e.target.reset();
-      carregarEspacos();
+    }
+
+    // =========================================================
+    // MEUS EMPRÉSTIMOS (ALUNO E PROFESSOR)
+    // =========================================================
+    function renderizarMeusEmprestimos() {
+      const meus = acervoGlobal.filter(l =>
+        !l.disponivel && (
+          (l.emailLeitor && l.emailLeitor === usuarioAtual.email) ||
+          (l.leitor && l.leitor.toLowerCase() === usuarioAtual.nome.toLowerCase())
+        )
+      );
+
+      document.getElementById('listaMeusEmprestimos').innerHTML = meus.map(l => {
+        const dev = new Date(l.dataDevolucao);
+        const hoje = new Date();
+        const atrasado = hoje > dev;
+
+        return `
+          <div class="p-4 rounded-2xl border ${atrasado ? 'bg-red-50 border-red-200' : 'bg-violet-50/50 border-violet-200'} flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div>
+              <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full ${l.statusEmprestimo === 'RESERVADO' ? 'bg-amber-200 text-amber-900' : 'bg-violet-200 text-violet-900'}">
+                ${l.statusEmprestimo === 'RESERVADO' ? 'Aguardando Retirada na Biblioteca' : 'Em sua posse'}
+              </span>
+              <h4 class="font-bold text-slate-800 text-lg mt-1">${l.titulo}</h4>
+              <p class="text-xs text-slate-600">Reservado em: ${new Date(l.dataReserva).toLocaleDateString('pt-BR')} • Entrega até: <strong>${dev.toLocaleDateString('pt-BR')}</strong></p>
+            </div>
+            ${atrasado ? '<span class="bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl">⚠️ Prazo Vencido — Devolver na Biblioteca</span>' : ''}
+          </div>
+        `;
+      }).join('') || '<p class="text-sm text-slate-400">Você não possui reservas ou empréstimos ativos no momento.</p>';
+    }
+
+    // =========================================================
+    // LIVROS RETIRADOS & ALERTAS DE ATRASO (ADMIN)
+    // =========================================================
+    function renderizarRetiradosAdmin() {
+      const retirados = acervoGlobal.filter(l => l.disponivel === false);
+      const container = document.getElementById('listaRetiradosAdmin');
+      let qtdAtrasados = 0;
+
+      container.innerHTML = retirados.map(l => {
+        const dtRes = new Date(l.dataReserva);
+        const dtDev = new Date(l.dataDevolucao);
+        const agora = new Date();
+        const diasComAluno = Math.max(0, Math.floor((agora - dtRes) / (1000 * 60 * 60 * 24)));
+        const atrasado = agora > dtDev;
+        if (atrasado) qtdAtrasados++;
+
+        const foneLimpo = (l.whatsappLeitor || '').replace(/\D/g, '');
+        const msgCobranca = encodeURIComponent(`Olá ${l.leitor}, aqui é da Biblioteca da EMEF Presidente Getúlio Vargas. Lembramos que o prazo do livro "${l.titulo}" venceu em ${dtDev.toLocaleDateString('pt-BR')}. Por favor, realize a devolução na biblioteca.`);
+        const linkZap = foneLimpo ? `https://api.whatsapp.com/send?phone=55${foneLimpo}&text=${msgCobranca}` : `https://api.whatsapp.com/send?text=${msgCobranca}`;
+        const linkMail = `mailto:${l.emailLeitor || ''}?subject=${encodeURIComponent('Aviso de Devolução — Biblioteca Getúlio Vargas')}&body=${msgCobranca}`;
+
+        return `
+          <div class="p-4 rounded-2xl border ${atrasado ? 'bg-red-50 border-red-300' : 'bg-amber-50/60 border-amber-200'} flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full ${l.statusEmprestimo === 'RESERVADO' ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'}">
+                  ${l.statusEmprestimo === 'RESERVADO' ? '📌 Reservado Online' : '📖 Retirado'}
+                </span>
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full ${atrasado ? 'bg-red-600 text-white' : 'bg-slate-200 text-slate-700'}">
+                  ${diasComAluno} ${diasComAluno === 1 ? 'dia' : 'dias'} com o leitor ${atrasado ? '(ATRASADO!)' : ''}
+                </span>
+              </div>
+              <h4 class="font-bold text-slate-800 text-lg mt-1">${l.titulo}</h4>
+              <p class="text-xs text-slate-700">Leitor: <strong>${l.leitor}</strong> (${l.turma}) • Tel: ${l.whatsappLeitor || 'Não inf.'} • E-mail: ${l.emailLeitor || 'Não inf.'}</p>
+              <p class="text-xs text-slate-500">Retirada: ${dtRes.toLocaleDateString('pt-BR')} • Limite: <strong>${dtDev.toLocaleDateString('pt-BR')}</strong></p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 w-full lg:w-auto">
+              ${l.statusEmprestimo === 'RESERVADO' ? `<button onclick="confirmarRetiradaAdmin('${l.id}')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-xl cursor-pointer">✅ Autorizar Retirada</button>` : ''}
+              <button onclick='abrirTermoImpressao(${JSON.stringify(l).replace(/'/g, "&#39;")})' class="bg-slate-700 hover:bg-slate-800 text-white text-xs font-bold px-3 py-2 rounded-xl cursor-pointer">🖨️ Termo</button>
+              <a href="${linkZap}" target="_blank" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-2 rounded-xl">💬 WhatsApp</a>
+              ${l.emailLeitor ? `<a href="${linkMail}" class="bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold px-3 py-2 rounded-xl">✉️ E-mail</a>` : ''}
+              <button onclick="devolverLivroAdmin('${l.id}')" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3 py-2 rounded-xl cursor-pointer">Receber Devolução</button>
+            </div>
+          </div>
+        `;
+      }).join('') || '<p class="text-sm text-slate-400">Nenhum livro reservado ou retirado no momento.</p>';
+
+      const badge = document.getElementById('badgeAtraso');
+      const resumo = document.getElementById('resumoAtrasados');
+      if (qtdAtrasados > 0) {
+        badge.classList.remove('hidden');
+        badge.textContent = qtdAtrasados;
+        resumo.classList.remove('hidden');
+        resumo.textContent = `⚠️ ${qtdAtrasados} ${qtdAtrasados === 1 ? 'empréstimo com prazo vencido' : 'empréstimos com prazo vencido'}`;
+      } else {
+        badge.classList.add('hidden');
+        resumo.classList.add('hidden');
+      }
+    }
+
+    async function confirmarRetiradaAdmin(id) {
+      const res = await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ acao: 'confirmar_retirada', id, adminPin: adminPinSessao })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        carregarLivros();
+        abrirTermoImpressao(data.livro);
+      }
+    }
+
+    async function devolverLivroAdmin(id) {
+      if (!confirm('Confirmar o recebimento e devolução deste livro ao acervo?')) return;
+      await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ acao: 'devolver', id, adminPin: adminPinSessao })
+      });
+      carregarLivros();
+    }
+
+    function abrirTermoImpressao(livro) {
+      document.getElementById('termoLivro').textContent = livro.titulo;
+      document.getElementById('termoAluno').textContent = livro.leitor;
+      document.getElementById('termoTurma').textContent = livro.turma;
+      document.getElementById('termoData').textContent = new Date(livro.dataReserva).toLocaleDateString('pt-BR');
+      document.getElementById('termoDevolucao').textContent = new Date(livro.dataDevolucao).toLocaleDateString('pt-BR');
+      document.getElementById('modalTermo').classList.remove('hidden');
+      document.getElementById('modalTermo').classList.add('flex');
+    }
+
+    // =========================================================
+    // AGENDA E ESPAÇO FÍSICO (ADMIN CONFIGURA / PROFESSOR RESERVA)
+    // =========================================================
+    async function salvarConfiguracaoEspaco(e) {
+      e.preventDefault();
+      const payload = {
+        acao: 'configurar_espaco',
+        adminPin: adminPinSessao,
+        data: document.getElementById('espData').value,
+        turno: document.getElementById('espTurno').value,
+        periodos: document.getElementById('espPeriodos').value.trim(),
+        status: document.getElementById('espStatus').value,
+        observacao: document.getElementById('espObs').value.trim()
+      };
+      const res = await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        e.target.reset();
+        carregarEspacos();
+      }
     }
 
     async function carregarEspacos() {
       const res = await fetch('/api/biblioteca?tipo=espacos');
       const espacos = await res.json();
-      const container = document.getElementById('listaEspacos');
+      const isAdmin = usuarioAtual.perfil === 'admin';
+      const isProf = usuarioAtual.perfil === 'professor';
 
-      container.innerHTML = espacos.map(e => {
-        const dataFormatada = e.data ? e.data.split('-').reverse().join('/') : '';
-        let badge = '';
-        let acaoBtn = '';
+      document.getElementById('listaEspacos').innerHTML = espacos.map(e => {
+        const dt = e.data ? e.data.split('-').reverse().join('/') : '';
+        let statusHtml = '';
+        let btnHtml = '';
 
         if (e.status === 'DISPONIVEL') {
-          badge = '<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">✅ Liberado para Reserva</span>';
-          acaoBtn = `<button onclick="abrirModalSlot('${e.id}', '${dataFormatada} - ${e.horario}')" class="bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer">Reservar Horário</button>`;
-        } else if (e.status === 'BLOQUEADO') {
-          badge = `<span class="bg-rose-100 text-rose-800 text-xs font-bold px-3 py-1 rounded-full">🚫 Indisponível (${e.motivo || 'Uso Interno'})</span>`;
-        } else {
-          badge = `<span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">📌 Reservado: ${e.prof} (${e.turma})</span>`;
+          statusHtml = `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">✅ Aberta / Disponível (${e.periodos})</span>`;
+          if (isProf) {
+            btnHtml = `<button onclick="abrirModalSlot('${e.id}', '${dt} • ${e.turno} (${e.periodos})')" class="bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer">Reservar Espaço</button>`;
+          }
+        } else if (e.status === 'ATIVIDADE_INTERNA') {
+          statusHtml = `<span class="bg-pink-100 text-pink-800 text-xs font-bold px-3 py-1 rounded-full">📖 ${e.periodos}</span>`;
+        } else if (e.status === 'FECHADO') {
+          statusHtml = `<span class="bg-rose-100 text-rose-800 text-xs font-bold px-3 py-1 rounded-full">🚫 Fechada (${e.periodos})</span>`;
+        } else if (e.status === 'RESERVADO') {
+          statusHtml = `<span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">📌 Reservado: Prof. ${e.prof} (${e.turma}) — ${e.periodos}</span>`;
         }
 
         return `
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
-              <p class="font-bold text-slate-800">${dataFormatada} — <span class="text-violet-700">${e.horario}</span></p>
-              <div class="mt-1">${badge}</div>
+              <p class="font-bold text-slate-800">${dt} — <span class="text-violet-700">Turno: ${e.turno}</span></p>
+              <div class="mt-1.5">${statusHtml}</div>
+              ${e.observacao ? `<p class="text-xs text-slate-500 mt-1">${e.observacao}</p>` : ''}
             </div>
             <div class="flex items-center gap-2">
-              ${acaoBtn}
-              <button onclick="excluirComPin('espaco', '${e.id}')" class="px-2.5 py-1.5 bg-slate-100 text-slate-600 hover:bg-rose-100 hover:text-rose-700 rounded-xl text-xs cursor-pointer" title="Remover da Agenda (Exige PIN)">🗑️</button>
+              ${btnHtml}
+              ${isAdmin ? `<button onclick="excluirAdmin('espaco', '${e.id}')" class="px-2.5 py-1.5 bg-rose-100 text-rose-700 rounded-xl text-xs cursor-pointer" title="Excluir horário">🗑️</button>` : ''}
             </div>
           </div>
         `;
-      }).join('') || '<p class="text-sm text-slate-400 bg-white p-6 rounded-2xl border text-center">A bibliotecária ainda não liberou horários na agenda.</p>';
+      }).join('') || '<p class="text-sm text-slate-400 bg-white p-6 rounded-2xl border text-center">Nenhum horário publicado na agenda pela biblioteca ainda.</p>';
     }
 
     function abrirModalSlot(id, info) {
       document.getElementById('idSlotReserva').value = id;
       document.getElementById('infoSlotReserva').textContent = info;
+      document.getElementById('profSlot').value = usuarioAtual.nome;
       document.getElementById('modalSlot').classList.remove('hidden');
       document.getElementById('modalSlot').classList.add('flex');
     }
@@ -538,36 +1007,89 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          acao: 'reservar_slot',
+          acao: 'reservar_espaco',
           id: document.getElementById('idSlotReserva').value,
-          prof: document.getElementById('profSlot').value,
-          turma: document.getElementById('turmaSlot').value
+          prof: document.getElementById('profSlot').value.trim(),
+          turma: document.getElementById('turmaSlot').value.trim(),
+          atividade: document.getElementById('atividadeSlot').value.trim()
         })
       });
       if (res.ok) {
         fecharModalSlot();
         carregarEspacos();
-        alert('Horário reservado com sucesso!');
+        alert('Reserva do espaço confirmada!');
       } else {
-        alert('Não foi possível reservar este horário.');
+        alert('Horário indisponível.');
       }
     }
 
-    function renderizarEmprestados() {
-      const emprestados = acervoGlobal.filter(l => l.disponivel === false);
-      const container = document.getElementById('listaEmprestados');
-      container.innerHTML = emprestados.map(l => `
-        <div class="bg-amber-50/60 p-4 rounded-2xl border border-amber-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+    // =========================================================
+    // GESTÃO DE PROFESSORES AUTORIZADOS E ALUNOS (ADMIN)
+    // =========================================================
+    async function carregarGestaoAdmin() {
+      const [resProfs, resUsers] = await Promise.all([
+        fetch('/api/biblioteca?tipo=profs_autorizados'),
+        fetch('/api/biblioteca?tipo=usuarios')
+      ]);
+      const profs = await resProfs.json();
+      const users = await resUsers.json();
+      const alunos = users.filter(u => u.perfil === 'aluno');
+
+      document.getElementById('listaProfsAutorizados').innerHTML = profs.map(p => `
+        <div class="bg-violet-50 p-3 rounded-2xl border border-violet-100 flex justify-between items-center">
           <div>
-            <h4 class="font-bold text-slate-800">${l.titulo}</h4>
-            <p class="text-xs text-slate-600">Com: <strong>${l.leitor}</strong> (${l.turma}) • Retirado em: ${new Date(l.dataReserva).toLocaleDateString('pt-BR')}</p>
+            <p class="font-bold text-slate-800 text-sm">${p.nome}</p>
+            <p class="text-xs text-slate-500">${p.email || 'Liberação por nome'}</p>
           </div>
-          <div class="flex gap-2 w-full sm:w-auto">
-            <a href="https://api.whatsapp.com/send?text=Olá%20${encodeURIComponent(l.leitor)},%20lembramos%20da%20devolução%20do%20livro%20'${encodeURIComponent(l.titulo)}'%20na%20biblioteca%20da%20EMEF%20Getúlio%20Vargas." target="_blank" class="flex-1 sm:flex-none bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-2 rounded-xl text-center">💬 WhatsApp</a>
-            <button onclick="devolver('${l.id}')" class="flex-1 sm:flex-none bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3 py-2 rounded-xl">Devolver</button>
-          </div>
+          <button onclick="removerProfAutorizado('${p.id}')" class="text-rose-600 hover:text-rose-800 text-xs font-bold px-2 py-1 cursor-pointer">Remover</button>
         </div>
-      `).join('') || '<p class="text-sm text-slate-400">Nenhum livro emprestado no momento.</p>';
+      `).join('') || '<p class="text-xs text-slate-400">Nenhum professor pré-autorizado ainda.</p>';
+
+      document.getElementById('listaAlunosAdmin').innerHTML = alunos.map(a => `
+        <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 flex justify-between items-center">
+          <div>
+            <p class="font-bold text-slate-800 text-sm">${a.nome}</p>
+            <p class="text-xs text-slate-500">Turma: ${a.turma} • ${a.whatsapp || ''}</p>
+            <p class="text-[11px] text-slate-400">${a.email}</p>
+          </div>
+          <button onclick="excluirAdmin('aluno', '${a.email}')" class="px-2.5 py-1.5 bg-rose-100 text-rose-700 hover:bg-rose-200 rounded-xl text-xs cursor-pointer" title="Excluir Aluno">🗑️</button>
+        </div>
+      `).join('') || '<p class="text-xs text-slate-400">Nenhum aluno cadastrado ainda.</p>';
+    }
+
+    async function adicionarProfAutorizado(e) {
+      e.preventDefault();
+      await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          acao: 'add_prof_autorizado',
+          adminPin: adminPinSessao,
+          nome: document.getElementById('novoProfNome').value.trim(),
+          email: document.getElementById('novoProfEmail').value.trim()
+        })
+      });
+      e.target.reset();
+      carregarGestaoAdmin();
+    }
+
+    async function removerProfAutorizado(id) {
+      await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ acao: 'del_prof_autorizado', adminPin: adminPinSessao, id })
+      });
+      carregarGestaoAdmin();
+    }
+
+    async function excluirAdmin(tipoItem, itemId) {
+      if (!confirm('Confirmar exclusão definitiva deste registro?')) return;
+      const res = await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ acao: 'excluir', tipoItem, itemId, adminPin: adminPinSessao })
+      });
+      if (res.ok) carregarTudo();
     }
 
     function abrirModalCadastro() {
@@ -579,14 +1101,7 @@
       document.getElementById('modalCadastro').classList.add('hidden');
       document.getElementById('formCadastro').reset();
     }
-    function abrirReserva(id, titulo) {
-      document.getElementById('idLivroReserva').value = id;
-      document.getElementById('nomeLivroReserva').textContent = `Livro: ${titulo}`;
-      document.getElementById('modalReserva').classList.remove('hidden');
-      document.getElementById('modalReserva').classList.add('flex');
-    }
     function fecharModalReserva() { document.getElementById('modalReserva').classList.add('hidden'); }
-    function fecharTermo() { document.getElementById('modalTermo').classList.add('hidden'); }
   </script>
 </body>
 </html>
