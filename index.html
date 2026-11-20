@@ -102,7 +102,7 @@
           <label for="lembrarDados" class="text-xs text-slate-300 cursor-pointer">Lembrar meus dados neste computador (Salvar PIN)</label>
         </div>
 
-        <button type="submit" class="w-full bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-500 hover:to-pink-500 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-violet-600/30 transition cursor-pointer">Acessar Sistema</button>
+        <button type="submit" class="w-full bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-500 hover:to-pink-500 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-violet-950/30 transition cursor-pointer">Acessar Sistema</button>
       </form>
 
       <form id="formCadastroUser" onsubmit="fazerCadastroUsuario(event)" class="hidden space-y-3.5" autocomplete="off">
@@ -195,7 +195,7 @@
       <!-- AGENDA E ESPAÇO -->
       <section id="secaoEspaco" class="hidden space-y-8 print:hidden">
         
-        <!-- PAINEL ADMIN: MURAL DE EVENTOS COM CAIXAS DE SELEÇÃO -->
+        <!-- PAINEL ADMIN: MURAL DE EVENTOS COM MÚLTIPLOS TURNOS E PERÍODOS -->
         <div id="painelAdminEvento" class="hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 border border-purple-400/40 text-white p-6 rounded-3xl shadow-2xl backdrop-blur-md bg-opacity-90">
           <h2 class="text-xl font-bold mb-1 font-display">📢 Publicar Evento / Post no Mural da Biblioteca</h2>
           <p class="text-xs text-purple-100 mb-5">Divulgue programações ou avisos importantes para toda a escola.</p>
@@ -220,7 +220,22 @@
 
             <div id="boxEvtTituloPersonalizado" class="hidden">
               <label class="block text-xs font-semibold text-purple-100 mb-1">Título Personalizado *</label>
-              <input type="text" id="evtTituloPersonalizado" placeholder="Ex: Visita da Patrono da Feira do Livro" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-purple-400/50 text-white text-sm placeholder-purple-300">
+              <input type="text" id="evtTituloPersonalizado" placeholder="Ex: Visita do Patrono da Feira do Livro" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-purple-400/50 text-white text-sm placeholder-purple-300">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-purple-100 mb-2">Turnos Afetados *</label>
+              <div class="flex flex-wrap gap-4 bg-slate-900/60 p-3 rounded-2xl border border-purple-400/30">
+                <label class="flex items-center gap-2 text-xs font-semibold text-purple-100 cursor-pointer">
+                  <input type="checkbox" name="evtTurnoCheck" value="Manhã" class="w-4 h-4 rounded accent-pink-500"> ☀️ Manhã
+                </label>
+                <label class="flex items-center gap-2 text-xs font-semibold text-purple-100 cursor-pointer">
+                  <input type="checkbox" name="evtTurnoCheck" value="Tarde" class="w-4 h-4 rounded accent-pink-500"> ⛅ Tarde
+                </label>
+                <label class="flex items-center gap-2 text-xs font-semibold text-purple-100 cursor-pointer">
+                  <input type="checkbox" name="evtTurnoCheck" value="Noite" class="w-4 h-4 rounded accent-pink-500"> 🌙 Noite
+                </label>
+              </div>
             </div>
 
             <div>
@@ -258,10 +273,10 @@
           </form>
         </div>
 
-        <!-- PAINEL ADMIN: LIBERAR ESPAÇO COM CAIXAS DE SELEÇÃO -->
+        <!-- PAINEL ADMIN: LIBERAR ESPAÇO COM MÚLTIPLOS TURNOS E PERÍODOS -->
         <div id="painelAdminEspaco" class="hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/30 text-white p-6 rounded-3xl shadow-xl backdrop-blur-md">
           <h2 class="text-xl font-bold mb-1 font-display">🗓️ Habilitar e Liberar Agendamento de Espaço</h2>
-          <p class="text-xs text-slate-400 mb-5">Abra os horários para que os professores possam selecionar os períodos com facilidade.</p>
+          <p class="text-xs text-slate-400 mb-5">Abra os horários para que os professores possam selecionar os turnos e períodos com facilidade.</p>
           
           <form onsubmit="salvarConfiguracaoEspaco(event)" class="space-y-4" autocomplete="off">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -270,12 +285,18 @@
                 <input type="date" id="espData" required class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-300 mb-1">Turno *</label>
-                <select id="espTurno" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-sm">
-                  <option value="Manhã">Manhã</option>
-                  <option value="Tarde">Tarde</option>
-                  <option value="Manhã e Tarde">Manhã e Tarde</option>
-                </select>
+                <label class="block text-xs font-semibold text-slate-300 mb-2">Turnos Disponíveis *</label>
+                <div class="flex flex-wrap gap-4 bg-slate-800 p-2.5 rounded-xl border border-slate-700">
+                  <label class="flex items-center gap-2 text-xs font-semibold text-slate-200 cursor-pointer">
+                    <input type="checkbox" name="espTurnoCheck" value="Manhã" class="w-4 h-4 rounded accent-pink-500"> ☀️ Manhã
+                  </label>
+                  <label class="flex items-center gap-2 text-xs font-semibold text-slate-200 cursor-pointer">
+                    <input type="checkbox" name="espTurnoCheck" value="Tarde" class="w-4 h-4 rounded accent-pink-500"> ⛅ Tarde
+                  </label>
+                  <label class="flex items-center gap-2 text-xs font-semibold text-slate-200 cursor-pointer">
+                    <input type="checkbox" name="espTurnoCheck" value="Noite" class="w-4 h-4 rounded accent-pink-500"> 🌙 Noite
+                  </label>
+                </div>
               </div>
             </div>
 
@@ -400,7 +421,7 @@
               </div>
             </div>
             <div class="flex justify-end pt-2">
-              <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm shadow cursor-pointer transition">Salvar Aluno e Gerar Guia</button>
+              <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm shadow cursor-pointer transition">Salvar Aluno no Sistema</button>
             </div>
           </form>
 
@@ -503,42 +524,58 @@
     </div>
   </div>
 
+  <!-- MODAL DE RETIRADA / EMPRÉSTIMO COM ALUNO CADASTRADO E PRAZO FLEXÍVEL -->
   <div id="modalReserva" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
     <div class="bg-white text-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
       <div class="flex justify-between items-center mb-3">
-        <h3 id="tituloModalReserva" class="text-xl font-bold text-slate-900 font-display">Empréstimo de Livro</h3>
+        <h3 id="tituloModalReserva" class="text-xl font-bold text-slate-900 font-display">Registrar Retirada de Livro</h3>
         <button onclick="fecharModalReserva()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
-      <p id="nomeLivroReserva" class="text-pink-600 font-bold mb-4"></p>
+      <p id="nomeLivroReserva" class="text-pink-600 font-bold mb-1"></p>
+      <p id="disponibilidadeLivroReserva" class="text-xs text-slate-500 mb-4 font-semibold"></p>
+      
       <form onsubmit="confirmarReservaLivro(event)" class="space-y-4" autocomplete="off">
         <input type="hidden" id="idLivroReserva">
+        
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Nome do Leitor(a) *</label>
-          <input type="text" id="resNomeLeitor" required class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800">
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Selecionar Aluno Cadastrado *</label>
+          <select id="selectAlunoReserva" required onchange="preencherDadosAlunoReserva()" class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 font-semibold text-sm">
+            <option value="">Selecione o estudante...</option>
+          </select>
+          <p class="text-[11px] text-amber-600 mt-1">⚠️ O aluno precisa estar cadastrado na aba "Cadastros e Gestão".</p>
         </div>
+
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Turma *</label>
-            <input type="text" id="resTurmaLeitor" required class="w-full px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-sm">
+            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Turma</label>
+            <input type="text" id="resTurmaLeitor" readonly class="w-full px-3 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-600 text-sm font-bold">
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Prazo Fixo</label>
-            <input type="text" disabled value="7 dias" class="w-full px-3 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-600 text-sm font-bold">
+            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Prazo de Devolução *</label>
+            <select id="resPrazoDias" class="w-full px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 font-bold text-sm">
+              <option value="2">2 dias</option>
+              <option value="5">5 dias</option>
+              <option value="7" selected>7 dias</option>
+              <option value="10">10 dias</option>
+              <option value="15">15 dias</option>
+            </select>
           </div>
         </div>
+
         <div>
-          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">WhatsApp</label>
-          <input type="text" id="resWhatsappLeitor" placeholder="(51) 9..." class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-sm placeholder-slate-400">
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">WhatsApp / Contato</label>
+          <input type="text" id="resWhatsappLeitor" readonly class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-600 text-sm font-bold">
         </div>
+
         <div class="flex justify-end gap-2 pt-3">
           <button type="button" onclick="fecharModalReserva()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-500 hover:text-slate-800 cursor-pointer">Cancelar</button>
-          <button type="submit" class="bg-pink-600 hover:bg-pink-500 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Confirmar Retirada</button>
+          <button type="submit" class="bg-pink-600 hover:bg-pink-500 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Confirmar Retirada e Gerar PDF</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL RESERVA DE ESPAÇO PARA PROFESSORES (COM VALIDAÇÃO DE BLOQUEIO) -->
+  <!-- MODAL RESERVA DE ESPAÇO PARA PROFESSORES -->
   <div id="modalSlot" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
     <div class="bg-white text-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
       <div class="flex justify-between items-center mb-3">
@@ -559,7 +596,7 @@
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Selecione os Períodos Desejados *</label>
           <div id="containerCheckPeriodosProf" class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200">
-            <!-- Gerado dinamicamente para respeitar bloqueios -->
+            <!-- Gerado dinamicamente -->
           </div>
         </div>
         <div class="flex justify-end gap-2 pt-3">
@@ -577,7 +614,7 @@
         <button onclick="fecharModalEvento()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
       <div>
-        <p class="text-xs font-bold text-purple-600 uppercase mb-1">Data Agendada e Períodos</p>
+        <p class="text-xs font-bold text-purple-600 uppercase mb-1">Data Agendada, Turno e Períodos</p>
         <p id="detalheEvtData" class="text-sm font-semibold text-slate-700"></p>
       </div>
       <div>
@@ -590,6 +627,7 @@
     </div>
   </div>
 
+  <!-- MODAL DE IMPRESSÃO DA GUIA (DUAS VIAS) -->
   <div id="modalTermo" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
     <div class="bg-white text-slate-900 rounded-3xl max-w-2xl w-full p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
       <div id="areaImpressao" class="space-y-6 bg-white p-2">
@@ -601,7 +639,7 @@
           <div class="text-xs space-y-1">
             <p><strong>Livro:</strong> <span id="termoLivro"></span></p>
             <p><strong>Aluno(a):</strong> <span id="termoAluno"></span> | <strong>Turma:</strong> <span id="termoTurma"></span></p>
-            <p><strong>Retirada:</strong> <span id="termoData"></span> | <strong>Devolução Limite (7 dias):</strong> <span id="termoDevolucao" class="font-bold text-pink-600"></span></p>
+            <p><strong>Retirada:</strong> <span id="termoData"></span> | <strong>Devolução Limite:</strong> <span id="termoDevolucao" class="font-bold text-pink-600"></span></p>
           </div>
           <div class="pt-6 text-center">
             <div class="border-t border-slate-400 w-2/3 mx-auto pt-1"></div>
@@ -617,7 +655,7 @@
           <div class="text-xs space-y-1">
             <p><strong>Livro:</strong> <span id="termoLivro2"></span></p>
             <p><strong>Aluno(a):</strong> <span id="termoAluno2"></span> | <strong>Turma:</strong> <span id="termoTurma2"></span></p>
-            <p><strong>Retirada:</strong> <span id="termoData2"></span> | <strong>Devolução Limite (7 dias):</strong> <span id="termoDevolucao2" class="font-bold text-pink-600"></span></p>
+            <p><strong>Retirada:</strong> <span id="termoData2"></span> | <strong>Devolução Limite:</strong> <span id="termoDevolucao2" class="font-bold text-pink-600"></span></p>
           </div>
           <div class="pt-6 text-center">
             <div class="border-t border-slate-400 w-2/3 mx-auto pt-1"></div>
@@ -627,8 +665,8 @@
       </div>
 
       <div class="flex justify-end gap-3 print:hidden">
-        <button onclick="document.getElementById('modalTermo').classList.add('hidden')" class="px-4 py-2 bg-slate-200 rounded-xl font-semibold cursor-pointer text-slate-800">Fechar</button>
-        <button onclick="window.print()" class="px-5 py-2 bg-pink-600 text-white font-bold rounded-xl shadow cursor-pointer">🖨️ Imprimir Duas Vias</button>
+        <button onclick="document.getElementById('modalTermo').classList.add('hidden'); carregarLivros();" class="px-4 py-2 bg-slate-200 rounded-xl font-semibold cursor-pointer text-slate-800">Fechar e Concluir</button>
+        <button onclick="window.print()" class="px-5 py-2 bg-pink-600 text-white font-bold rounded-xl shadow cursor-pointer">🖨️ Imprimir Duas Vias (PDF)</button>
       </div>
     </div>
   </div>
@@ -907,9 +945,9 @@
       await Promise.all([
         carregarLivros(),
         carregarEspacos(),
-        carregarMuralEventos()
+        carregarMuralEventos(),
+        carregarGestaoAdmin()
       ]);
-      if (usuarioAtual.perfil === 'admin') carregarGestaoAdmin();
     }
 
     function mudarAba(aba) {
@@ -1027,7 +1065,7 @@
             </div>
             <div class="mt-4 pt-3 border-t border-slate-100 flex gap-2">
               ${temDisponivel
-                ? `<button onclick="abrirReservaLivro('${livro.id}', '${livro.titulo.replace(/'/g, "\\'")}')" class="flex-1 bg-pink-600 hover:bg-pink-500 text-white py-2.5 rounded-xl text-sm font-bold cursor-pointer transition shadow-lg shadow-pink-600/20">
+                ? `<button onclick="abrirReservaLivro('${livro.id}', '${livro.titulo.replace(/'/g, "\\'")}', ${qtdDisp}, ${qtdTotal})" class="flex-1 bg-pink-600 hover:bg-pink-500 text-white py-2.5 rounded-xl text-sm font-bold cursor-pointer transition shadow-lg shadow-pink-600/20">
                     ${isAdmin ? 'Registrar Retirada' : 'Reservar Livro'}
                   </button>`
                 : `<button disabled class="flex-1 bg-slate-100 text-slate-400 py-2.5 rounded-xl text-sm font-bold cursor-not-allowed">Esgotado</button>`
@@ -1130,12 +1168,53 @@
       }
     }
 
-    function abrirReservaLivro(id, titulo) {
+    async function carregarGestaoAdmin() {
+      try {
+        const resUsers = await fetch('/api/biblioteca?tipo=usuarios');
+        usuariosGlobal = await resUsers.json();
+        atualizarSelectAlunosModal();
+        renderizarAlunosTabela();
+      } catch (e) {
+        console.error('Erro ao carregar gestão', e);
+      }
+    }
+
+    function atualizarSelectAlunosModal() {
+      const select = document.getElementById('selectAlunoReserva');
+      if (!select) return;
+      const alunos = usuariosGlobal.filter(u => u.perfil === 'aluno');
+      
+      select.innerHTML = '<option value="">Selecione o estudante cadastrado...</option>' + alunos.map(a => `
+        <option value="${a.nome}" data-turma="${a.turma || ''}" data-whatsapp="${a.whatsapp || ''}">${a.nome} (${a.turma || 'Sem turma'})</option>
+      `).join('');
+    }
+
+    function preencherDadosAlunoReserva() {
+      const select = document.getElementById('selectAlunoReserva');
+      const opt = select.options[select.selectedIndex];
+      if (opt && opt.value) {
+        document.getElementById('resTurmaLeitor').value = opt.getAttribute('data-turma') || '';
+        document.getElementById('resWhatsappLeitor').value = opt.getAttribute('data-whatsapp') || '';
+      } else {
+        document.getElementById('resTurmaLeitor').value = '';
+        document.getElementById('resWhatsappLeitor').value = '';
+      }
+    }
+
+    function abrirReservaLivro(id, titulo, qtdDisp, qtdTotal) {
+      if (qtdDisp <= 0) {
+        return alert('Este livro está esgotado no momento. Todos os exemplares encontram-se emprestados.');
+      }
       document.getElementById('idLivroReserva').value = id;
       document.getElementById('nomeLivroReserva').textContent = `Livro: ${titulo}`;
-      document.getElementById('resNomeLeitor').value = usuarioAtual.nome;
-      document.getElementById('resTurmaLeitor').value = usuarioAtual.turma || 'Docente';
-      document.getElementById('resWhatsappLeitor').value = usuarioAtual.whatsapp || '';
+      document.getElementById('disponibilidadeLivroReserva').textContent = `Exemplares disponíveis para retirada: ${qtdDisp} de ${qtdTotal}`;
+      
+      atualizarSelectAlunosModal();
+      document.getElementById('selectAlunoReserva').value = '';
+      document.getElementById('resTurmaLeitor').value = '';
+      document.getElementById('resWhatsappLeitor').value = '';
+      document.getElementById('resPrazoDias').value = '7';
+
       document.getElementById('modalReserva').classList.remove('hidden');
       document.getElementById('modalReserva').classList.add('flex');
     }
@@ -1144,15 +1223,22 @@
 
     async function confirmarReservaLivro(e) {
       e.preventDefault();
-      const isAdmin = usuarioAtual.perfil === 'admin';
+      const select = document.getElementById('selectAlunoReserva');
+      const leitorNome = select.value;
+      if (!leitorNome) return alert('Selecione um aluno cadastrado no sistema.');
+
+      const turmaLeitor = document.getElementById('resTurmaLeitor').value;
+      const whatsappLeitor = document.getElementById('resWhatsappLeitor').value;
+      const prazoDiasInt = parseInt(document.getElementById('resPrazoDias').value) || 7;
+
       const payload = {
         acao: 'reservar',
         id: document.getElementById('idLivroReserva').value,
-        leitor: document.getElementById('resNomeLeitor').value.trim(),
-        turma: document.getElementById('resTurmaLeitor').value.trim(),
-        whatsappLeitor: document.getElementById('resWhatsappLeitor').value.trim(),
-        prazoDias: 7,
-        statusEmprestimo: isAdmin ? 'RETIRADO' : 'RESERVADO'
+        leitor: leitorNome,
+        turma: turmaLeitor,
+        whatsappLeitor: whatsappLeitor,
+        prazoDias: prazoDiasInt,
+        statusEmprestimo: 'RETIRADO'
       };
 
       const res = await fetch('/api/biblioteca', {
@@ -1161,11 +1247,35 @@
         body: JSON.stringify(payload)
       });
       const data = await res.json();
-      if (!res.ok) return alert(data.erro);
+      if (!res.ok) return alert(data.erro || 'Erro ao registrar retirada.');
 
       fecharModalReserva();
       carregarLivros();
-      abrirTermoImpressao(data.livro);
+      abrirTermoImpressao(data.livro, leitorNome, turmaLeitor, prazoDiasInt);
+    }
+
+    function abrirTermoImpressao(livro, leitor, turma, diasPrazo) {
+      const hoje = new Date();
+      const devolucao = new Date();
+      devolucao.setDate(hoje.getDate() + diasPrazo);
+
+      const dataHojeStr = hoje.toLocaleDateString('pt-BR');
+      const dataDevStr = devolucao.toLocaleDateString('pt-BR');
+
+      document.getElementById('termoLivro').textContent = livro.titulo;
+      document.getElementById('termoAluno').textContent = leitor;
+      document.getElementById('termoTurma').textContent = turma;
+      document.getElementById('termoData').textContent = dataHojeStr;
+      document.getElementById('termoDevolucao').textContent = dataDevStr;
+
+      document.getElementById('termoLivro2').textContent = livro.titulo;
+      document.getElementById('termoAluno2').textContent = leitor;
+      document.getElementById('termoTurma2').textContent = turma;
+      document.getElementById('termoData2').textContent = dataHojeStr;
+      document.getElementById('termoDevolucao2').textContent = dataDevStr;
+
+      document.getElementById('modalTermo').classList.remove('hidden');
+      document.getElementById('modalTermo').classList.add('flex');
     }
 
     function renderizarMeusEmprestimos() {
@@ -1199,7 +1309,7 @@
         const dtDevStr = item.empInfo.dataDevolucao.split('T')[0];
         const venceHoje = dtDevStr === hojeStr;
         const atrasado = new Date() > dtDev && !venceHoje;
-        if (venceHoje) vencemHojeCount++;
+        if (venceHoje || atrasado) vencemHojeCount++;
 
         const linkZap = `https://api.whatsapp.com/send?phone=55${(item.empInfo.whatsappLeitor||'').replace(/\D/g,'')}&text=${encodeURIComponent('Olá ' + item.empInfo.leitor + ', lembramos da devolução do livro "' + item.titulo + '".')}`;
 
@@ -1215,7 +1325,6 @@
               <p class="text-xs text-slate-500">Entrega limite: <strong>${dtDev.toLocaleDateString('pt-BR')}</strong></p>
             </div>
             <div class="flex gap-2">
-              ${item.empInfo.statusEmprestimo === 'RESERVADO' ? `<button onclick="confirmarRetiradaAdmin('${item.id}')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow">Autorizar</button>` : ''}
               <a href="${linkZap}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow">💬 WhatsApp</a>
               <button onclick="devolverLivroAdmin('${item.id}')" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow">Devolver</button>
             </div>
@@ -1225,13 +1334,8 @@
 
       document.getElementById('listaRetiradosAdmin').innerHTML = html;
       document.getElementById('alertaRetiradosHeader').innerHTML = vencemHojeCount > 0 
-        ? `<div class="bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-2xl shadow animate-bounce text-xs flex items-center gap-2">🔔 ${vencemHojeCount} prazo(s) expirando hoje!</div>`
+        ? `<div class="bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-2xl shadow animate-bounce text-xs flex items-center gap-2">🔔 ${vencemHojeCount} prazo(s) expirando ou vencidos!</div>`
         : '';
-    }
-
-    async function confirmarRetiradaAdmin(id) {
-      carregarLivros();
-      alert('Retirada autorizada com sucesso!');
     }
 
     async function devolverLivroAdmin(id) {
@@ -1245,9 +1349,13 @@
       const tipoSel = document.getElementById('evtTipoSelect').value;
       const tituloFinal = tipoSel === 'Outros' ? document.getElementById('evtTituloPersonalizado').value.trim() : tipoSel;
 
-      const checkboxes = document.querySelectorAll('input[name="evtPeriodoCheck"]:checked');
-      if (checkboxes.length === 0) return alert('Selecione pelo menos um período ou "Todos os Períodos".');
-      const periodosStr = Array.from(checkboxes).map(cb => cb.value).join(', ');
+      const turnosCheck = document.querySelectorAll('input[name="evtTurnoCheck"]:checked');
+      if (turnosCheck.length === 0) return alert('Selecione pelo menos um turno afetado.');
+      const turnosStr = Array.from(turnosCheck).map(cb => cb.value).join(', ');
+
+      const periodosCheck = document.querySelectorAll('input[name="evtPeriodoCheck"]:checked');
+      if (periodosCheck.length === 0) return alert('Selecione pelo menos um período ou "Todos os Períodos".');
+      const periodosStr = Array.from(periodosCheck).map(cb => cb.value).join(', ');
 
       await fetch('/api/biblioteca', {
         method: 'POST',
@@ -1257,7 +1365,7 @@
           adminPin: adminPinSessao,
           data: document.getElementById('evtData').value,
           titulo: tituloFinal,
-          descricao: `Períodos: ${periodosStr} — ${document.getElementById('evtDescricao').value.trim()}`
+          descricao: `Turno(s): ${turnosStr} | Período(s): ${periodosStr} — ${document.getElementById('evtDescricao').value.trim()}`
         })
       });
       e.target.reset();
@@ -1309,9 +1417,13 @@
 
     async function salvarConfiguracaoEspaco(e) {
       e.preventDefault();
-      const checkboxes = document.querySelectorAll('input[name="espPeriodoCheck"]:checked');
-      if (checkboxes.length === 0) return alert('Selecione pelo menos um período ou "Todos os Períodos".');
-      const periodosSelecionados = Array.from(checkboxes).map(cb => cb.value).join(', ');
+      const turnosCheck = document.querySelectorAll('input[name="espTurnoCheck"]:checked');
+      if (turnosCheck.length === 0) return alert('Selecione pelo menos um turno.');
+      const turnosStr = Array.from(turnosCheck).map(cb => cb.value).join(', ');
+
+      const periodosCheck = document.querySelectorAll('input[name="espPeriodoCheck"]:checked');
+      if (periodosCheck.length === 0) return alert('Selecione pelo menos um período ou "Todos os Períodos".');
+      const periodosSelecionados = Array.from(periodosCheck).map(cb => cb.value).join(', ');
 
       await fetch('/api/biblioteca', {
         method: 'POST',
@@ -1320,7 +1432,7 @@
           acao: 'configurar_espaco',
           adminPin: adminPinSessao,
           data: document.getElementById('espData').value,
-          turno: document.getElementById('espTurno').value,
+          turno: turnosStr,
           periodos: periodosSelecionados,
           status: 'DISPONIVEL',
           observacao: ''
@@ -1351,7 +1463,7 @@
           return `
             <div class="bg-white/90 backdrop-blur-md border border-slate-200 p-4 rounded-2xl flex justify-between items-center shadow-sm">
               <div>
-                <p class="font-bold text-slate-900">${dt} — Turno: ${e.turno}</p>
+                <p class="font-bold text-slate-900">${dt} — Turno(s): ${e.turno}</p>
                 <div class="mt-1">${badge}</div>
               </div>
               <div class="flex gap-2">
@@ -1375,7 +1487,6 @@
       document.getElementById('profSlot').value = usuarioAtual.nome;
       document.getElementById('turmaSlot').value = '';
 
-      // Monta checkboxes apenas com os períodos que o admin liberou para este slot
       const container = document.getElementById('containerCheckPeriodosProf');
       const periodosLiberadosStr = slot.periodos || '';
       
@@ -1383,7 +1494,6 @@
       let htmlChecks = '';
 
       listaOpcoes.forEach(p => {
-        // Se o admin marcou "Todos os Períodos" ou especificou o período individual
         const permitido = periodosLiberadosStr.includes('Todos os Períodos') || periodosLiberadosStr.includes(p);
         if (permitido) {
           htmlChecks += `
@@ -1452,13 +1562,28 @@
       }
     }
 
-    async function carregarGestaoAdmin() {
-      try {
-        const resUsers = await fetch('/api/biblioteca?tipo=usuarios');
-        usuariosGlobal = await resUsers.json();
-      } catch (e) {
-        console.error('Erro ao carregar gestão', e);
-      }
+    function renderizarAlunosTabela() {
+      const termo = (document.getElementById('buscaAlunoAdmin')?.value || '').toLowerCase();
+      const container = document.getElementById('listaAlunosAdmin');
+      if (!container) return;
+
+      const alunos = usuariosGlobal.filter(u => u.perfil === 'aluno' && (
+        (u.nome || '').toLowerCase().includes(termo) || (u.turma || '').toLowerCase().includes(termo)
+      ));
+
+      container.innerHTML = alunos.map(a => `
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-xs">
+          <div>
+            <p class="font-bold text-slate-800 text-sm">${a.nome} <span class="text-purple-600 font-semibold">(${a.turma || 'Sem turma'})</span></p>
+            <p class="text-slate-500">Email: ${a.email || 'Não inf.'} • Tel: ${a.whatsapp || 'Não inf.'}</p>
+          </div>
+          <button onclick="solicitarExclusaoAdmin('usuario', '${a.id}')" class="text-rose-600 hover:text-rose-800 font-bold px-2 py-1 bg-rose-50 border border-rose-200 rounded-lg cursor-pointer">🗑️ Excluir</button>
+        </div>
+      `).join('') || '<p class="text-xs text-slate-400 p-2">Nenhum estudante encontrado.</p>';
+    }
+
+    function filtrarAlunosAdmin() {
+      renderizarAlunosTabela();
     }
 
     function solicitarExclusaoAdmin(tipoItem, itemId) {
