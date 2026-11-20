@@ -9,7 +9,8 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const PIN_ADMIN_MESTRE = "2027";
+  // SENHA RIGOROSA DE ADMIN SOLICITADA
+  const SENHA_ADMIN_MESTRE = "BiblioGetulio#2027@";
 
   try {
     // --- MODO GET: Buscar dados ---
@@ -18,56 +19,29 @@ export default async function handler(req, res) {
 
       if (tipo === 'usuarios') {
         let usuarios = [];
-        try {
-          usuarios = (await kv.get('biblioteca_usuarios')) || [];
-        } catch (err) {
-          usuarios = global.memUsuarios || [];
-        }
+        try { usuarios = (await kv.get('biblioteca_usuarios')) || global.memUsuarios || []; } 
+        catch (err) { usuarios = global.memUsuarios || []; }
         return res.status(200).json(usuarios);
       }
 
       if (tipo === 'espacos') {
         let espacos = [];
-        try {
-          espacos = (await kv.get('biblioteca_espacos')) || [];
-        } catch (err) {
-          espacos = global.memEspacos || [];
-        }
+        try { espacos = (await kv.get('biblioteca_espacos')) || global.memEspacos || []; } 
+        catch (err) { espacos = global.memEspacos || []; }
         return res.status(200).json(espacos);
       }
 
       if (tipo === 'eventos') {
         let eventos = [];
-        try {
-          eventos = (await kv.get('biblioteca_eventos')) || [];
-        } catch (err) {
-          eventos = global.memEventos || [];
-        }
+        try { eventos = (await kv.get('biblioteca_eventos')) || global.memEventos || []; } 
+        catch (err) { eventos = global.memEventos || []; }
         return res.status(200).json(eventos);
       }
 
-      // Padrão: Retorna o acervo de livros
+      // Acervo de livros
       let acervo = [];
-      try {
-        acervo = (await kv.get('biblioteca_acervo')) || [];
-      } catch (err) {
-        acervo = global.memAcervo || [
-          {
-            id: "1",
-            titulo: "13º Bienal do Mercosul",
-            autor: "Diversos",
-            edicao: "1ª",
-            ano: "2022",
-            quantidadeTotal: 1,
-            quantidadeDisponivel: 1,
-            capa: "https://placehold.co/400x600/2563eb/white?text=Bienal",
-            pdf: "",
-            categoria: "Arte e Cultura",
-            codigo: "ART-01",
-            leitoresAtivos: []
-          }
-        ];
-      }
+      try { acervo = (await kv.get('biblioteca_acervo')) || global.memAcervo || []; } 
+      catch (err) { acervo = global.memAcervo || []; }
       return res.status(200).json(acervo);
     }
 
@@ -78,11 +52,7 @@ export default async function handler(req, res) {
       // 1. REGISTRAR / CADASTRAR USUÁRIO
       if (acao === 'registrar_usuario') {
         let usuarios = [];
-        try {
-          usuarios = (await kv.get('biblioteca_usuarios')) || [];
-        } catch (err) {
-          usuarios = global.memUsuarios || [];
-        }
+        try { usuarios = (await kv.get('biblioteca_usuarios')) || global.memUsuarios || []; } catch(e){}
 
         const novoUser = {
           id: 'user_' + Date.now(),
@@ -95,11 +65,8 @@ export default async function handler(req, res) {
         };
 
         usuarios.push(novoUser);
-        try {
-          await kv.set('biblioteca_usuarios', usuarios);
-        } catch (err) {
-          global.memUsuarios = usuarios;
-        }
+        global.memUsuarios = usuarios;
+        try { await kv.set('biblioteca_usuarios', usuarios); } catch(e){}
 
         return res.status(200).json({ sucesso: true, usuario: novoUser });
       }
@@ -107,11 +74,7 @@ export default async function handler(req, res) {
       // 2. LOGIN DE USUÁRIO
       if (acao === 'login') {
         let usuarios = [];
-        try {
-          usuarios = (await kv.get('biblioteca_usuarios')) || [];
-        } catch (err) {
-          usuarios = global.memUsuarios || [];
-        }
+        try { usuarios = (await kv.get('biblioteca_usuarios')) || global.memUsuarios || []; } catch(e){}
 
         const encontrado = usuarios.find(u => 
           u.perfil === dados.perfil && 
@@ -129,11 +92,7 @@ export default async function handler(req, res) {
       // 3. CADASTRAR NOVO LIVRO
       if (acao === 'cadastrar') {
         let acervo = [];
-        try {
-          acervo = (await kv.get('biblioteca_acervo')) || [];
-        } catch (err) {
-          acervo = global.memAcervo || [];
-        }
+        try { acervo = (await kv.get('biblioteca_acervo')) || global.memAcervo || []; } catch(e){}
 
         const qtd = parseInt(dados.quantidade) || 1;
         const novoLivro = {
@@ -152,11 +111,8 @@ export default async function handler(req, res) {
         };
 
         acervo.push(novoLivro);
-        try {
-          await kv.set('biblioteca_acervo', acervo);
-        } catch (err) {
-          global.memAcervo = acervo;
-        }
+        global.memAcervo = acervo;
+        try { await kv.set('biblioteca_acervo', acervo); } catch(e){}
 
         return res.status(200).json({ sucesso: true, livro: novoLivro });
       }
@@ -164,11 +120,7 @@ export default async function handler(req, res) {
       // 4. EDITAR LIVRO
       if (acao === 'editar') {
         let acervo = [];
-        try {
-          acervo = (await kv.get('biblioteca_acervo')) || [];
-        } catch (err) {
-          acervo = global.memAcervo || [];
-        }
+        try { acervo = (await kv.get('biblioteca_acervo')) || global.memAcervo || []; } catch(e){}
 
         const index = acervo.findIndex(l => l.id === dados.id);
         if (index !== -1) {
@@ -187,23 +139,16 @@ export default async function handler(req, res) {
           if (dados.categoria) acervo[index].categoria = dados.categoria;
           if (dados.codigo !== undefined) acervo[index].codigo = dados.codigo;
 
-          try {
-            await kv.set('biblioteca_acervo', acervo);
-          } catch (err) {
-            global.memAcervo = acervo;
-          }
+          global.memAcervo = acervo;
+          try { await kv.set('biblioteca_acervo', acervo); } catch(e){}
         }
         return res.status(200).json({ sucesso: true });
       }
 
-      // 5. RESERVAR / AGENDAR / RETIRAR LIVRO (COM CAPTURA COMPLETA DA MENSAGEM E STATUS)
+      // 5. RESERVAR / AGENDAR / RETIRAR LIVRO
       if (acao === 'reservar') {
         let acervo = [];
-        try {
-          acervo = (await kv.get('biblioteca_acervo')) || [];
-        } catch (err) {
-          acervo = global.memAcervo || [];
-        }
+        try { acervo = (await kv.get('biblioteca_acervo')) || global.memAcervo || []; } catch(e){}
 
         const index = acervo.findIndex(l => l.id === dados.id);
         if (index === -1) return res.status(404).json({ erro: 'Livro não encontrado.' });
@@ -222,7 +167,6 @@ export default async function handler(req, res) {
         const dataDevolucao = new Date();
         dataDevolucao.setDate(dataDevolucao.getDate() + dias);
 
-        // GRAVAÇÃO CORRETA DOS DADOS DO PROFESSOR (INCLUINDO OBSERVACAO E STATUS ESPECÍFICO)
         const novoEmprestimo = {
           leitor: dados.leitor,
           turma: dados.turma || 'Docente',
@@ -235,16 +179,12 @@ export default async function handler(req, res) {
 
         livro.leitoresAtivos.push(novoEmprestimo);
         
-        // Se for retirada imediata ou aprovada, desconta do estoque disponível
         if (novoEmprestimo.statusEmprestimo === 'RETIRADO') {
           livro.quantidadeDisponivel = Math.max(0, qtdDisp - 1);
         }
 
-        try {
-          await kv.set('biblioteca_acervo', acervo);
-        } catch (err) {
-          global.memAcervo = acervo;
-        }
+        global.memAcervo = acervo;
+        try { await kv.set('biblioteca_acervo', acervo); } catch(e){}
 
         return res.status(200).json({ sucesso: true, livro });
       }
@@ -252,26 +192,19 @@ export default async function handler(req, res) {
       // 6. DEVOLVER LIVRO
       if (acao === 'devolver') {
         let acervo = [];
-        try {
-          acervo = (await kv.get('biblioteca_acervo')) || [];
-        } catch (err) {
-          acervo = global.memAcervo || [];
-        }
+        try { acervo = (await kv.get('biblioteca_acervo')) || global.memAcervo || []; } catch(e){}
 
         const index = acervo.findIndex(l => l.id === dados.id);
         if (index !== -1) {
           const livro = acervo[index];
           if (livro.leitoresAtivos && livro.leitoresAtivos.length > 0) {
-            livro.leitoresAtivos.shift(); // Remove o primeiro leitor ativo
+            livro.leitoresAtivos.shift();
             const qtdTotal = livro.quantidadeTotal || 1;
             let qtdDisp = livro.quantidadeDisponivel !== undefined ? livro.quantidadeDisponivel : 0;
             livro.quantidadeDisponivel = Math.min(qtdTotal, qtdDisp + 1);
 
-            try {
-              await kv.set('biblioteca_acervo', acervo);
-            } catch (err) {
-              global.memAcervo = acervo;
-            }
+            global.memAcervo = acervo;
+            try { await kv.set('biblioteca_acervo', acervo); } catch(e){}
           }
         }
         return res.status(200).json({ sucesso: true });
@@ -280,11 +213,7 @@ export default async function handler(req, res) {
       // 7. CONFIGURAR ESPAÇO
       if (acao === 'configurar_espaco') {
         let espacos = [];
-        try {
-          espacos = (await kv.get('biblioteca_espacos')) || [];
-        } catch (err) {
-          espacos = global.memEspacos || [];
-        }
+        try { espacos = (await kv.get('biblioteca_espacos')) || global.memEspacos || []; } catch(e){}
 
         const novoSlot = {
           id: 'esp_' + Date.now(),
@@ -297,11 +226,8 @@ export default async function handler(req, res) {
         };
 
         espacos.push(novoSlot);
-        try {
-          await kv.set('biblioteca_espacos', espacos);
-        } catch (err) {
-          global.memEspacos = espacos;
-        }
+        global.memEspacos = espacos;
+        try { await kv.set('biblioteca_espacos', espacos); } catch(e){}
 
         return res.status(200).json({ sucesso: true, slot: novoSlot });
       }
@@ -309,11 +235,7 @@ export default async function handler(req, res) {
       // 8. RESERVAR ESPAÇO (PROFESSOR)
       if (acao === 'reservar_espaco') {
         let espacos = [];
-        try {
-          espacos = (await kv.get('biblioteca_espacos')) || [];
-        } catch (err) {
-          espacos = global.memEspacos || [];
-        }
+        try { espacos = (await kv.get('biblioteca_espacos')) || global.memEspacos || []; } catch(e){}
 
         const index = espacos.findIndex(s => s.id === dados.id);
         if (index !== -1) {
@@ -322,11 +244,8 @@ export default async function handler(req, res) {
           espacos[index].turma = dados.turma;
           espacos[index].periodos = dados.periodos;
 
-          try {
-            await kv.set('biblioteca_espacos', espacos);
-          } catch (err) {
-            global.memEspacos = espacos;
-          }
+          global.memEspacos = espacos;
+          try { await kv.set('biblioteca_espacos', espacos); } catch(e){}
         }
         return res.status(200).json({ sucesso: true });
       }
@@ -334,11 +253,7 @@ export default async function handler(req, res) {
       // 9. SALVAR EVENTO / MURAL
       if (acao === 'salvar_evento') {
         let eventos = [];
-        try {
-          eventos = (await kv.get('biblioteca_eventos')) || [];
-        } catch (err) {
-          eventos = global.memEventos || [];
-        }
+        try { eventos = (await kv.get('biblioteca_eventos')) || global.memEventos || []; } catch(e){}
 
         const novoEvt = {
           id: 'evt_' + Date.now(),
@@ -348,19 +263,16 @@ export default async function handler(req, res) {
         };
 
         eventos.push(novoEvt);
-        try {
-          await kv.set('biblioteca_eventos', eventos);
-        } catch (err) {
-          global.memEventos = eventos;
-        }
+        global.memEventos = eventos;
+        try { await kv.set('biblioteca_eventos', eventos); } catch(e){}
 
         return res.status(200).json({ sucesso: true, evento: novoEvt });
       }
 
-      // 10. EXCLUIR REGISTRO (LIVRO, ESPAÇO, EVENTO OU USUÁRIO)
+      // 10. EXCLUIR REGISTRO (LIVRO, ESPAÇO, EVENTO OU USUÁRIO) COM VALIDAÇÃO DA SENHA MESTRE
       if (acao === 'excluir') {
-        if (dados.adminPin !== PIN_ADMIN_MESTRE && dados.adminPin !== '2027') {
-          return res.status(401).json({ erro: 'PIN incorreto para exclusão.' });
+        if (adminPin !== SENHA_ADMIN_MESTRE) {
+          return res.status(401).json({ erro: 'Senha de Administrador incorreta.' });
         }
 
         const tipo = dados.tipoItem;
@@ -369,19 +281,23 @@ export default async function handler(req, res) {
         if (tipo === 'livro') {
           let acervo = (await kv.get('biblioteca_acervo')) || global.memAcervo || [];
           acervo = acervo.filter(l => l.id !== id);
-          try { await kv.set('biblioteca_acervo', acervo); } catch(e) { global.memAcervo = acervo; }
+          global.memAcervo = acervo;
+          try { await kv.set('biblioteca_acervo', acervo); } catch(e){}
         } else if (tipo === 'espaco') {
           let espacos = (await kv.get('biblioteca_espacos')) || global.memEspacos || [];
           espacos = espacos.filter(s => s.id !== id);
-          try { await kv.set('biblioteca_espacos', espacos); } catch(e) { global.memEspacos = espacos; }
+          global.memEspacos = espacos;
+          try { await kv.set('biblioteca_espacos', espacos); } catch(e){}
         } else if (tipo === 'evento') {
           let eventos = (await kv.get('biblioteca_eventos')) || global.memEventos || [];
           eventos = eventos.filter(e => e.id !== id);
-          try { await kv.set('biblioteca_eventos', eventos); } catch(e) { global.memEventos = eventos; }
+          global.memEventos = eventos;
+          try { await kv.set('biblioteca_eventos', eventos); } catch(e){}
         } else if (tipo === 'usuario') {
           let usuarios = (await kv.get('biblioteca_usuarios')) || global.memUsuarios || [];
           usuarios = usuarios.filter(u => u.id !== id);
-          try { await kv.set('biblioteca_usuarios', usuarios); } catch(e) { global.memUsuarios = usuarios; }
+          global.memUsuarios = usuarios;
+          try { await kv.set('biblioteca_usuarios', usuarios); } catch(e){}
         }
 
         return res.status(200).json({ sucesso: true });
