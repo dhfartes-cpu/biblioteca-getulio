@@ -22,7 +22,7 @@
       overflow-x: hidden;
     }
 
-    /* Gradiente ajustado: Azul início, Rosa centralizado e Laranja no fim */
+    /* Gradiente do cabeçalho */
     .bg-cabecalho-cores {
       background: linear-gradient(135deg, #2563eb 0%, #3b82f6 20%, #7c3aed 45%, #db2777 65%, #f43f5e 85%, #f97316 100%);
       position: relative;
@@ -31,24 +31,24 @@
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
     }
 
-    /* Bolhas flutuantes com camada z-index alta para aparecerem sobre o cabeçalho */
-    .bolha-fundo {
-      position: fixed;
-      bottom: -150px;
-      background: radial-gradient(circle at 30% 30%, rgba(56, 189, 248, 0.4), rgba(147, 51, 234, 0.15) 70%, rgba(236, 72, 153, 0.3) 100%);
+    /* Bolhas restritas exclusivamente a subir dentro do cabeçalho */
+    .bolha-cabecalho {
+      position: absolute;
+      bottom: -60px;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.1) 70%, rgba(255, 255, 255, 0.3) 100%);
       border-radius: 50%;
-      border: 1.5px solid rgba(255, 255, 255, 0.6);
-      box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.7);
-      animation: subirFundo 8s infinite linear;
-      z-index: 25;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.8);
+      animation: subirCabecalho 6s infinite linear;
       pointer-events: none;
+      z-index: 1;
     }
 
-    @keyframes subirFundo {
-      0% { transform: translateY(0) translateX(0) scale(0.6); opacity: 0; }
-      15% { opacity: 0.75; }
-      85% { opacity: 0.75; }
-      100% { transform: translateY(-115vh) translateX(70px) scale(1.4); opacity: 0; }
+    @keyframes subirCabecalho {
+      0% { transform: translateY(0) scale(0.5); opacity: 0; }
+      20% { opacity: 0.8; }
+      80% { opacity: 0.8; }
+      100% { transform: translateY(-160px) scale(1.2); opacity: 0; }
     }
 
     @media print {
@@ -59,13 +59,6 @@
   </style>
 </head>
 <body class="bg-patrao-escola text-slate-800 min-h-screen flex flex-col relative">
-
-  <!-- Bolhas flutuantes contínuas -->
-  <div class="bolha-fundo" style="left: 4%; width: 55px; height: 55px; animation-duration: 6.5s; animation-delay: 0s;"></div>
-  <div class="bolha-fundo" style="left: 18%; width: 95px; height: 95px; animation-duration: 10s; animation-delay: 2s;"></div>
-  <div class="bolha-fundo" style="left: 38%; width: 45px; height: 45px; animation-duration: 5.5s; animation-delay: 1s;"></div>
-  <div class="bolha-fundo" style="left: 62%; width: 120px; height: 120px; animation-duration: 12s; animation-delay: 3.5s;"></div>
-  <div class="bolha-fundo" style="left: 85%; width: 70px; height: 70px; animation-duration: 8s; animation-delay: 1.5s;"></div>
 
   <!-- TELA DE LOGIN / CADASTRO -->
   <div id="telaAuth" class="min-h-screen flex items-center justify-center p-4 bg-estante-login relative z-40">
@@ -170,6 +163,14 @@
   <div id="appPrincipal" class="hidden flex-col min-h-screen text-slate-800 relative z-20">
     
     <header class="bg-cabecalho-cores text-white border-b border-white/25 shadow-2xl print:hidden relative overflow-hidden py-4">
+      
+      <!-- Bolhas exclusivamente dentro do cabeçalho -->
+      <div class="bolha-cabecalho" style="left: 6%; width: 45px; height: 45px; animation-duration: 5s; animation-delay: 0s;"></div>
+      <div class="bolha-cabecalho" style="left: 25%; width: 75px; height: 75px; animation-duration: 7.5s; animation-delay: 1.5s;"></div>
+      <div class="bolha-cabecalho" style="left: 50%; width: 55px; height: 55px; animation-duration: 6s; animation-delay: 0.8s;"></div>
+      <div class="bolha-cabecalho" style="left: 75%; width: 90px; height: 90px; animation-duration: 8.5s; animation-delay: 2.2s;"></div>
+      <div class="bolha-cabecalho" style="left: 92%; width: 40px; height: 40px; animation-duration: 4.5s; animation-delay: 0.3s;"></div>
+
       <div class="max-w-7xl mx-auto px-4 flex flex-col xl:flex-row items-center justify-between gap-6 relative z-10">
         
         <div class="flex items-center gap-5 text-center xl:text-left">
@@ -371,7 +372,7 @@
     </div>
   </div>
 
-  <!-- MODAL CADASTRO DE LIVRO (CORRIGIDO PARA SALVAR URL MANUAL OU BUSCA) -->
+  <!-- MODAL CADASTRO DE LIVRO (CORRIGIDO E SEGURO) -->
   <div id="modalCadastro" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
     <div class="bg-white text-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-200">
       <div class="flex justify-between items-center mb-4">
@@ -391,7 +392,7 @@
           <input type="text" id="autorLivro" required class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800">
         </div>
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-1">Capa (URL da Imagem)</label>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Capa (URL Direta da Imagem opcional)</label>
           <input type="url" id="capaLivro" oninput="atualizarPreviewCapa()" placeholder="https://exemplo.com/capa.jpg" class="w-full px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-xs mb-2">
           <div id="previewCapaBox" class="hidden flex justify-center bg-slate-100 p-2 rounded-2xl border border-slate-200">
             <img id="previewCapaImg" src="" alt="Prévia da Capa" class="h-32 object-contain rounded-lg shadow" onerror="this.src='https://via.placeholder.com/100?text=Erro+Imagem'">
@@ -755,7 +756,6 @@
       }
     }
 
-    // CARREGAMENTO GLOBAL IMEDIATO AO INICIAR A SESSÃO (Evita tela em branco)
     function iniciarSessaoUI() {
       document.getElementById('telaAuth').classList.add('hidden');
       document.getElementById('appPrincipal').classList.remove('hidden');
@@ -795,7 +795,6 @@
       }
       nav.innerHTML = htmlNav;
 
-      // Executa o carregamento de todas as fontes logo na entrada
       carregarTudoGeral();
       mudarAba('espaco');
     }
@@ -827,7 +826,7 @@
       const url = document.getElementById('capaLivro').value.trim();
       const box = document.getElementById('previewCapaBox');
       const img = document.getElementById('previewCapaImg');
-      if (url) {
+      if (url && !url.includes('google.com/search')) {
         img.src = url;
         box.classList.remove('hidden');
       } else {
@@ -853,15 +852,15 @@
             document.getElementById('autorLivro').value = info.authors.join(', ');
           }
           if (info.imageLinks && (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail)) {
-            const urlSegura = (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail).replace('http://', 'https://');
+            let urlSegura = (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail).replace('http://', 'https://');
             document.getElementById('capaLivro').value = urlSegura;
             atualizarPreviewCapa();
             alert('Capa encontrada com sucesso!');
           } else {
-            alert('Livro encontrado, mas sem capa na API. Cole o link direto de uma imagem da internet.');
+            alert('Livro encontrado, mas sem capa na API. Pode deixar em branco ou colar o link direto de uma imagem.');
           }
         } else {
-          alert('Capa não encontrada automaticamente. Cole o link da imagem direto no campo de URL.');
+          alert('Capa não encontrada automaticamente. Pode cadastrar normalmente sem a URL.');
         }
       } catch (e) {
         alert('Erro ao buscar capa online.');
@@ -917,7 +916,7 @@
 
       container.innerHTML = lista.map(livro => {
         const disp = livro.disponivel !== false;
-        const capa = livro.capa
+        const capa = livro.capa && !livro.capa.includes('google.com/search')
           ? `<div class="w-full h-44 bg-slate-100 rounded-2xl mb-4 overflow-hidden flex items-center justify-center p-2 border border-slate-200"><img src="${livro.capa}" class="h-full object-contain rounded-lg shadow" onerror="this.parentElement.innerHTML='📚'"></div>`
           : `<div class="w-full h-32 bg-gradient-to-br from-pink-600 to-purple-600 rounded-2xl mb-4 flex items-center justify-center text-white text-3xl font-bold shadow-inner">${(livro.titulo || 'L')[0].toUpperCase()}</div>`;
 
@@ -970,12 +969,17 @@
 
     async function salvarLivro(e) {
       e.preventDefault();
+      let urlCapa = document.getElementById('capaLivro').value.trim();
+      if (urlCapa.includes('google.com/search')) {
+        urlCapa = ''; // Limpa se for URL de busca inválida do Google
+      }
+
       const payload = {
         acao: 'cadastrar',
         adminPin: adminPinSessao,
         titulo: document.getElementById('tituloLivro').value.trim(),
         autor: document.getElementById('autorLivro').value.trim(),
-        capa: document.getElementById('capaLivro').value.trim(),
+        capa: urlCapa,
         categoria: document.getElementById('categoriaLivro').value,
         codigo: document.getElementById('codigoLivro').value.trim()
       };
@@ -1336,7 +1340,7 @@
       await fetch('/api/biblioteca', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ acao: 'excluir', tipoItem, itemId, adminPin: adminPinSessao })
+        body: JSON.xml ? '' : JSON.stringify({ acao: 'excluir', tipoItem, itemId, adminPin: adminPinSessao })
       });
 
       fecharModalPinAdmin();
