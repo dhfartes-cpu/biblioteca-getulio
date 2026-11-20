@@ -22,7 +22,6 @@
       overflow-x: hidden;
     }
 
-    /* Gradiente do cabeçalho */
     .bg-cabecalho-cores {
       background: linear-gradient(135deg, #2563eb 0%, #3b82f6 20%, #7c3aed 45%, #db2777 65%, #f43f5e 85%, #f97316 100%);
       position: relative;
@@ -31,7 +30,6 @@
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
     }
 
-    /* Bolhas restritas exclusivamente a subir dentro do cabeçalho */
     .bolha-cabecalho {
       position: absolute;
       bottom: -60px;
@@ -76,7 +74,6 @@
         <button type="button" onclick="alternarModoAuth('cadastro')" id="btnModoCadastro" class="py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white cursor-pointer transition">Primeiro Acesso</button>
       </div>
 
-      <!-- FORMULÁRIO LOGIN -->
       <form id="formLogin" onsubmit="fazerLogin(event)" class="space-y-4" autocomplete="on">
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Tipo de Acesso</label>
@@ -108,7 +105,6 @@
         <button type="submit" class="w-full bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-500 hover:to-pink-500 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-violet-600/30 transition cursor-pointer">Acessar Sistema</button>
       </form>
 
-      <!-- FORMULÁRIO CADASTRO -->
       <form id="formCadastroUser" onsubmit="fazerCadastroUsuario(event)" class="hidden space-y-3.5" autocomplete="off">
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Tipo de Cadastro *</label>
@@ -164,7 +160,6 @@
     
     <header class="bg-cabecalho-cores text-white border-b border-white/25 shadow-2xl print:hidden relative overflow-hidden py-4">
       
-      <!-- Bolhas exclusivamente dentro do cabeçalho -->
       <div class="bolha-cabecalho" style="left: 6%; width: 45px; height: 45px; animation-duration: 5s; animation-delay: 0s;"></div>
       <div class="bolha-cabecalho" style="left: 25%; width: 75px; height: 75px; animation-duration: 7.5s; animation-delay: 1.5s;"></div>
       <div class="bolha-cabecalho" style="left: 50%; width: 55px; height: 55px; animation-duration: 6s; animation-delay: 0.8s;"></div>
@@ -183,9 +178,7 @@
           </div>
         </div>
 
-        <nav class="flex items-center gap-2 flex-wrap justify-center" id="navAbasPrincipal">
-          <!-- Abas dinâmicas -->
-        </nav>
+        <nav class="flex items-center gap-2 flex-wrap justify-center" id="navAbasPrincipal"></nav>
 
         <div class="flex items-center gap-3 bg-black/25 backdrop-blur-md border border-white/25 px-4 py-2.5 rounded-2xl text-xs shadow-inner xl:ml-auto">
           <div>
@@ -372,7 +365,7 @@
     </div>
   </div>
 
-  <!-- MODAL CADASTRO DE LIVRO (CORRIGIDO E SEGURO) -->
+  <!-- MODAL CADASTRO DE LIVRO COM TODAS AS CATEGORIAS ESCOLARES -->
   <div id="modalCadastro" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
     <div class="bg-white text-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-200">
       <div class="flex justify-between items-center mb-4">
@@ -383,7 +376,7 @@
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Título do Livro *</label>
           <div class="flex gap-2">
-            <input type="text" id="tituloLivro" required placeholder="Ex: O Pequeno Príncipe" class="flex-1 px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400">
+            <input type="text" id="tituloLivro" required placeholder="Ex: 13ª Bienal do Mercosul" class="flex-1 px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400">
             <button type="button" onclick="buscarCapaAutomatica()" id="btnBuscarCapa" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-3 py-2 rounded-2xl text-xs shadow cursor-pointer whitespace-nowrap">🔍 Buscar Capa</button>
           </div>
         </div>
@@ -393,7 +386,7 @@
         </div>
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Capa (URL Direta da Imagem opcional)</label>
-          <input type="url" id="capaLivro" oninput="atualizarPreviewCapa()" placeholder="https://exemplo.com/capa.jpg" class="w-full px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-xs mb-2">
+          <input type="text" id="capaLivro" oninput="atualizarPreviewCapa()" placeholder="https://..." class="w-full px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-xs mb-2">
           <div id="previewCapaBox" class="hidden flex justify-center bg-slate-100 p-2 rounded-2xl border border-slate-200">
             <img id="previewCapaImg" src="" alt="Prévia da Capa" class="h-32 object-contain rounded-lg shadow" onerror="this.src='https://via.placeholder.com/100?text=Erro+Imagem'">
           </div>
@@ -402,10 +395,18 @@
           <div>
             <label class="block text-sm font-semibold text-slate-700 mb-1">Categoria</label>
             <select id="categoriaLivro" class="w-full px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-sm">
-              <option value="Literatura Infantil">Literatura Infantil</option>
-              <option value="Literatura Juvenil">Literatura Juvenil</option>
-              <option value="Romance / Ficção">Romance / Ficção</option>
-              <option value="Didático">Didático</option>
+              <option value="Arte e Cultura">🎨 Arte e Cultura</option>
+              <option value="Literatura Infantil">📚 Literatura Infantil</option>
+              <option value="Literatura Juvenil">📖 Literatura Juvenil</option>
+              <option value="Romance / Ficção">✨ Romance / Ficção</option>
+              <option value="História">🏛️ História</option>
+              <option value="Geografia">🌍 Geografia</option>
+              <option value="Ciências">🔬 Ciências</option>
+              <option value="Matemática">📐 Matemática</option>
+              <option value="Língua Portuguesa">✍️ Língua Portuguesa</option>
+              <option value="Ensino Religioso">🕊️ Ensino Religioso</option>
+              <option value="Educação Física">⚽ Educação Física</option>
+              <option value="Didático / Geral">📘 Didático / Geral</option>
             </select>
           </div>
           <div>
@@ -456,7 +457,6 @@
     </div>
   </div>
 
-  <!-- MODAL RESERVA DE ESPAÇO -->
   <div id="modalSlot" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
     <div class="bg-white text-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
       <div class="flex justify-between items-center mb-3">
@@ -499,7 +499,6 @@
     </div>
   </div>
 
-  <!-- MODAL DETALHES DO EVENTO -->
   <div id="modalEventoDetalhes" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
     <div class="bg-white text-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
       <div class="flex justify-between items-center border-b pb-3">
@@ -520,7 +519,6 @@
     </div>
   </div>
 
-  <!-- TERMO DUAS VIAS PARA IMPRESSÃO -->
   <div id="modalTermo" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
     <div class="bg-white text-slate-900 rounded-3xl max-w-2xl w-full p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
       <div id="areaImpressao" class="space-y-6 bg-white p-2">
@@ -971,7 +969,7 @@
       e.preventDefault();
       let urlCapa = document.getElementById('capaLivro').value.trim();
       if (urlCapa.includes('google.com/search')) {
-        urlCapa = ''; // Limpa se for URL de busca inválida do Google
+        urlCapa = '';
       }
 
       const payload = {
@@ -1340,7 +1338,7 @@
       await fetch('/api/biblioteca', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.xml ? '' : JSON.stringify({ acao: 'excluir', tipoItem, itemId, adminPin: adminPinSessao })
+        body: JSON.stringify({ acao: 'excluir', tipoItem, itemId, adminPin: adminPinSessao })
       });
 
       fecharModalPinAdmin();
