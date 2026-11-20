@@ -29,24 +29,23 @@
       overflow: hidden;
     }
 
-    /* Bolhas de Sabão Ultra Realistas e Transparentes */
+    /* Bolhas de Sabão Super Transparentes e em Movimento Contínuo Sem Parar */
     .bolha {
       position: absolute;
-      bottom: -90px;
-      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.02) 60%, rgba(255, 255, 255, 0.15) 100%);
+      bottom: -80px;
+      background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.02) 65%, rgba(255, 255, 255, 0.12) 100%);
       border-radius: 50%;
-      border: 1.5px solid rgba(255, 255, 255, 0.55);
-      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 255, 255, 0.25);
-      animation: flutuarBolhaReal 8s infinite ease-in-out;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.5);
+      animation: flutuarContinuo 6s infinite linear;
       pointer-events: none;
     }
 
-    @keyframes flutuarBolhaReal {
-      0% { transform: translateY(0) translateX(0) scale(0.7); opacity: 0; }
-      15% { opacity: 0.65; }
-      50% { transform: translateY(-180px) translateX(40px) scale(1); opacity: 0.75; }
-      85% { opacity: 0.65; }
-      100% { transform: translateY(-360px) translateX(-30px) scale(1.2); opacity: 0; }
+    @keyframes flutuarContinuo {
+      0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+      20% { opacity: 0.6; }
+      80% { opacity: 0.6; }
+      100% { transform: translateY(-280px) translateX(35px) scale(1.1); opacity: 0; }
     }
 
     @media print {
@@ -62,8 +61,8 @@
   <div id="telaAuth" class="min-h-screen flex items-center justify-center p-4 bg-estante-login">
     <div class="bg-slate-900/95 border border-violet-500/30 backdrop-blur-xl rounded-3xl max-w-md w-full p-8 shadow-2xl shadow-violet-950/60 my-6 text-slate-100">
       <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center w-28 h-28 rounded-3xl bg-white/10 p-2.5 mb-3 shadow-xl border-2 border-white/20 backdrop-blur-md">
-          <img src="logo-escola.png" alt="Logo Getúlio Vargas" class="w-full h-full object-contain filter drop-shadow" onerror="this.src='https://via.placeholder.com/112?text=GV'">
+        <div class="inline-flex items-center justify-center w-28 h-28 rounded-2xl bg-white p-2 mb-3 shadow-xl border border-violet-200">
+          <img src="logo-escola.png" alt="Logo Getúlio Vargas" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/112?text=GV'">
         </div>
         <h1 class="text-3xl font-bold text-white tracking-wide font-display">Biblioteca Digital</h1>
         <p class="text-xs font-semibold text-violet-400 uppercase tracking-widest mt-1">EMEF Presidente Getúlio Vargas • Gravataí-RS</p>
@@ -147,23 +146,22 @@
   <!-- APLICATIVO PRINCIPAL -->
   <div id="appPrincipal" class="hidden flex-col min-h-screen bg-patrao-escola text-slate-800">
     
-    <!-- Cabeçalho Dinâmico com Bolhas Reais Transparentes -->
-    <header class="bg-cabecalho-cores text-white border-b border-white/20 shadow-xl print:hidden relative overflow-hidden" id="cabecalhoBolhas">
-      <div class="bolha" style="left: 4%; width: 28px; height: 28px; animation-duration: 7s; animation-delay: 0s;"></div>
-      <div class="bolha" style="left: 15%; width: 55px; height: 55px; animation-duration: 9s; animation-delay: 1.5s;"></div>
-      <div class="bolha" style="left: 25%; width: 22px; height: 22px; animation-duration: 6s; animation-delay: 2.2s;"></div>
-      <div class="bolha" style="left: 38%; width: 70px; height: 70px; animation-duration: 11s; animation-delay: 0.5s;"></div>
-      <div class="bolha" style="left: 50%; width: 30px; height: 30px; animation-duration: 6.5s; animation-delay: 3s;"></div>
-      <div class="bolha" style="left: 62%; width: 48px; height: 48px; animation-duration: 8s; animation-delay: 1.8s;"></div>
-      <div class="bolha" style="left: 75%; width: 60px; height: 60px; animation-duration: 10s; animation-delay: 0.8s;"></div>
-      <div class="bolha" style="left: 88%; width: 35px; height: 35px; animation-duration: 7.5s; animation-delay: 2.5s;"></div>
+    <!-- Cabeçalho Mais Amplo com Logo Original Aumentado e Bolhas Contínuas -->
+    <header class="bg-cabecalho-cores text-white border-b border-white/20 shadow-xl print:hidden relative overflow-hidden py-4" id="cabecalhoBolhas">
+      <div class="bolha" style="left: 5%; width: 25px; height: 25px; animation-duration: 5s; animation-delay: 0s;"></div>
+      <div class="bolha" style="left: 18%; width: 45px; height: 45px; animation-duration: 7s; animation-delay: 1s;"></div>
+      <div class="bolha" style="left: 30%; width: 20px; height: 20px; animation-duration: 4.5s; animation-delay: 2s;"></div>
+      <div class="bolha" style="left: 45%; width: 60px; height: 60px; animation-duration: 8s; animation-delay: 0.5s;"></div>
+      <div class="bolha" style="left: 58%; width: 30px; height: 30px; animation-duration: 5.5s; animation-delay: 2.5s;"></div>
+      <div class="bolha" style="left: 70%; width: 50px; height: 50px; animation-duration: 6.5s; animation-delay: 1.2s;"></div>
+      <div class="bolha" style="left: 85%; width: 35px; height: 35px; animation-duration: 6s; animation-delay: 1.8s;"></div>
 
-      <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col xl:flex-row items-center justify-between gap-6 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 flex flex-col xl:flex-row items-center justify-between gap-6 relative z-10">
         
-        <!-- Logo e Texto em Linha Única -->
+        <!-- Logo Original Maior e Texto em Linha Única -->
         <div class="flex items-center gap-5 text-center xl:text-left">
-          <div class="w-20 h-20 rounded-2xl bg-white/10 p-2 shadow-xl border-2 border-white/30 backdrop-blur-md flex-shrink-0 flex items-center justify-center">
-            <img src="logo-escola.png" alt="Logo Getúlio Vargas" class="w-full h-full object-contain filter drop-shadow" onerror="this.src='https://via.placeholder.com/80?text=GV'">
+          <div class="w-24 h-24 rounded-2xl bg-white p-2 shadow-2xl border-2 border-white/90 flex-shrink-0 flex items-center justify-center">
+            <img src="logo-escola.png" alt="Logo Getúlio Vargas" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/96?text=GV'">
           </div>
           <div>
             <h1 class="text-3xl font-extrabold tracking-tight text-white font-display drop-shadow-md">Biblioteca Escolar</h1>
@@ -606,6 +604,11 @@
       const data = await res.json();
       if (!res.ok) return alert(data.erro || 'Dados inválidos ou perfil incorreto.');
 
+      // Validação rigorosa: impede que aluno entre como professor ou vice-versa
+      if (data.usuario.perfil !== perfil) {
+        return alert('Acesso negado: o perfil selecionado não confere com este usuário.');
+      }
+
       usuarioAtual = data.usuario;
       sessionStorage.setItem('bib_user', JSON.stringify(usuarioAtual));
       if (perfil === 'admin') {
@@ -685,10 +688,10 @@
             document.getElementById('previewCapaBox').classList.remove('hidden');
             alert('Capa encontrada com sucesso!');
           } else {
-            alert('Livro encontrado, mas sem capa na API. Você pode colar o link direto de uma imagem da internet no campo de capa.');
+            alert('Livro encontrado, mas sem capa na API. Cole o link direto de uma imagem da internet no campo de capa.');
           }
         } else {
-          alert('Capa não encontrada automaticamente. Tente colar o link de uma imagem da capa.');
+          alert('Capa não encontrada automaticamente. Tente colar o link direto de uma imagem da capa.');
         }
       } catch (e) {
         alert('Erro ao buscar capa.');
@@ -722,7 +725,6 @@
       const container = document.getElementById('listaLivros');
       document.getElementById('contadorLivros').textContent = `${lista.length} livros`;
       const isAdmin = usuarioAtual.perfil === 'admin';
-      const isAluno = usuarioAtual.perfil === 'aluno';
 
       container.innerHTML = lista.map(livro => {
         const disp = livro.disponivel !== false;
@@ -858,7 +860,7 @@
 
       document.getElementById('listaRetiradosAdmin').innerHTML = html;
       document.getElementById('alertaRetiradosHeader').innerHTML = vencemHojeCount > 0 
-        ? `<div class="bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-2xl shadow animate-bounce text-xs flex items-center gap-2">🔔 ${venceHojeCount} prazo(s) expirando hoje!</div>`
+        ? `<div class="bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-2xl shadow animate-bounce text-xs flex items-center gap-2">🔔 ${vencemHojeCount} prazo(s) expirando hoje!</div>`
         : '';
     }
 
