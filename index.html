@@ -10,29 +10,32 @@
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     h1, h2, h3, .font-display { font-family: 'Fredoka', sans-serif; }
     
-    /* Fundo Escuro Futurista para a Tela de Login */
     .bg-estante-login {
       background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(30, 27, 75, 0.92)), url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1200&q=80');
       background-size: cover;
       background-position: center;
     }
 
-    /* Cabeçalho Extremamente Colorido (Azul, Roxo, Rosa e Laranja) com Estética de Plantas / Selva */
-    .bg-cabecalho-selva {
-      background: linear-gradient(135deg, #1d4ed8 0%, #7e22ce 35%, #db2777 70%, #f97316 100%);
+    /* Cabeçalho com Degradê Vivo (Azul Clarinho -> Purple -> Rosa -> Laranja) e Bolhas d'Água */
+    .bg-cabecalho-bolhas {
+      background: linear-gradient(135deg, #38bdf8 0%, #9333ea 35%, #ec4899 70%, #f97316 100%);
       position: relative;
       overflow: hidden;
     }
-    
-    /* Detalhe gráfico decorativo simulando folhagens/plantas no cabeçalho */
-    .bg-cabecalho-selva::before {
+
+    /* Efeito de Bolhas d'Água Grandes e Pequenas flutuando no Cabeçalho */
+    .bg-cabecalho-bolhas::before {
       content: "";
       position: absolute;
       inset: 0;
-      opacity: 0.12;
-      background-image: radial-gradient(#ffffff 2px, transparent 2px), radial-gradient(#ffffff 2px, #1d4ed8 2px);
-      background-size: 32px 32px;
-      background-position: 0 0, 16px 16px;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.35) 0, rgba(255, 255, 255, 0.35) 12px, transparent 13px),
+        radial-gradient(circle at 25% 80%, rgba(255, 255, 255, 0.25) 0, rgba(255, 255, 255, 0.25) 6px, transparent 7px),
+        radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.4) 0, rgba(255, 255, 255, 0.4) 20px, transparent 21px),
+        radial-gradient(circle at 65% 70%, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0.2) 4px, transparent 5px),
+        radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.3) 0, rgba(255, 255, 255, 0.3) 15px, transparent 16px),
+        radial-gradient(circle at 92% 85%, rgba(255, 255, 255, 0.35) 0, rgba(255, 255, 255, 0.35) 9px, transparent 10px),
+        radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0.2) 7px, transparent 8px);
       pointer-events: none;
     }
 
@@ -45,13 +48,10 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
 
-  <!-- =========================================================
-       TELA DE LOGIN / CADASTRO (FUTURISTA COM ESTANTE)
-       ========================================================= -->
+  <!-- TELA DE LOGIN / CADASTRO -->
   <div id="telaAuth" class="min-h-screen flex items-center justify-center p-4 bg-estante-login">
     <div class="bg-slate-900/95 border border-violet-500/30 backdrop-blur-xl rounded-3xl max-w-md w-full p-8 shadow-2xl shadow-violet-950/60 my-6 text-slate-100">
       <div class="text-center mb-6">
-        <!-- Brasão Oficial da Escola -->
         <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white p-2 mb-3 shadow-lg shadow-violet-500/20 border border-violet-200">
           <img src="image_2107dd.png" alt="Logo Getúlio Vargas" class="w-full h-full object-contain">
         </div>
@@ -64,7 +64,7 @@
         <button type="button" onclick="alternarModoAuth('cadastro')" id="btnModoCadastro" class="py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white cursor-pointer transition">Primeiro Acesso</button>
       </div>
 
-      <!-- FORMULÁRIO LOGIN -->
+      <!-- FORMULÁRIO LOGIN (Apenas Professor e Admin) -->
       <form id="formLogin" onsubmit="fazerLogin(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Tipo de Acesso</label>
@@ -112,8 +112,7 @@
           <input type="text" id="regWhatsapp" placeholder="(51) 9..." class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white text-sm placeholder-slate-500">
         </div>
 
-        <!-- Chave Mestra / PIN Mestre -->
-        <div id="boxRegChave">
+        <div>
           <label class="block text-xs font-bold uppercase text-amber-400 mb-1" id="lblChaveMestra">Chave Mestra de Professor *</label>
           <input type="password" id="regChaveProf" required placeholder="Chave de segurança" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-amber-500/50 text-white placeholder-slate-500 text-sm">
         </div>
@@ -128,11 +127,11 @@
     </div>
   </div>
 
-  <!-- APLICATIVO PRINCIPAL (FUNDO CLARO E CABEÇALHO SUPER COLORIDO) -->
+  <!-- APLICATIVO PRINCIPAL -->
   <div id="appPrincipal" class="hidden flex-col min-h-screen bg-slate-100 text-slate-800">
     
-    <!-- Cabeçalho Largo Super Colorido (Azul, Roxo, Rosa, Laranja) com Logo -->
-    <header class="bg-cabecalho-selva text-white border-b border-white/20 shadow-xl print:hidden relative overflow-hidden">
+    <!-- Cabeçalho com Bolhas d'Água, Cores Vivas e Logo do Getúlio Vargas -->
+    <header class="bg-cabecalho-bolhas text-white border-b border-white/20 shadow-xl print:hidden relative overflow-hidden">
       <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
         
         <div class="flex items-center gap-4 text-center sm:text-left">
@@ -147,13 +146,13 @@
 
         <nav class="flex bg-black/20 backdrop-blur-md p-1.5 rounded-2xl border border-white/25 gap-1.5 flex-wrap justify-center shadow-inner">
           <button onclick="mudarAba('acervo')" id="tabAcervo" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition bg-white text-blue-900 shadow-md cursor-pointer">Acervo</button>
-          <button onclick="mudarAba('meus')" id="tabMeus" class="hidden px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/20 cursor-pointer">Meus Empréstimos</button>
+          <button onclick="mudarAba('meus')" id="tabMeus" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/20 cursor-pointer">Meus Empréstimos</button>
           <button onclick="mudarAba('espaco')" id="tabEspaco" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/20 cursor-pointer">Agenda e Espaço</button>
           <button onclick="mudarAba('retirados')" id="tabRetirados" class="hidden relative px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/20 cursor-pointer">
             Livros Retirados
             <span id="badgeAtraso" class="hidden -top-1 -right-1 absolute bg-red-600 text-white text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center animate-bounce shadow">!</span>
           </button>
-          <button onclick="mudarAba('gestao')" id="tabGestao" class="hidden px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/20 cursor-pointer">Gerenciamento</button>
+          <button onclick="mudarAba('gestao')" id="tabGestao" class="hidden px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/20 cursor-pointer">Cadastros e Gestão</button>
         </nav>
 
         <div class="flex items-center gap-3 bg-black/25 backdrop-blur-md border border-white/25 px-4 py-2.5 rounded-2xl text-xs shadow-inner">
@@ -192,16 +191,16 @@
       <section id="secaoMeus" class="hidden space-y-6 print:hidden">
         <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-xl">
           <h2 class="text-2xl font-bold text-slate-900 mb-1 font-display">Meus Empréstimos</h2>
-          <p class="text-sm text-slate-500 mb-6">Confira seus livros reservados e a data limite de devolução.</p>
+          <p class="text-sm text-slate-500 mb-6">Confira seus livros reservados e a data limite de devolução (prazo fixo de 7 dias).</p>
           <div id="listaMeusEmprestimos" class="space-y-4"></div>
         </div>
       </section>
 
-      <!-- ESPAÇO FÍSICO -->
+      <!-- AGENDA E ESPAÇO -->
       <section id="secaoEspaco" class="hidden space-y-8 print:hidden">
         <div id="painelAdminEspaco" class="hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 border border-purple-500/30 text-white p-6 rounded-3xl shadow-2xl max-w-3xl mx-auto">
-          <h2 class="text-xl font-bold mb-1 font-display">🗓️ Configurar Disponibilidade da Biblioteca (Admin)</h2>
-          <p class="text-xs text-purple-200 mb-5">Defina turnos e períodos liberados para reservas de professores.</p>
+          <h2 class="text-xl font-bold mb-1 font-display">🗓️ Configurar e Liberar Horários (Admin)</h2>
+          <p class="text-xs text-purple-200 mb-5">Adicione os turnos e publique para habilitar aos professores.</p>
           <form onsubmit="salvarConfiguracaoEspaco(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold text-purple-100 mb-1">Data *</label>
@@ -220,26 +219,22 @@
               <input type="text" id="espPeriodos" required placeholder="Ex: 1º ao 3º período" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-400">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-purple-100 mb-1">Situação *</label>
+              <label class="block text-xs font-semibold text-purple-100 mb-1">Situação Inicial *</label>
               <select id="espStatus" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white">
-                <option value="DISPONIVEL">✅ Disponível para Reserva de Professores</option>
+                <option value="DISPONIVEL">✅ Disponível (Liberado)</option>
                 <option value="ATIVIDADE_INTERNA">📖 Hora do Conto / Atividade Interna</option>
                 <option value="FECHADO">🚫 Fechado / Indisponível</option>
               </select>
             </div>
-            <div class="sm:col-span-2">
-              <label class="block text-xs font-semibold text-purple-100 mb-1">Observação</label>
-              <input type="text" id="espObs" placeholder="Ex: Atendimento apenas para retirada" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-400">
-            </div>
             <div class="sm:col-span-2 flex justify-end">
-              <button type="submit" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-6 py-2.5 rounded-xl shadow cursor-pointer transition">Publicar na Agenda</button>
+              <button type="submit" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-6 py-2.5 rounded-xl shadow cursor-pointer transition">🚀 Liberar/Publicar Horário</button>
             </div>
           </form>
         </div>
 
         <div class="max-w-3xl mx-auto">
           <h3 class="text-2xl font-bold text-slate-900 mb-2 font-display">Cronograma da Biblioteca</h3>
-          <p id="subtituloAgenda" class="text-sm text-slate-500 mb-5"></p>
+          <p id="subtituloAgenda" class="text-sm text-slate-500 mb-5">Consulte os horários liberados para reserva.</p>
           <div id="listaEspacos" class="space-y-3"></div>
         </div>
       </section>
@@ -249,19 +244,46 @@
         <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-xl">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-6">
             <div>
-              <h2 class="text-2xl font-bold text-slate-900 font-display">Livros Retirados e Reservas</h2>
-              <p class="text-sm text-slate-500">Acompanhe prazos e envie lembretes via WhatsApp.</p>
+              <h2 class="text-2xl font-bold text-slate-900 font-display">Livros Retirados e Alertas de Prazos</h2>
+              <p class="text-sm text-slate-500">Acompanhe devoluções (limite de 7 dias) e envie lembretes via WhatsApp.</p>
             </div>
           </div>
           <div id="listaRetiradosAdmin" class="space-y-4"></div>
         </div>
       </section>
 
-      <!-- GESTÃO -->
+      <!-- GESTÃO E CADASTRO DE ALUNOS -->
       <section id="secaoGestao" class="hidden space-y-8 print:hidden">
         <div class="bg-white border border-slate-200 p-6 rounded-3xl shadow-xl max-w-3xl mx-auto">
-          <h2 class="text-xl font-bold text-slate-900 mb-1 font-display">⚙️ Painel Administrativo</h2>
-          <p class="text-xs text-slate-500 mb-4">Gerenciamento geral do sistema da biblioteca.</p>
+          <h2 class="text-xl font-bold text-slate-900 mb-1 font-display">🎓 Cadastrar Aluno (Painel do Admin)</h2>
+          <p class="text-xs text-slate-500 mb-4">Cadastre os alunos para habilitá-los no controle da biblioteca.</p>
+          <form onsubmit="cadastrarAlunoAdmin(event)" class="space-y-3 mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Nome Completo do Aluno *</label>
+                <input type="text" id="cadAlunoNome" required placeholder="Nome do aluno" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Turma *</label>
+                <input type="text" id="cadAlunoTurma" required placeholder="Ex: 8º Ano A" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp / Contato</label>
+                <input type="text" id="cadAlunoZap" placeholder="(51) 9..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">PIN de Acesso *</label>
+                <input type="password" id="cadAlunoPin" required placeholder="Ex: 1234" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm">
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow cursor-pointer">Salvar Aluno no Sistema</button>
+            </div>
+          </form>
+
+          <h3 class="text-lg font-bold text-slate-900 mb-2 font-display">📋 Lista de Alunos e Usuários Cadastrados</h3>
           <div id="listaAlunosAdmin" class="space-y-2"></div>
         </div>
       </section>
@@ -337,11 +359,8 @@
             <input type="text" id="resTurmaLeitor" required class="w-full px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-sm">
           </div>
           <div>
-            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Prazo (Dias)</label>
-            <select id="resPrazoDias" class="w-full px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-sm font-bold">
-              <option value="7">7 dias</option>
-              <option value="14">14 dias</option>
-            </select>
+            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Prazo Fixo</label>
+            <input type="text" disabled value="7 dias" class="w-full px-3 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-600 text-sm font-bold">
           </div>
         </div>
         <div>
@@ -350,7 +369,7 @@
         </div>
         <div class="flex justify-end gap-2 pt-3">
           <button type="button" onclick="fecharModalReserva()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-500 hover:text-slate-800 cursor-pointer">Cancelar</button>
-          <button type="submit" class="bg-pink-600 hover:bg-pink-500 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Confirmar</button>
+          <button type="submit" class="bg-pink-600 hover:bg-pink-500 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Confirmar Retirada</button>
         </div>
       </form>
     </div>
@@ -383,26 +402,26 @@
 
   <div id="modalTermo" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
     <div class="bg-white text-slate-900 rounded-3xl max-w-lg w-full p-8 shadow-2xl space-y-6">
-      <div id="areaImpressao" class="space-y-4">
+      <div id="areaImpressao" class="space-y-4 border border-slate-300 p-6 rounded-2xl bg-white">
         <div class="text-center border-b pb-4">
           <h2 class="text-xl font-bold">EMEF Presidente Getúlio Vargas</h2>
-          <p class="text-xs text-slate-500">Biblioteca Escolar — Termo de Retirada</p>
+          <p class="text-xs text-slate-500">Biblioteca Escolar — Termo de Retirada de Exemplar</p>
         </div>
         <div class="text-sm space-y-2">
           <p><strong>Livro:</strong> <span id="termoLivro"></span></p>
           <p><strong>Leitor(a):</strong> <span id="termoAluno"></span></p>
           <p><strong>Turma:</strong> <span id="termoTurma"></span></p>
-          <p><strong>Retirada:</strong> <span id="termoData"></span></p>
-          <p><strong>Devolução:</strong> <span id="termoDevolucao" class="font-bold"></span></p>
+          <p><strong>Data de Retirada:</strong> <span id="termoData"></span></p>
+          <p><strong>Data Limite de Devolução (7 dias):</strong> <span id="termoDevolucao" class="font-bold text-pink-600"></span></p>
         </div>
-        <div class="pt-12 text-center space-y-1">
+        <div class="pt-10 text-center space-y-1">
           <div class="border-t border-slate-400 w-3/4 mx-auto pt-1"></div>
-          <p class="text-xs font-bold">Assinatura</p>
+          <p class="text-xs font-bold">Assinatura do Leitor / Responsável</p>
         </div>
       </div>
       <div class="flex justify-end gap-3 print:hidden">
         <button onclick="document.getElementById('modalTermo').classList.add('hidden')" class="px-4 py-2 bg-slate-200 rounded-xl font-semibold cursor-pointer text-slate-800">Fechar</button>
-        <button onclick="window.print()" class="px-5 py-2 bg-pink-600 text-white font-bold rounded-xl shadow cursor-pointer">🖨️ Termo</button>
+        <button onclick="window.print()" class="px-5 py-2 bg-pink-600 text-white font-bold rounded-xl shadow cursor-pointer">🖨️ Imprimir Termo</button>
       </div>
     </div>
   </div>
@@ -536,7 +555,7 @@
         document.getElementById('tabRetirados').classList.remove('hidden');
         document.getElementById('tabGestao').classList.remove('hidden');
         document.getElementById('painelAdminEspaco').classList.remove('hidden');
-        document.getElementById('subtituloAgenda').textContent = 'Gerencie abaixo os horários publicados para os professores.';
+        document.getElementById('subtituloAgenda').textContent = 'Gerencie e libere os horários para os professores abaixo.';
       } else {
         document.getElementById('tabMeus').classList.remove('hidden');
         document.getElementById('subtituloAgenda').textContent = 'Consulte e reserve os horários liberados pela biblioteca.';
@@ -584,7 +603,7 @@
             document.getElementById('previewCapaImg').src = urlSegura;
             document.getElementById('previewCapaBox').classList.remove('hidden');
           } else {
-            alert('Livro encontrado, mas sem capa cadastrada no Google Books.');
+            alert('Livro encontrado, mas sem capa cadastrada.');
           }
         } else {
           alert('Capa não encontrada.');
@@ -677,12 +696,9 @@
     function abrirReservaLivro(id, titulo) {
       document.getElementById('idLivroReserva').value = id;
       document.getElementById('nomeLivroReserva').textContent = `Livro: ${titulo}`;
-      if (usuarioAtual.perfil !== 'admin') {
-        document.getElementById('resNomeLeitor').value = usuarioAtual.nome;
-        document.getElementById('resTurmaLeitor').value = usuarioAtual.turma || 'Docente';
-        document.getElementById('resWhatsappLeitor').value = usuarioAtual.whatsapp || '';
-        document.getElementById('resPrazoDias').value = '14';
-      }
+      document.getElementById('resNomeLeitor').value = usuarioAtual.nome;
+      document.getElementById('resTurmaLeitor').value = usuarioAtual.turma || 'Docente';
+      document.getElementById('resWhatsappLeitor').value = usuarioAtual.whatsapp || '';
       document.getElementById('modalReserva').classList.remove('hidden');
       document.getElementById('modalReserva').classList.add('flex');
     }
@@ -696,7 +712,7 @@
         leitor: document.getElementById('resNomeLeitor').value.trim(),
         turma: document.getElementById('resTurmaLeitor').value.trim(),
         whatsappLeitor: document.getElementById('resWhatsappLeitor').value.trim(),
-        prazoDias: document.getElementById('resPrazoDias').value,
+        prazoDias: 7,
         statusEmprestimo: isAdmin ? 'RETIRADO' : 'RESERVADO'
       };
 
@@ -710,9 +726,7 @@
 
       fecharModalReserva();
       carregarLivros();
-
-      if (isAdmin) abrirTermoImpressao(data.livro);
-      else alert('Reserva confirmada! Passe na biblioteca para retirar seu exemplar.');
+      abrirTermoImpressao(data.livro);
     }
 
     function renderizarMeusEmprestimos() {
@@ -720,7 +734,7 @@
       document.getElementById('listaMeusEmprestimos').innerHTML = meus.map(l => `
         <div class="p-4 rounded-2xl border bg-pink-50 border-pink-200 shadow-sm">
           <h4 class="font-bold text-slate-900 text-lg font-display">${l.titulo}</h4>
-          <p class="text-xs text-pink-700 mt-1">Devolução até: <strong>${new Date(l.dataDevolucao).toLocaleDateString('pt-BR')}</strong></p>
+          <p class="text-xs text-pink-700 mt-1">Devolução até (7 dias): <strong>${new Date(l.dataDevolucao).toLocaleDateString('pt-BR')}</strong></p>
         </div>
       `).join('') || '<p class="text-sm text-slate-400">Nenhum empréstimo ativo no momento.</p>';
     }
@@ -735,9 +749,9 @@
         const linkZap = `https://api.whatsapp.com/send?phone=55${(l.whatsappLeitor||'').replace(/\D/g,'')}&text=${encodeURIComponent('Olá ' + l.leitor + ', lembramos da devolução do livro "' + l.titulo + '".')}`;
 
         return `
-          <div class="p-4 rounded-2xl border ${atrasado ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-200'} flex justify-between items-center gap-4 shadow-sm">
+          <div class="p-4 rounded-2xl border ${atrasado ? 'bg-red-50 border-red-300' : 'bg-slate-50 border-slate-200'} flex justify-between items-center gap-4 shadow-sm">
             <div>
-              <h4 class="font-bold text-slate-900 text-lg font-display">${l.titulo}</h4>
+              <h4 class="font-bold text-slate-900 text-lg font-display">${l.titulo} ${atrasado ? '<span class="text-xs text-red-600 bg-red-100 px-2 py-0.5 rounded-full font-bold ml-2">⚠️ ATRAZADO (> 7 dias)</span>' : ''}</h4>
               <p class="text-xs text-slate-600">Leitor: <strong>${l.leitor}</strong> (${l.turma}) • Tel: ${l.whatsappLeitor || 'Não inf.'}</p>
               <p class="text-xs text-slate-500">Entrega limite: <strong>${dtDev.toLocaleDateString('pt-BR')}</strong></p>
             </div>
@@ -758,7 +772,7 @@
     }
 
     async function devolverLivroAdmin(id) {
-      if (!confirm('Confirmar devolução?')) return;
+      if (!confirm('Confirmar devolução do livro?')) return;
       await fetch('/api/biblioteca', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'devolver', id, adminPin: adminPinSessao }) });
       carregarLivros();
     }
@@ -785,11 +799,12 @@
           turno: document.getElementById('espTurno').value,
           periodos: document.getElementById('espPeriodos').value.trim(),
           status: document.getElementById('espStatus').value,
-          observacao: document.getElementById('espObs').value.trim()
+          observacao: ''
         })
       });
       e.target.reset();
       carregarEspacos();
+      alert('Horário liberado na agenda com sucesso!');
     }
 
     async function carregarEspacos() {
@@ -800,22 +815,22 @@
 
       document.getElementById('listaEspacos').innerHTML = espacos.map(e => {
         const dt = e.data ? e.data.split('-').reverse().join('/') : '';
-        let badge = e.status === 'DISPONIVEL' ? `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">✅ ${e.periodos}</span>` : `<span class="bg-indigo-100 text-indigo-900 text-xs font-bold px-3 py-1 rounded-full border border-indigo-200">🔒 Reservado por: ${e.prof} (${e.turma})</span>`;
-        let btn = (isProf && e.status === 'DISPONIVEL') ? `<button onclick="abrirModalSlot('${e.id}', '${dt} - ${e.turno}')" class="bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold px-4 py-2 rounded-xl shadow">Reservar</button>` : '';
+        let badge = e.status === 'DISPONIVEL' ? `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">✅ Disponível</span>` : `<span class="bg-indigo-100 text-indigo-900 text-xs font-bold px-3 py-1 rounded-full border border-indigo-200">🔒 Reservado por: ${e.prof} (${e.turma})</span>`;
+        let btn = (isProf && e.status === 'DISPONIVEL') ? `<button onclick="abrirModalSlot('${e.id}', '${dt} - ${e.turno}')" class="bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold px-4 py-2 rounded-xl shadow cursor-pointer">Reservar Espaço</button>` : '';
 
         return `
           <div class="bg-white border border-slate-200 p-4 rounded-2xl flex justify-between items-center shadow-sm">
             <div>
-              <p class="font-bold text-slate-900">${dt} — Turno: ${e.turno}</p>
+              <p class="font-bold text-slate-900">${dt} — Turno: ${e.turno} (${e.periodos})</p>
               <div class="mt-1">${badge}</div>
             </div>
             <div class="flex gap-2">
               ${btn}
-              ${isAdmin ? `<button onclick="excluirAdmin('espaco', '${e.id}')" class="text-rose-500 hover:text-rose-700 text-xs cursor-pointer">🗑️</button>` : ''}
+              ${isAdmin ? `<button onclick="excluirAdmin('espaco', '${e.id}')" class="text-rose-500 hover:text-rose-700 text-xs cursor-pointer font-bold">🗑️ Excluir</button>` : ''}
             </div>
           </div>
         `;
-      }).join('') || '<p class="text-sm text-slate-400 bg-white border border-slate-200 p-6 rounded-2xl text-center shadow-sm">Nenhum horário na agenda.</p>';
+      }).join('') || '<p class="text-sm text-slate-400 bg-white border border-slate-200 p-6 rounded-2xl text-center shadow-sm">Nenhum horário liberado na agenda.</p>';
     }
 
     function abrirModalSlot(id, info) {
@@ -844,6 +859,31 @@
       alert('Espaço reservado com sucesso!');
     }
 
+    async function cadastrarAlunoAdmin(e) {
+      e.preventDefault();
+      const payload = {
+        acao: 'registrar_usuario',
+        perfil: 'aluno',
+        nome: document.getElementById('cadAlunoNome').value.trim(),
+        turma: document.getElementById('cadAlunoTurma').value.trim(),
+        whatsapp: document.getElementById('cadAlunoZap').value.trim(),
+        email: '',
+        pin: document.getElementById('cadAlunoPin').value.trim()
+      };
+      const res = await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        alert('Aluno cadastrado com sucesso!');
+        e.target.reset();
+        carregarGestaoAdmin();
+      } else {
+        alert('Erro ao cadastrar aluno.');
+      }
+    }
+
     async function carregarGestaoAdmin() {
       const resUsers = await fetch('/api/biblioteca?tipo=usuarios');
       const users = await resUsers.json();
@@ -852,9 +892,9 @@
         <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl flex justify-between items-center shadow-sm">
           <div>
             <p class="font-bold text-slate-800 text-sm">${u.nome} <span class="text-xs uppercase text-pink-600 font-bold ml-2">(${u.perfil})</span></p>
-            <p class="text-xs text-slate-500">E-mail: ${u.email || 'Não inf.'} • WhatsApp: ${u.whatsapp || 'Não inf.'}</p>
+            <p class="text-xs text-slate-500">Turma/Detalhe: ${u.turma || 'N/A'} • WhatsApp: ${u.whatsapp || 'Não inf.'}</p>
           </div>
-          <button onclick="excluirAdmin('aluno', '${u.nome}')" class="text-rose-500 hover:text-rose-700 text-xs cursor-pointer font-bold">🗑️</button>
+          <button onclick="excluirAdmin('aluno', '${u.nome}')" class="text-rose-500 hover:text-rose-700 text-xs cursor-pointer font-bold">🗑️ Excluir</button>
         </div>
       `).join('') || '<p class="text-xs text-slate-400">Nenhum usuário cadastrado.</p>';
     }
