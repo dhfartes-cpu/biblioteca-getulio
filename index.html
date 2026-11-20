@@ -134,9 +134,13 @@
           <input type="text" id="regWhatsapp" placeholder="(51) 9..." class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white text-sm placeholder-slate-500" autocomplete="off">
         </div>
 
-        <!-- Chave Mestra invisível na tela mas validada silenciosamente no código por segurança -->
-        <div class="hidden">
-          <input type="password" id="regChaveProf" value="GETULIO2026">
+        <!-- CAMPO DA CHAVE MESTRA VISÍVEL APENAS PARA PROFESSORES -->
+        <div id="boxRegChave">
+          <label class="block text-xs font-bold uppercase text-amber-400 mb-1" id="lblChaveMestra">Chave Mestra de Professor *</label>
+          <div class="relative">
+            <input type="password" id="regChaveProf" required placeholder="GETULIO2026" autocomplete="new-password" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-amber-500/50 text-white placeholder-slate-500 text-sm pr-12">
+            <button type="button" onclick="toggleVisibilidade('regChaveProf', this)" class="absolute right-3 top-3 text-xs text-amber-300 hover:text-white font-bold cursor-pointer">👁️</button>
+          </div>
         </div>
 
         <div>
@@ -761,13 +765,19 @@
       const p = document.getElementById('regPerfil').value;
       const boxTurma = document.getElementById('boxRegTurma');
       const inputTurma = document.getElementById('regTurma');
+      const boxChave = document.getElementById('boxRegChave');
+      const inputChave = document.getElementById('regChaveProf');
 
       if (p === 'professor') {
         boxTurma.classList.add('hidden');
         inputTurma.removeAttribute('required');
+        boxChave.classList.remove('hidden');
+        inputChave.setAttribute('required', 'true');
       } else {
         boxTurma.classList.remove('hidden');
         inputTurma.setAttribute('required', 'true');
+        boxChave.classList.add('hidden');
+        inputChave.removeAttribute('required');
       }
     }
 
@@ -1628,7 +1638,7 @@
           const dt = e.data ? e.data.split('-').reverse().join('/') : '';
           let badge = e.status === 'DISPONIVEL' 
             ? `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">✅ Disponível (${e.periodos})</span>` 
-            : `<span class="bg-indigo-100 text-indigo-900 text-xs font-bold px-3 py-1 rounded-full border border-indigo-200">🔒 Reservado por: ${e.prof} (${e.turma} — ${e.periodos})</span>`;
+            : `<span class="bg-indigo-100 text-indigo-900 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">🔒 Reservado por: ${e.prof} (${e.turma} — ${e.periodos})</span>`;
           
           let btn = (isProf && e.status === 'DISPONIVEL') 
             ? `<button onclick="abrirModalSlot('${e.id}', '${dt} - Turno: ${e.turno} (Disp: ${e.periodos})')" class="bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold px-4 py-2 rounded-xl shadow cursor-pointer">Reservar Período</button>` 
