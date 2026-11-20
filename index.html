@@ -18,6 +18,7 @@
 </head>
 <body class="bg-amber-50/40 text-slate-800 min-h-screen flex flex-col">
 
+  <!-- Cabeçalho -->
   <header class="bg-gradient-to-r from-violet-600 via-pink-600 to-amber-500 text-white shadow-xl print:hidden">
     <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-3 text-center sm:text-left">
@@ -60,39 +61,52 @@
       <div id="listaLivros" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
     </section>
 
-    <!-- ABA 2: ESPAÇO FÍSICO -->
-    <section id="secaoEspaco" class="hidden space-y-6 print:hidden">
-      <div class="bg-white p-6 rounded-3xl shadow-sm border border-violet-100 max-w-2xl mx-auto">
-        <h2 class="text-2xl font-bold text-slate-800 mb-2">Agendamento do Espaço Físico</h2>
-        <form onsubmit="agendarEspaco(event)" class="space-y-4">
+    <!-- ABA 2: ESPAÇO FÍSICO (CONTROLE DA BIBLIOTECÁRIA + RESERVA AUTORIZADA) -->
+    <section id="secaoEspaco" class="hidden space-y-8 print:hidden">
+      
+      <!-- Painel da Bibliotecária (Exige PIN) -->
+      <div class="bg-violet-900 text-white p-6 rounded-3xl shadow-lg max-w-3xl mx-auto">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="text-xl">🔐</span>
+          <h2 class="text-xl font-bold">Gestão da Agenda (Exclusivo Bibliotecária)</h2>
+        </div>
+        <p class="text-xs text-violet-200 mb-5">Defina quais datas e horários estão liberados para turmas ou bloqueados para atividades internas. Professores só podem reservar horários previamente liberados.</p>
+        
+        <form onsubmit="gerenciarAgendaEspaco(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1">Professor(a) Responsável *</label>
-            <input type="text" id="profEspaco" required placeholder="Nome completo" class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50">
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-semibold text-slate-700 mb-1">Turma *</label>
-              <input type="text" id="turmaEspaco" required placeholder="Ex: 8º Ano A" class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50">
-            </div>
-            <div>
-              <label class="block text-sm font-semibold text-slate-700 mb-1">Data *</label>
-              <input type="date" id="dataEspaco" required class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50">
-            </div>
+            <label class="block text-xs font-semibold text-violet-200 mb-1">Data *</label>
+            <input type="date" id="dataAgendaAdmin" required class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none">
           </div>
           <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-1">Horário / Turno *</label>
-            <select id="horarioEspaco" class="w-full px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50">
-              <option value="Manhã - 1º Horário">Manhã - 1º Horário</option>
-              <option value="Manhã - 2º Horário">Manhã - 2º Horário</option>
-              <option value="Tarde - 1º Horário">Tarde - 1º Horário</option>
-              <option value="Tarde - 2º Horário">Tarde - 2º Horário</option>
+            <label class="block text-xs font-semibold text-violet-200 mb-1">Turno / Horário *</label>
+            <select id="horarioAgendaAdmin" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-white/20 text-white focus:outline-none">
+              <option value="Manhã - 1º Horário (07:30 - 09:30)">Manhã - 1º Horário (07:30 - 09:30)</option>
+              <option value="Manhã - 2º Horário (09:45 - 11:30)">Manhã - 2º Horário (09:45 - 11:30)</option>
+              <option value="Tarde - 1º Horário (13:00 - 15:00)">Tarde - 1º Horário (13:00 - 15:00)</option>
+              <option value="Tarde - 2º Horário (15:15 - 17:00)">Tarde - 2º Horário (15:15 - 17:00)</option>
             </select>
           </div>
-          <button type="submit" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3.5 rounded-2xl shadow-md transition cursor-pointer">Confirmar Agendamento</button>
+          <div>
+            <label class="block text-xs font-semibold text-violet-200 mb-1">Ação na Agenda *</label>
+            <select id="acaoAgendaAdmin" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-white/20 text-white focus:outline-none">
+              <option value="liberar_horario">✅ Liberar Horário para Reservas</option>
+              <option value="bloquear_horario">🚫 Marcar como Indisponível / Ocupado</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-violet-200 mb-1">Observação / Motivo (se bloqueado)</label>
+            <input type="text" id="motivoAgendaAdmin" placeholder="Ex: Organização de acervo" class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-violet-300 focus:outline-none">
+          </div>
+          <div class="sm:col-span-2 flex justify-end pt-2">
+            <button type="submit" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-6 py-2.5 rounded-xl shadow cursor-pointer">Atualizar Agenda (Solicitar PIN)</button>
+          </div>
         </form>
       </div>
-      <div class="max-w-2xl mx-auto mt-8">
-        <h3 class="text-xl font-bold text-slate-800 mb-4">Agendamentos Confirmados</h3>
+
+      <!-- Grade de Horários para Professores -->
+      <div class="max-w-3xl mx-auto">
+        <h3 class="text-2xl font-bold text-slate-800 mb-2">Horários da Biblioteca</h3>
+        <p class="text-sm text-slate-500 mb-4">Clique em <strong>Reservar Horário</strong> apenas nos períodos liberados pela bibliotecária.</p>
         <div id="listaEspacos" class="space-y-3"></div>
       </div>
     </section>
@@ -161,26 +175,57 @@
     </div>
   </div>
 
-  <!-- Modais de Cadastro de Livro e Empréstimo -->
+  <!-- MODAL CADASTRO DE LIVRO (COM BUSCA AUTOMÁTICA DE CAPA) -->
   <div id="modalCadastro" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-pink-100">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-pink-100 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-4">
         <h3 class="text-2xl font-bold text-slate-800">Novo Livro</h3>
         <button onclick="fecharModalCadastro()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
       <form id="formCadastro" onsubmit="salvarLivro(event)" class="space-y-4">
-        <div><label class="block text-sm font-semibold text-slate-700 mb-1">Título *</label><input type="text" id="tituloLivro" required class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50"></div>
-        <div><label class="block text-sm font-semibold text-slate-700 mb-1">Autor(a) *</label><input type="text" id="autorLivro" required class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50"></div>
-        <div><label class="block text-sm font-semibold text-slate-700 mb-1">Link Direto da Capa (.jpg/.png)</label><input type="url" id="capaLivro" placeholder="https://..." class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50 text-xs"></div>
-        <div class="grid grid-cols-2 gap-3">
-          <div><label class="block text-sm font-semibold text-slate-700 mb-1">Categoria</label><select id="categoriaLivro" class="w-full px-3 py-2.5 rounded-2xl border bg-slate-50 text-sm"><option value="Literatura Infantil">Literatura Infantil</option><option value="Literatura Juvenil">Literatura Juvenil</option><option value="Romance / Ficção">Romance / Ficção</option><option value="Didático">Didático</option></select></div>
-          <div><label class="block text-sm font-semibold text-slate-700 mb-1">Prateleira</label><input type="text" id="codigoLivro" placeholder="A-01" class="w-full px-3 py-2.5 rounded-2xl border bg-slate-50 text-sm"></div>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Título do Livro *</label>
+          <div class="flex gap-2">
+            <input type="text" id="tituloLivro" required placeholder="Ex: O Pequeno Príncipe" class="flex-1 px-4 py-2.5 rounded-2xl border bg-slate-50">
+            <button type="button" onclick="buscarCapaAutomatica()" id="btnBuscarCapa" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-3 py-2 rounded-2xl text-xs shadow cursor-pointer whitespace-nowrap">🔍 Buscar Capa</button>
+          </div>
         </div>
-        <div class="flex justify-end gap-2 pt-3"><button type="button" onclick="fecharModalCadastro()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-600 cursor-pointer">Cancelar</button><button type="submit" class="bg-violet-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Salvar</button></div>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Autor(a) *</label>
+          <input type="text" id="autorLivro" required placeholder="Preenchido automaticamente ou digite" class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Capa Encontrada (URL)</label>
+          <input type="url" id="capaLivro" placeholder="Clique em Buscar Capa acima" class="w-full px-4 py-2 rounded-2xl border bg-slate-50 text-xs mb-2">
+          <div id="previewCapaBox" class="hidden flex justify-center bg-slate-100 p-2 rounded-2xl border">
+            <img id="previewCapaImg" src="" alt="Prévia da Capa" class="h-32 object-contain rounded-lg shadow">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Categoria</label>
+            <select id="categoriaLivro" class="w-full px-3 py-2.5 rounded-2xl border bg-slate-50 text-sm">
+              <option value="Literatura Infantil">Literatura Infantil</option>
+              <option value="Literatura Juvenil">Literatura Juvenil</option>
+              <option value="Romance / Ficção">Romance / Ficção</option>
+              <option value="Didático">Didático</option>
+              <option value="Artes e Cultura">Artes e Cultura</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Prateleira</label>
+            <input type="text" id="codigoLivro" placeholder="A-01" class="w-full px-3 py-2.5 rounded-2xl border bg-slate-50 text-sm">
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-3">
+          <button type="button" onclick="fecharModalCadastro()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-600 cursor-pointer">Cancelar</button>
+          <button type="submit" class="bg-violet-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Salvar</button>
+        </div>
       </form>
     </div>
   </div>
 
+  <!-- MODAL EMPRÉSTIMO DE LIVRO -->
   <div id="modalReserva" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-pink-100">
       <div class="flex justify-between items-center mb-4">
@@ -193,6 +238,23 @@
         <div><label class="block text-sm font-semibold text-slate-700 mb-1">Nome do Aluno(a) *</label><input type="text" id="nomeLeitor" required placeholder="Nome completo" class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50"></div>
         <div><label class="block text-sm font-semibold text-slate-700 mb-1">Turma *</label><input type="text" id="turmaLeitor" required placeholder="Ex: 7º Ano A" class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50"></div>
         <div class="flex justify-end gap-2 pt-3"><button type="button" onclick="fecharModalReserva()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-600 cursor-pointer">Cancelar</button><button type="submit" class="bg-pink-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Confirmar e Gerar Termo</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL RESERVA DE HORÁRIO LIBERADO (PROFESSOR) -->
+  <div id="modalSlot" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-violet-100">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-slate-800">Reservar Horário na Biblioteca</h3>
+        <button onclick="fecharModalSlot()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold cursor-pointer">&times;</button>
+      </div>
+      <p id="infoSlotReserva" class="text-sm text-violet-700 font-semibold mb-4"></p>
+      <form onsubmit="confirmarReservaSlot(event)" class="space-y-4">
+        <input type="hidden" id="idSlotReserva">
+        <div><label class="block text-sm font-semibold text-slate-700 mb-1">Nome do Professor(a) *</label><input type="text" id="profSlot" required placeholder="Seu nome" class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50"></div>
+        <div><label class="block text-sm font-semibold text-slate-700 mb-1">Turma / Atividade *</label><input type="text" id="turmaSlot" required placeholder="Ex: 8º Ano B - Leitura" class="w-full px-4 py-2.5 rounded-2xl border bg-slate-50"></div>
+        <div class="flex justify-end gap-2 pt-3"><button type="button" onclick="fecharModalSlot()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-600 cursor-pointer">Cancelar</button><button type="submit" class="bg-violet-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow cursor-pointer">Confirmar Reserva</button></div>
       </form>
     </div>
   </div>
@@ -215,8 +277,49 @@
         document.getElementById(`secao${a}`).classList.add('hidden');
         document.getElementById(`tab${a}`).className = 'px-4 py-2 rounded-xl text-sm font-bold transition text-white hover:bg-white/10 cursor-pointer';
       });
-      document.getElementById(`secao${aba.charAt(0).toUpperCase() + aba.slice(1)}`).classList.remove('hidden');
-      document.getElementById(`tab${aba.charAt(0).toUpperCase() + aba.slice(1)}`).className = 'px-4 py-2 rounded-xl text-sm font-bold transition bg-white text-slate-900 shadow-sm cursor-pointer';
+      const nomeAba = aba.charAt(0).toUpperCase() + aba.slice(1);
+      document.getElementById(`secao${nomeAba}`).classList.remove('hidden');
+      document.getElementById(`tab${nomeAba}`).className = 'px-4 py-2 rounded-xl text-sm font-bold transition bg-white text-slate-900 shadow-sm cursor-pointer';
+    }
+
+    // BUSCA AUTOMÁTICA DE CAPA VIA GOOGLE BOOKS API
+    async function buscarCapaAutomatica() {
+      const titulo = document.getElementById('tituloLivro').value.trim();
+      if (!titulo) {
+        alert('Digite o título do livro primeiro para buscar a capa.');
+        return;
+      }
+      const btn = document.getElementById('btnBuscarCapa');
+      btn.textContent = 'Buscando...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(titulo)}&maxResults=1`);
+        const data = await res.json();
+
+        if (data.items && data.items.length > 0) {
+          const info = data.items[0].volumeInfo;
+          if (info.authors && !document.getElementById('autorLivro').value) {
+            document.getElementById('autorLivro').value = info.authors.join(', ');
+          }
+          if (info.imageLinks && info.imageLinks.thumbnail) {
+            // Converte para HTTPS para evitar bloqueio de segurança do navegador
+            const urlSegura = info.imageLinks.thumbnail.replace('http://', 'https://');
+            document.getElementById('capaLivro').value = urlSegura;
+            document.getElementById('previewCapaImg').src = urlSegura;
+            document.getElementById('previewCapaBox').classList.remove('hidden');
+          } else {
+            alert('Livro encontrado, mas sem imagem de capa disponível no Google Books.');
+          }
+        } else {
+          alert('Nenhuma capa encontrada automaticamente para este título.');
+        }
+      } catch (err) {
+        alert('Erro ao consultar o catálogo de capas online.');
+      } finally {
+        btn.textContent = '🔍 Buscar Capa';
+        btn.disabled = false;
+      }
     }
 
     async function carregarLivros() {
@@ -245,7 +348,9 @@
       document.getElementById('contadorLivros').textContent = `${lista.length} livros`;
       container.innerHTML = lista.map(livro => {
         const disp = livro.disponivel !== false;
-        let capa = livro.capa ? `<div class="w-full h-40 bg-slate-100 rounded-2xl mb-4 overflow-hidden"><img src="${livro.capa}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='📚'"></div>` : `<div class="w-full h-32 bg-gradient-to-br from-violet-500 to-pink-500 rounded-2xl mb-4 flex items-center justify-center text-white text-3xl font-bold">${(livro.titulo||'L')[0]}</div>`;
+        let capa = livro.capa
+          ? `<div class="w-full h-44 bg-slate-100 rounded-2xl mb-4 overflow-hidden flex items-center justify-center p-2"><img src="${livro.capa}" class="h-full object-contain rounded-lg shadow-sm" onerror="this.parentElement.innerHTML='📚'"></div>`
+          : `<div class="w-full h-32 bg-gradient-to-br from-violet-500 to-pink-500 rounded-2xl mb-4 flex items-center justify-center text-white text-3xl font-bold">${(livro.titulo||'L')[0].toUpperCase()}</div>`;
         return `
           <div class="bg-white rounded-3xl p-5 shadow-sm border border-violet-100 flex flex-col justify-between">
             <div>
@@ -259,8 +364,11 @@
               ${!disp ? `<p class="text-xs bg-amber-50 p-2 rounded-xl text-amber-900 mt-2">Com: <strong>${livro.leitor}</strong> (${livro.turma})</p>` : ''}
             </div>
             <div class="mt-4 pt-3 border-t flex gap-2">
-              ${disp ? `<button onclick="abrirReserva('${livro.id}', '${livro.titulo.replace(/'/g, "\\'")}')" class="flex-1 bg-violet-600 text-white py-2 rounded-xl text-sm font-bold cursor-pointer">Emprestar</button>` : `<button onclick="devolver('${livro.id}')" class="flex-1 bg-amber-500 text-white py-2 rounded-xl text-sm font-bold cursor-pointer">Devolver</button>`}
-              <button onclick="excluirItem('livro', '${livro.id}')" class="px-3 bg-rose-100 text-rose-700 hover:bg-rose-200 rounded-xl text-sm cursor-pointer" title="Excluir Livro">🗑️</button>
+              ${disp
+                ? `<button onclick="abrirReserva('${livro.id}', '${livro.titulo.replace(/'/g, "\\'")}')" class="flex-1 bg-violet-600 text-white py-2 rounded-xl text-sm font-bold cursor-pointer">Emprestar</button>`
+                : `<button onclick="devolver('${livro.id}')" class="flex-1 bg-amber-500 text-white py-2 rounded-xl text-sm font-bold cursor-pointer">Devolver</button>`
+              }
+              <button onclick="excluirComPin('livro', '${livro.id}')" class="px-3 bg-rose-100 text-rose-700 hover:bg-rose-200 rounded-xl text-sm cursor-pointer" title="Excluir Livro (Exige PIN)">🗑️</button>
             </div>
           </div>
         `;
@@ -277,8 +385,7 @@
         categoria: document.getElementById('categoriaLivro').value,
         codigo: document.getElementById('codigoLivro').value
       })});
-      document.getElementById('modalCadastro').classList.add('hidden');
-      document.getElementById('formCadastro').reset();
+      fecharModalCadastro();
       carregarLivros();
     }
 
@@ -292,11 +399,9 @@
         acao: 'reservar', id, leitor, turma
       })});
 
-      document.getElementById('modalReserva').classList.add('hidden');
-      document.getElementById('formReserva').reset();
+      fecharModalReserva();
       carregarLivros();
 
-      // Abrir Termo para Impressão
       document.getElementById('termoLivro').textContent = document.getElementById('nomeLivroReserva').textContent.replace('Livro: ', '');
       document.getElementById('termoAluno').textContent = leitor;
       document.getElementById('termoTurma').textContent = turma;
@@ -306,18 +411,30 @@
     }
 
     async function devolver(id) {
-      if(!confirm('Confirmar devolução do livro?')) return;
+      if (!confirm('Confirmar devolução do livro?')) return;
       await fetch('/api/biblioteca', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'devolver', id }) });
       carregarLivros();
     }
 
-    async function excluirItem(tipoItem, itemId) {
-      if(!confirm('Tem certeza que deseja excluir este item permanentemente?')) return;
-      await fetch('/api/biblioteca', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'excluir', tipoItem, itemId }) });
+    // EXCLUSÃO PROTEGIDA POR PIN DA BIBLIOTECÁRIA
+    async function excluirComPin(tipoItem, itemId) {
+      const pin = prompt('🔐 Digite o PIN da Bibliotecária para confirmar a exclusão:');
+      if (!pin) return;
+
+      const res = await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ acao: 'excluir', tipoItem, itemId, pin })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.erro || 'PIN incorreto!');
+        return;
+      }
       carregarTudo();
     }
 
-    // Alunos e Espaços
+    // GESTÃO DE ALUNOS
     async function cadastrarAluno(e) {
       e.preventDefault();
       await fetch('/api/biblioteca', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
@@ -335,36 +452,105 @@
       const res = await fetch('/api/biblioteca?tipo=alunos');
       const alunos = await res.json();
       document.getElementById('listaAlunos').innerHTML = alunos.map(a => `
-        <div class="bg-slate-50 p-3 rounded-2xl border flex justify-between items-center">
-          <div><p class="font-bold text-slate-800">${a.nome}</p><p class="text-xs text-slate-500">Turma: ${a.turma} ${a.contato ? '• ' + a.contato : ''}</p></div>
-          <button onclick="excluirItem('aluno', '${a.id}')" class="text-rose-500 hover:text-rose-700 text-sm">🗑️</button>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-center">
+          <div>
+            <p class="font-bold text-slate-800">${a.nome}</p>
+            <p class="text-xs text-slate-500">Turma: ${a.turma} ${a.contato ? '• ' + a.contato : ''}</p>
+          </div>
+          <button onclick="excluirComPin('aluno', '${a.id}')" class="px-2.5 py-1.5 bg-rose-100 text-rose-700 hover:bg-rose-200 rounded-xl text-sm cursor-pointer" title="Excluir Aluno (Exige PIN)">🗑️</button>
         </div>
-      `).join('') || '<p class="text-xs text-slate-400">Nenhum aluno.</p>';
+      `).join('') || '<p class="text-xs text-slate-400">Nenhum aluno cadastrado.</p>';
     }
 
-    async function agendarEspaco(e) {
+    // AGENDA DO ESPAÇO FÍSICO (CONTROLE DA BIBLIOTECÁRIA)
+    async function gerenciarAgendaEspaco(e) {
       e.preventDefault();
-      await fetch('/api/biblioteca', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-        acao: 'agendar_espaco',
-        prof: document.getElementById('profEspaco').value,
-        turma: document.getElementById('turmaEspaco').value,
-        data: document.getElementById('dataEspaco').value,
-        horario: document.getElementById('horarioEspaco').value
-      })});
+      const pin = prompt('🔐 Digite o PIN da Bibliotecária para alterar a agenda:');
+      if (!pin) return;
+
+      const payload = {
+        acao: document.getElementById('acaoAgendaAdmin').value,
+        data: document.getElementById('dataAgendaAdmin').value,
+        horario: document.getElementById('horarioAgendaAdmin').value,
+        motivo: document.getElementById('motivoAgendaAdmin').value,
+        pin
+      };
+
+      const res = await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        alert(result.erro || 'PIN incorreto!');
+        return;
+      }
       e.target.reset();
       carregarEspacos();
-      alert('Espaço agendado!');
     }
 
     async function carregarEspacos() {
       const res = await fetch('/api/biblioteca?tipo=espacos');
       const espacos = await res.json();
-      document.getElementById('listaEspacos').innerHTML = espacos.map(e => `
-        <div class="bg-white p-4 rounded-2xl border flex justify-between items-center">
-          <div><p class="font-bold text-slate-800">${e.turma} — <span class="text-violet-600">${e.horario}</span></p><p class="text-xs text-slate-500">Prof(a): ${e.prof} • Data: ${e.data}</p></div>
-          <button onclick="excluirItem('espaco', '${e.id}')" class="text-rose-500 hover:text-rose-700 text-sm">🗑️</button>
-        </div>
-      `).join('') || '<p class="text-xs text-slate-400">Nenhum agendamento.</p>';
+      const container = document.getElementById('listaEspacos');
+
+      container.innerHTML = espacos.map(e => {
+        const dataFormatada = e.data ? e.data.split('-').reverse().join('/') : '';
+        let badge = '';
+        let acaoBtn = '';
+
+        if (e.status === 'DISPONIVEL') {
+          badge = '<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">✅ Liberado para Reserva</span>';
+          acaoBtn = `<button onclick="abrirModalSlot('${e.id}', '${dataFormatada} - ${e.horario}')" class="bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer">Reservar Horário</button>`;
+        } else if (e.status === 'BLOQUEADO') {
+          badge = `<span class="bg-rose-100 text-rose-800 text-xs font-bold px-3 py-1 rounded-full">🚫 Indisponível (${e.motivo || 'Uso Interno'})</span>`;
+        } else {
+          badge = `<span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">📌 Reservado: ${e.prof} (${e.turma})</span>`;
+        }
+
+        return `
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div>
+              <p class="font-bold text-slate-800">${dataFormatada} — <span class="text-violet-700">${e.horario}</span></p>
+              <div class="mt-1">${badge}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              ${acaoBtn}
+              <button onclick="excluirComPin('espaco', '${e.id}')" class="px-2.5 py-1.5 bg-slate-100 text-slate-600 hover:bg-rose-100 hover:text-rose-700 rounded-xl text-xs cursor-pointer" title="Remover da Agenda (Exige PIN)">🗑️</button>
+            </div>
+          </div>
+        `;
+      }).join('') || '<p class="text-sm text-slate-400 bg-white p-6 rounded-2xl border text-center">A bibliotecária ainda não liberou horários na agenda.</p>';
+    }
+
+    function abrirModalSlot(id, info) {
+      document.getElementById('idSlotReserva').value = id;
+      document.getElementById('infoSlotReserva').textContent = info;
+      document.getElementById('modalSlot').classList.remove('hidden');
+      document.getElementById('modalSlot').classList.add('flex');
+    }
+    function fecharModalSlot() { document.getElementById('modalSlot').classList.add('hidden'); }
+
+    async function confirmarReservaSlot(e) {
+      e.preventDefault();
+      const res = await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          acao: 'reservar_slot',
+          id: document.getElementById('idSlotReserva').value,
+          prof: document.getElementById('profSlot').value,
+          turma: document.getElementById('turmaSlot').value
+        })
+      });
+      if (res.ok) {
+        fecharModalSlot();
+        carregarEspacos();
+        alert('Horário reservado com sucesso!');
+      } else {
+        alert('Não foi possível reservar este horário.');
+      }
     }
 
     function renderizarEmprestados() {
@@ -384,8 +570,15 @@
       `).join('') || '<p class="text-sm text-slate-400">Nenhum livro emprestado no momento.</p>';
     }
 
-    function abrirModalCadastro() { document.getElementById('modalCadastro').classList.remove('hidden'); document.getElementById('modalCadastro').classList.add('flex'); }
-    function fecharModalCadastro() { document.getElementById('modalCadastro').classList.add('hidden'); }
+    function abrirModalCadastro() {
+      document.getElementById('previewCapaBox').classList.add('hidden');
+      document.getElementById('modalCadastro').classList.remove('hidden');
+      document.getElementById('modalCadastro').classList.add('flex');
+    }
+    function fecharModalCadastro() {
+      document.getElementById('modalCadastro').classList.add('hidden');
+      document.getElementById('formCadastro').reset();
+    }
     function abrirReserva(id, titulo) {
       document.getElementById('idLivroReserva').value = id;
       document.getElementById('nomeLivroReserva').textContent = `Livro: ${titulo}`;
