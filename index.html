@@ -260,7 +260,7 @@
       <section id="secaoAcervo" class="hidden space-y-6 print:hidden">
         <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div class="bg-white/90 backdrop-blur-md border border-slate-200 p-3 rounded-3xl shadow-lg flex-1 w-full flex flex-col md:flex-row gap-3">
-            <input type="text" id="campoBusca" oninput="filtrarLivros()" placeholder="Buscar por título, autor ou categoria..." class="flex-1 px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-pink-500"/>
+            <input type="text" id="campoBusca" oninput="filtrarLivros()" placeholder="Buscar por título, autor, categoria, edição ou ano..." class="flex-1 px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-pink-500"/>
             <select id="filtroStatus" onchange="filtrarLivros()" class="px-4 py-3 rounded-2xl border border-slate-200 bg-slate-50 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-pink-500">
               <option value="todos">Todos os livros</option>
               <option value="disponivel">Disponíveis</option>
@@ -365,7 +365,7 @@
     </div>
   </div>
 
-  <!-- MODAL CADASTRO / EDIÇÃO DE LIVRO -->
+  <!-- MODAL CADASTRO / EDIÇÃO DE LIVRO COM EDIÇÃO E ANO -->
   <div id="modalCadastro" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
     <div class="bg-white text-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-200">
       <div class="flex justify-between items-center mb-4">
@@ -384,6 +384,16 @@
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Autor(a) *</label>
           <input type="text" id="autorLivro" required class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Edição</label>
+            <input type="text" id="edicaoLivro" placeholder="Ex: 2ª Ed." class="w-full px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-sm placeholder-slate-400">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Ano</label>
+            <input type="text" id="anoLivro" placeholder="Ex: 2023" class="w-full px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-sm placeholder-slate-400">
+          </div>
         </div>
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Capa (URL da Imagem)</label>
@@ -863,7 +873,11 @@
       const status = document.getElementById('filtroStatus').value;
       
       const filtrados = acervoGlobal.filter(l => {
-        const t = (l.titulo || '').toLowerCase().includes(termo) || (l.autor || '').toLowerCase().includes(termo);
+        const t = (l.titulo || '').toLowerCase().includes(termo) || 
+                  (l.autor || '').toLowerCase().includes(termo) ||
+                  (l.categoria || '').toLowerCase().includes(termo) ||
+                  (l.edicao || '').toLowerCase().includes(termo) ||
+                  (l.ano || '').toLowerCase().includes(termo);
         const disp = l.disponivel !== false;
         const st = status === 'todos' || (status === 'disponivel' && disp) || (status === 'emprestado' && !disp);
         return t && st;
@@ -891,6 +905,8 @@
           ? `<div class="w-full h-44 bg-slate-100 rounded-2xl mb-4 overflow-hidden flex items-center justify-center p-2 border border-slate-200"><img src="${livro.capa}" class="h-full object-contain rounded-lg shadow" onerror="this.parentElement.innerHTML='📚'"></div>`
           : `<div class="w-full h-32 bg-gradient-to-br from-pink-600 to-purple-600 rounded-2xl mb-4 flex items-center justify-center text-white text-3xl font-bold shadow-inner">${(livro.titulo || 'L')[0].toUpperCase()}</div>`;
 
+        const infoEdicaoAno = (livro.edicao || livro.ano) ? `<p class="text-xs text-slate-500 mt-0.5">${livro.edicao ? livro.edicao : ''} ${livro.edicao && livro.ano ? '•' : ''} ${livro.ano ? livro.ano : ''}</p>` : '';
+
         return `
           <div class="bg-white/90 backdrop-blur-md border border-slate-200 rounded-3xl p-5 shadow-xl flex flex-col justify-between hover:border-pink-400 transition">
             <div>
@@ -902,7 +918,8 @@
                 </span>
               </div>
               <h3 class="text-lg font-bold text-slate-900 font-display">${livro.titulo}</h3>
-              <p class="text-sm text-slate-500 mb-1">por ${livro.autor}</p>
+              <p class="text-sm text-slate-500 mb-0.5">por ${livro.autor}</p>
+              ${infoEdicaoAno}
               <p class="text-xs font-semibold text-indigo-600 mt-1">Prateleira: ${livro.codigo || 'Não inf.'}</p>
             </div>
             <div class="mt-4 pt-3 border-t border-slate-100 flex gap-2">
@@ -959,6 +976,8 @@
       document.getElementById('tituloModalLivro').textContent = 'Editar Livro';
       document.getElementById('tituloLivro').value = livro.titulo || '';
       document.getElementById('autorLivro').value = livro.autor || '';
+      document.getElementById('edicaoLivro').value = livro.edicao || '';
+      document.getElementById('anoLivro').value = livro.ano || '';
       document.getElementById('capaLivro').value = livro.capa || '';
       document.getElementById('categoriaLivro').value = livro.categoria || 'Didático / Geral';
       document.getElementById('codigoLivro').value = livro.codigo || '';
@@ -981,6 +1000,8 @@
         adminPin: adminPinSessao,
         titulo: document.getElementById('tituloLivro').value.trim(),
         autor: document.getElementById('autorLivro').value.trim(),
+        edicao: document.getElementById('edicaoLivro').value.trim(),
+        ano: document.getElementById('anoLivro').value.trim(),
         capa: document.getElementById('capaLivro').value.trim(),
         categoria: document.getElementById('categoriaLivro').value,
         codigo: document.getElementById('codigoLivro').value.trim()
