@@ -22,14 +22,12 @@
       background-size: 24px 24px;
     }
 
-    /* Cabeçalho com Degradê Colorido Fluido */
     .bg-cabecalho-cores {
       background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 25%, #9333ea 50%, #ec4899 75%, #f97316 100%);
       position: relative;
       overflow: hidden;
     }
 
-    /* Bolhas de Sabão Grandes, Variadas, Transparentes e Rápidas */
     .bolha {
       position: absolute;
       bottom: -100px;
@@ -74,7 +72,7 @@
       </div>
 
       <!-- FORMULÁRIO LOGIN -->
-      <form id="formLogin" onsubmit="fazerLogin(event)" class="space-y-4" autocomplete="off">
+      <form id="formLogin" onsubmit="fazerLogin(event)" class="space-y-4" autocomplete="on">
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Tipo de Acesso</label>
           <select id="loginPerfil" onchange="ajustarCamposLogin()" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white font-semibold focus:ring-2 focus:ring-violet-500 focus:outline-none">
@@ -86,15 +84,20 @@
 
         <div id="boxLoginNome">
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Seu Nome Completo *</label>
-          <input type="text" id="loginNome" placeholder="Digite seu nome completo" autocomplete="off" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white focus:ring-2 focus:ring-violet-500 focus:outline-none placeholder-slate-500">
+          <input type="text" id="loginNome" placeholder="Digite seu nome completo" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white focus:ring-2 focus:ring-violet-500 focus:outline-none placeholder-slate-500">
         </div>
 
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">PIN de Acesso *</label>
           <div class="relative">
-            <input type="password" id="loginPin" required placeholder="••••" autocomplete="new-password" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white tracking-widest focus:ring-2 focus:ring-violet-500 focus:outline-none pr-12">
+            <input type="password" id="loginPin" required placeholder="••••" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white tracking-widest focus:ring-2 focus:ring-violet-500 focus:outline-none pr-12">
             <button type="button" onclick="toggleVisibilidade('loginPin', this)" class="absolute right-3 top-3.5 text-xs text-violet-300 hover:text-white font-bold cursor-pointer">👁️</button>
           </div>
+        </div>
+
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="lembrarDados" checked class="w-4 h-4 rounded accent-pink-600 cursor-pointer">
+          <label for="lembrarDados" class="text-xs text-slate-300 cursor-pointer">Lembrar meus dados neste computador (Salvar PIN)</label>
         </div>
 
         <button type="submit" class="w-full bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-500 hover:to-pink-500 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-violet-600/30 transition cursor-pointer">Acessar Sistema</button>
@@ -107,34 +110,33 @@
           <select id="regPerfil" onchange="ajustarCamposCadastro()" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white font-semibold">
             <option value="professor">🍎 Professor(a)</option>
             <option value="aluno">🎓 Aluno(a)</option>
-            <option value="admin">🔐 Administração da Biblioteca</option>
           </select>
         </div>
 
         <div id="boxRegNome">
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Nome Completo *</label>
-          <input type="text" id="regNome" required placeholder="Digite seu nome completo" autocomplete="off" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500">
+          <input type="text" id="regNome" required placeholder="Digite seu nome completo" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500">
         </div>
 
         <div id="boxRegTurma">
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Turma *</label>
-          <input type="text" id="regTurma" placeholder="Ex: 8º Ano A" autocomplete="off" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500 text-sm">
+          <input type="text" id="regTurma" placeholder="Ex: 8º Ano A" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500 text-sm">
         </div>
 
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">E-mail *</label>
-          <input type="email" id="regEmail" required placeholder="seu.email@escola.com" autocomplete="off" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500 text-sm">
+          <input type="email" id="regEmail" required placeholder="seu.email@escola.com" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500 text-sm">
         </div>
 
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">WhatsApp / Telefone</label>
-          <input type="text" id="regWhatsapp" placeholder="(51) 9..." autocomplete="off" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white text-sm placeholder-slate-500">
+          <input type="text" id="regWhatsapp" placeholder="(51) 9..." class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white text-sm placeholder-slate-500">
         </div>
 
         <div id="boxRegChave">
           <label class="block text-xs font-bold uppercase text-amber-400 mb-1" id="lblChaveMestra">Chave Mestra *</label>
           <div class="relative">
-            <input type="password" id="regChaveProf" required placeholder="Chave de segurança" autocomplete="new-password" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-amber-500/50 text-white placeholder-slate-500 text-sm pr-12">
+            <input type="password" id="regChaveProf" required placeholder="Chave de segurança" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-amber-500/50 text-white placeholder-slate-500 text-sm pr-12">
             <button type="button" onclick="toggleVisibilidade('regChaveProf', this)" class="absolute right-3 top-3 text-xs text-amber-300 hover:text-white font-bold cursor-pointer">👁️</button>
           </div>
         </div>
@@ -142,7 +144,7 @@
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Crie seu PIN de Acesso *</label>
           <div class="relative">
-            <input type="password" id="regPin" required placeholder="Ex: 1234" autocomplete="new-password" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white tracking-widest pr-12">
+            <input type="password" id="regPin" required placeholder="Ex: 1234" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white tracking-widest pr-12">
             <button type="button" onclick="toggleVisibilidade('regPin', this)" class="absolute right-3 top-3 text-xs text-violet-300 hover:text-white font-bold cursor-pointer">👁️</button>
           </div>
         </div>
@@ -155,7 +157,6 @@
   <!-- APLICATIVO PRINCIPAL -->
   <div id="appPrincipal" class="hidden flex-col min-h-screen bg-patrao-escola text-slate-800">
     
-    <!-- Cabeçalho Mais Amplo com Logo Original Aumentado e Bolhas Dinâmicas -->
     <header class="bg-cabecalho-cores text-white border-b border-white/20 shadow-xl print:hidden relative overflow-hidden py-4" id="cabecalhoBolhas">
       <div class="bolha" style="left: 4%; width: 35px; height: 35px; animation-duration: 3.8s; animation-delay: 0s;"></div>
       <div class="bolha" style="left: 15%; width: 60px; height: 60px; animation-duration: 4.5s; animation-delay: 0.8s;"></div>
@@ -233,7 +234,6 @@
       <!-- AGENDA E ESPAÇO -->
       <section id="secaoEspaco" class="hidden space-y-8 print:hidden">
         
-        <!-- PAINEL ADMIN: CRIAR EVENTOS / POSTS NO MURAL -->
         <div id="painelAdminEvento" class="hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 border border-purple-400/40 text-white p-6 rounded-3xl shadow-2xl">
           <h2 class="text-xl font-bold mb-1 font-display">📢 Publicar Evento / Post no Mural da Biblioteca</h2>
           <p class="text-xs text-purple-100 mb-5">Divulgue programações (Hora do Conto, visitas de escritores, feiras, etc.) para toda a escola.</p>
@@ -256,7 +256,6 @@
           </form>
         </div>
 
-        <!-- PAINEL ADMIN: LIBERAR HORÁRIOS DE RESERVA -->
         <div id="painelAdminEspaco" class="hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/30 text-white p-6 rounded-3xl shadow-xl">
           <h2 class="text-xl font-bold mb-1 font-display">🗓️ Habilitar e Liberar Agendamento de Espaço</h2>
           <p class="text-xs text-slate-400 mb-5">Abra os horários para que os professores possam reservar os períodos.</p>
@@ -283,14 +282,12 @@
           </form>
         </div>
 
-        <!-- MURAL DE POSTS DA BIBLIOTECA -->
         <div class="space-y-4">
           <h3 class="text-2xl font-bold text-slate-900 font-display">📚 Mural e Programação da Biblioteca</h3>
           <p class="text-sm text-slate-500">Acompanhe todos os eventos, palestras e atividades agendadas para este mês.</p>
           <div id="muralEventos" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
 
-        <!-- CALENDÁRIO / ESPAÇOS LIBERADOS PARA RESERVA -->
         <div class="space-y-4 pt-6 border-t border-slate-200">
           <h3 class="text-2xl font-bold text-slate-900 font-display">⏱️ Horários Disponíveis para Reserva (Professores)</h3>
           <div id="listaEspacos" class="space-y-3"></div>
@@ -320,26 +317,26 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Nome Completo do Aluno *</label>
-                <input type="text" id="cadAlunoNome" required placeholder="Nome do aluno" autocomplete="off" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm">
+                <input type="text" id="cadAlunoNome" required placeholder="Nome do aluno" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm">
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Turma *</label>
-                <input type="text" id="cadAlunoTurma" required placeholder="Ex: 8º Ano A" autocomplete="off" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm">
+                <input type="text" id="cadAlunoTurma" required placeholder="Ex: 8º Ano A" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm">
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">E-mail *</label>
-                <input type="email" id="cadAlunoEmail" required placeholder="aluno@escola.com" autocomplete="off" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm">
+                <input type="email" id="cadAlunoEmail" required placeholder="aluno@escola.com" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm">
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp / Telefone</label>
-                <input type="text" id="cadAlunoZap" placeholder="(51) 9..." autocomplete="off" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm">
+                <input type="text" id="cadAlunoZap" placeholder="(51) 9..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm">
               </div>
               <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">PIN de Acesso *</label>
                 <div class="relative">
-                  <input type="password" id="cadAlunoPin" required placeholder="Ex: 1234" autocomplete="new-password" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm pr-10">
+                  <input type="password" id="cadAlunoPin" required placeholder="Ex: 1234" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm pr-10">
                   <button type="button" onclick="toggleVisibilidade('cadAlunoPin', this)" class="absolute right-2.5 top-2.5 text-xs text-slate-500 hover:text-slate-800 font-bold cursor-pointer">👁️</button>
                 </div>
               </div>
@@ -368,17 +365,17 @@
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Título do Livro *</label>
           <div class="flex gap-2">
-            <input type="text" id="tituloLivro" required placeholder="Ex: O Pequeno Príncipe" autocomplete="off" class="flex-1 px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400">
+            <input type="text" id="tituloLivro" required placeholder="Ex: O Pequeno Príncipe" class="flex-1 px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400">
             <button type="button" onclick="buscarCapaAutomatica()" id="btnBuscarCapa" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-3 py-2 rounded-2xl text-xs shadow cursor-pointer whitespace-nowrap">🔍 Buscar Capa</button>
           </div>
         </div>
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Autor(a) *</label>
-          <input type="text" id="autorLivro" required autocomplete="off" class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800">
+          <input type="text" id="autorLivro" required class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800">
         </div>
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Capa (URL da Imagem)</label>
-          <input type="url" id="capaLivro" placeholder="https://exemplo.com/capa.jpg" autocomplete="off" class="w-full px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-xs mb-2">
+          <input type="url" id="capaLivro" placeholder="https://exemplo.com/capa.jpg" class="w-full px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-xs mb-2">
           <div id="previewCapaBox" class="hidden flex justify-center bg-slate-100 p-2 rounded-2xl border border-slate-200">
             <img id="previewCapaImg" src="" alt="Prévia" class="h-32 object-contain rounded-lg shadow">
           </div>
@@ -395,7 +392,7 @@
           </div>
           <div>
             <label class="block text-sm font-semibold text-slate-700 mb-1">Prateleira</label>
-            <input type="text" id="codigoLivro" placeholder="B-04" autocomplete="off" class="w-full px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-sm placeholder-slate-400">
+            <input type="text" id="codigoLivro" placeholder="B-04" class="w-full px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-sm placeholder-slate-400">
           </div>
         </div>
         <div class="flex justify-end gap-2 pt-3">
@@ -417,12 +414,12 @@
         <input type="hidden" id="idLivroReserva">
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Nome do Leitor(a) *</label>
-          <input type="text" id="resNomeLeitor" required autocomplete="off" class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800">
+          <input type="text" id="resNomeLeitor" required class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800">
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Turma *</label>
-            <input type="text" id="resTurmaLeitor" required autocomplete="off" class="w-full px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-sm">
+            <input type="text" id="resTurmaLeitor" required class="w-full px-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-sm">
           </div>
           <div>
             <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Prazo Fixo</label>
@@ -431,7 +428,7 @@
         </div>
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">WhatsApp</label>
-          <input type="text" id="resWhatsappLeitor" placeholder="(51) 9..." autocomplete="off" class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-sm placeholder-slate-400">
+          <input type="text" id="resWhatsappLeitor" placeholder="(51) 9..." class="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-sm placeholder-slate-400">
         </div>
         <div class="flex justify-end gap-2 pt-3">
           <button type="button" onclick="fecharModalReserva()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-500 hover:text-slate-800 cursor-pointer">Cancelar</button>
@@ -452,11 +449,11 @@
         <input type="hidden" id="idSlotReserva">
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Professor(a) *</label>
-          <input type="text" id="profSlot" required autocomplete="off" class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800">
+          <input type="text" id="profSlot" required class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800">
         </div>
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Turma *</label>
-          <input type="text" id="turmaSlot" required placeholder="Ex: 8º Ano B" autocomplete="off" class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400">
+          <input type="text" id="turmaSlot" required placeholder="Ex: 8º Ano B" class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400">
         </div>
         <div class="flex justify-end gap-2 pt-3">
           <button type="button" onclick="fecharModalSlot()" class="px-4 py-2.5 rounded-xl font-semibold text-slate-500 hover:text-slate-800 cursor-pointer">Cancelar</button>
@@ -512,18 +509,35 @@
 
   <script>
     const CHAVE_MESTRA_PROF = "GETULIO2026";
-    const PIN_ADMIN_MESTRE = "BiblioGetulio@2027@";
+    const CHAVE_MESTRA_ADMIN = "AdminGetúlio#2027#";
+    const PIN_ADMIN_PADRAO = "2027";
+
     let usuarioAtual = null;
     let adminPinSessao = '';
     let acervoGlobal = [];
 
     document.addEventListener('DOMContentLoaded', () => {
+      // Verifica se há sessão salva ou PIN salvo no localStorage
       const salvo = sessionStorage.getItem('bib_user');
-      const pinSalvo = sessionStorage.getItem('bib_admin_pin');
+      const pinSalvoLocal = localStorage.getItem('bib_saved_pin');
+      const perfilSalvoLocal = localStorage.getItem('bib_saved_perfil');
+
       if (salvo) {
         usuarioAtual = JSON.parse(salvo);
-        adminPinSessao = pinSalvo || '';
+        adminPinSessao = sessionStorage.getItem('bib_admin_pin') || PIN_ADMIN_PADRAO;
         iniciarSessaoUI();
+      } else if (pinSalvoLocal && perfilSalvoLocal) {
+        // Auto-preenchimento inteligente se o usuário marcou para salvar
+        document.getElementById('loginPerfil').value = perfilSalvoLocal;
+        ajustarCamposLogin();
+        document.getElementById('loginPin').value = pinSalvoLocal;
+        if (perfilSalvoLocal === 'professor') {
+          const nomeSalvoLocal = localStorage.getItem('bib_saved_nome') || '';
+          document.getElementById('loginNome').value = nomeSalvoLocal;
+        }
+        document.getElementById('lembrarDados').checked = true;
+      } else {
+        ajustarCamposLogin();
       }
     });
 
@@ -543,26 +557,35 @@
 
     function ajustarCamposLogin() {
       const p = document.getElementById('loginPerfil').value;
-      document.getElementById('boxLoginNome').style.display = p === 'admin' ? 'none' : 'block';
+      const boxNome = document.getElementById('boxLoginNome');
+      if (p === 'admin') {
+        boxNome.style.display = 'none';
+        document.getElementById('loginNome').removeAttribute('required');
+        // Se houver PIN salvo do admin, preenche automaticamente
+        const pinLocal = localStorage.getItem('bib_saved_pin');
+        if (localStorage.getItem('bib_saved_perfil') === 'admin' && pinLocal) {
+          document.getElementById('loginPin').value = pinLocal;
+        }
+      } else {
+        boxNome.style.display = 'block';
+        document.getElementById('loginNome').setAttribute('required', 'true');
+        if (localStorage.getItem('bib_saved_perfil') === p) {
+          document.getElementById('loginPin').value = localStorage.getItem('bib_saved_pin') || '';
+          document.getElementById('loginNome').value = localStorage.getItem('bib_saved_nome') || '';
+        }
+      }
     }
 
     function ajustarCamposCadastro() {
       const p = document.getElementById('regPerfil').value;
       const lbl = document.getElementById('lblChaveMestra');
       const boxTurma = document.getElementById('boxRegTurma');
-      const boxChave = document.getElementById('boxRegChave');
 
-      if (p === 'admin') {
-        lbl.textContent = 'Chave Mestra da Administração *';
-        boxTurma.style.display = 'none';
-        boxChave.style.display = 'block';
-      } else if (p === 'professor') {
+      if (p === 'professor') {
         lbl.textContent = 'Chave Mestra de Professor *';
         boxTurma.style.display = 'none';
-        boxChave.style.display = 'block';
       } else {
         boxTurma.style.display = 'block';
-        boxChave.style.display = 'none';
       }
     }
 
@@ -580,14 +603,13 @@
     async function fazerCadastroUsuario(e) {
       e.preventDefault();
       const perfil = document.getElementById('regPerfil').value;
-      const nome = perfil === 'admin' ? 'Administração da Biblioteca' : document.getElementById('regNome').value.trim();
-      const turma = perfil === 'aluno' ? document.getElementById('regTurma').value.trim() : (perfil === 'professor' ? 'Docente' : 'Admin');
+      const nome = document.getElementById('regNome').value.trim();
+      const turma = perfil === 'aluno' ? document.getElementById('regTurma').value.trim() : 'Docente';
       const email = document.getElementById('regEmail').value.trim();
       const whatsapp = document.getElementById('regWhatsapp').value.trim();
       const pin = document.getElementById('regPin').value.trim();
       const chaveDigitada = document.getElementById('regChaveProf').value.trim();
 
-      if (perfil === 'admin' && chaveDigitada !== PIN_ADMIN_MESTRE) return alert('Chave Mestra da Administração incorreta.');
       if (perfil === 'professor' && chaveDigitada !== CHAVE_MESTRA_PROF) return alert('Chave Mestra de Professor incorreta.');
 
       const payload = { acao: 'registrar_usuario', perfil, nome, turma, whatsapp, email, pin };
@@ -602,31 +624,48 @@
 
       usuarioAtual = data.usuario;
       sessionStorage.setItem('bib_user', JSON.stringify(usuarioAtual));
-      if (perfil === 'admin') {
-        adminPinSessao = pin;
-        sessionStorage.setItem('bib_admin_pin', pin);
+      
+      // Salva dados no localStorage se marcado
+      if (document.getElementById('lembrarDados')?.checked) {
+        localStorage.setItem('bib_saved_pin', pin);
+        localStorage.setItem('bib_saved_perfil', perfil);
+        localStorage.setItem('bib_saved_nome', nome);
       }
+
       iniciarSessaoUI();
     }
 
     async function fazerLogin(e) {
       e.preventDefault();
       const perfil = document.getElementById('loginPerfil').value;
-      const nome = document.getElementById('loginNome').value.trim();
       const pin = document.getElementById('loginPin').value.trim();
+      const lembrar = document.getElementById('lembrarDados').checked;
 
       if (perfil === 'admin') {
-        if (pin !== PIN_ADMIN_MESTRE && pin !== '1234') {
-          return alert('PIN de Administrador incorreto.');
+        // Aceita tanto o PIN padrão 2027 quanto a senha mestra no primeiro acesso
+        if (pin !== PIN_ADMIN_PADRAO && pin !== CHAVE_MESTRA_ADMIN && pin !== '1234') {
+          return alert('PIN ou Chave Mestra de Administrador incorreta. Use o PIN 2027 ou a Chave Mestra AdminGetúlio#2027#');
         }
         usuarioAtual = { perfil: 'admin', nome: 'Administração da Biblioteca', turma: 'Admin' };
-        adminPinSessao = pin;
+        adminPinSessao = PIN_ADMIN_PADRAO;
+        
         sessionStorage.setItem('bib_user', JSON.stringify(usuarioAtual));
-        sessionStorage.setItem('bib_admin_pin', pin);
+        sessionStorage.setItem('bib_admin_pin', adminPinSessao);
+
+        if (lembrar) {
+          localStorage.setItem('bib_saved_pin', PIN_ADMIN_PADRAO);
+          localStorage.setItem('bib_saved_perfil', 'admin');
+          localStorage.removeItem('bib_saved_nome');
+        } else {
+          localStorage.removeItem('bib_saved_pin');
+          localStorage.removeItem('bib_saved_perfil');
+        }
+
         iniciarSessaoUI();
         return;
       }
 
+      const nome = document.getElementById('loginNome').value.trim();
       const res = await fetch('/api/biblioteca', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -641,6 +680,17 @@
 
       usuarioAtual = data.usuario;
       sessionStorage.setItem('bib_user', JSON.stringify(usuarioAtual));
+
+      if (lembrar) {
+        localStorage.setItem('bib_saved_pin', pin);
+        localStorage.setItem('bib_saved_perfil', perfil);
+        localStorage.setItem('bib_saved_nome', nome);
+      } else {
+        localStorage.removeItem('bib_saved_pin');
+        localStorage.removeItem('bib_saved_perfil');
+        localStorage.removeItem('bib_saved_nome');
+      }
+
       iniciarSessaoUI();
     }
 
@@ -1063,7 +1113,6 @@
       const resUsers = await fetch('/api/biblioteca?tipo=usuarios');
       const users = await resUsers.json();
       
-      // Filtra estritamente apenas os usuários que possuem o perfil de aluno
       const apenasAlunos = users.filter(u => u.perfil === 'aluno');
 
       document.getElementById('listaAlunosAdmin').innerHTML = apenasAlunos.map(u => `
