@@ -134,11 +134,11 @@
           <input type="text" id="regWhatsapp" placeholder="(51) 9..." class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white text-sm placeholder-slate-500" autocomplete="off">
         </div>
 
-        <!-- CAMPO DA CHAVE MESTRA VISÍVEL APENAS PARA PROFESSORES -->
+        <!-- CAMPO DA CHAVE MESTRA OBRIGATÓRIO E OCULTO EM FORMATO DE SENHA -->
         <div id="boxRegChave">
           <label class="block text-xs font-bold uppercase text-amber-400 mb-1" id="lblChaveMestra">Chave Mestra de Professor *</label>
           <div class="relative">
-            <input type="password" id="regChaveProf" required placeholder="GETULIO2026" autocomplete="new-password" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-amber-500/50 text-white placeholder-slate-500 text-sm pr-12">
+            <input type="password" id="regChaveProf" required placeholder="Digite a chave secreta" autocomplete="new-password" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-amber-500/50 text-white tracking-widest placeholder-slate-500 text-sm pr-12">
             <button type="button" onclick="toggleVisibilidade('regChaveProf', this)" class="absolute right-3 top-3 text-xs text-amber-300 hover:text-white font-bold cursor-pointer">👁️</button>
           </div>
         </div>
@@ -601,6 +601,7 @@
         <button onclick="fecharModalSlot()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
       <p id="infoSlotReserva" class="text-sm text-pink-600 font-bold mb-4"></p>
+      
       <form onsubmit="confirmarReservaSlot(event)" class="space-y-4" autocomplete="off">
         <input type="hidden" id="idSlotReserva">
         <div>
@@ -610,6 +611,13 @@
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Turma *</label>
           <input type="text" id="turmaSlot" required placeholder="Ex: 8º Ano B" class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400">
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Turno Desejado *</label>
+          <select id="slotTurnoDesejado" onchange="atualizarPeriodosPorTurno()" class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 font-semibold text-sm">
+            <option value="Manhã">☀️ Turno Manhã</option>
+            <option value="Tarde">⛅ Turno Tarde</option>
+          </select>
         </div>
         <div>
           <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Selecione os Períodos Desejados *</label>
@@ -1636,23 +1644,33 @@
 
         document.getElementById('listaEspacos').innerHTML = espacosGlobal.map(e => {
           const dt = e.data ? e.data.split('-').reverse().join('/') : '';
-          let badge = e.status === 'DISPONIVEL' 
-            ? `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">✅ Disponível (${e.periodos})</span>` 
-            : `<span class="bg-indigo-100 text-indigo-900 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">🔒 Reservado por: ${e.prof} (${e.turma} — ${e.periodos})</span>`;
           
-          let btn = (isProf && e.status === 'DISPONIVEL') 
-            ? `<button onclick="abrirModalSlot('${e.id}', '${dt} - Turno: ${e.turno} (Disp: ${e.periodos})')" class="bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold px-4 py-2 rounded-xl shadow cursor-pointer">Reservar Período</button>` 
-            : '';
+          let badge = '';
+          let btn = '';
+
+          if (e.status === 'DISPONIVEL') {
+            badge = `<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">✅ Disponível (Turno: ${e.turno} | Períodos: ${e.periodos})</span>`;
+            if (isProf) {
+              btn = `<button onclick="abrirModalSlot('${e.id}', '${dt} - Turno: ${e.turno}')" class="bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold px-4 py-2 rounded-xl shadow cursor-pointer">Reservar Período</button>`;
+            }
+          } else {
+            badge = `<span class="bg-indigo-100 text-indigo-900 text-xs font-bold px-3 py-1 rounded-full border border-indigo-200">🔒 Reservado por: ${e.prof} (${e.turma} — Turno ${e.turnoGet || e.turno}: ${e.periodos})</span>`;
+            
+            // Se for o próprio professor que reservou ou o Admin, permite cancelar/liberar
+            if (isProf && e.prof.toLowerCase() === usuarioAtual.nome.toLowerCase()) {
+              btn = `<button onclick="cancelarReservaSlot('${e.id}')" class="bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow cursor-pointer">🗑️ Cancelar Minha Reserva</button>`;
+            }
+          }
 
           return `
-            <div class="bg-white/90 backdrop-blur-md border border-slate-200 p-4 rounded-2xl flex justify-between items-center shadow-sm">
+            <div class="bg-white/90 backdrop-blur-md border border-slate-200 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shadow-sm">
               <div>
-                <p class="font-bold text-slate-900">${dt} — Turno(s): ${e.turno}</p>
+                <p class="font-bold text-slate-900">${dt} — Turno(s) Liberados: ${e.turno}</p>
                 <div class="mt-1">${badge}</div>
               </div>
               <div class="flex gap-2">
                 ${btn}
-                ${isAdmin ? `<button onclick="solicitarExclusaoAdmin('espaco', '${e.id}')" class="text-rose-500 hover:text-rose-700 text-xs cursor-pointer font-bold">🗑️ Excluir</button>` : ''}
+                ${isAdmin ? `<button onclick="solicitarExclusaoAdmin('espaco', '${e.id}')" class="text-rose-500 hover:text-rose-700 text-xs cursor-pointer font-bold px-2 py-1 bg-rose-50 border border-rose-200 rounded-lg">🗑️ Excluir</button>` : ''}
               </div>
             </div>
           `;
@@ -1671,14 +1689,31 @@
       document.getElementById('profSlot').value = usuarioAtual.nome;
       document.getElementById('turmaSlot').value = '';
 
+      // Configura o seletor de turno com base no que o admin liberou
+      const selectTurno = document.getElementById('slotTurnoDesejado');
+      const turnosLiberados = slot.turno || '';
+      
+      let opcoesHtml = '';
+      if (turnosLiberados.includes('Manhã')) opcoesHtml += '<option value="Manhã">☀️ Turno Manhã</option>';
+      if (turnosLiberados.includes('Tarde')) opcoesHtml += '<option value="Tarde">⛅ Turno Tarde</option>';
+      if (!opcoesHtml) opcoesHtml = '<option value="Manhã">☀️ Turno Manhã</option><option value="Tarde">⛅ Turno Tarde</option>';
+      
+      selectTurno.innerHTML = opcoesHtml;
+      atualizarPeriodosPorTurno(slot.periodos);
+
+      document.getElementById('modalSlot').classList.remove('hidden');
+      document.getElementById('modalSlot').classList.add('flex');
+    }
+
+    function atualizarPeriodosPorTurno(periodosAdmin) {
       const container = document.getElementById('containerCheckPeriodosProf');
-      const periodosLiberadosStr = slot.periodos || '';
+      const periodoLibStr = periodosAdmin || '1º Período, 2º Período, 3º Período, 4º Período, 5º Período';
       
       const listaOpcoes = ['1º Período', '2º Período', '3º Período', '4º Período', '5º Período'];
       let htmlChecks = '';
 
       listaOpcoes.forEach(p => {
-        const permitido = periodosLiberadosStr.includes('Todos os Períodos') || periodosLiberadosStr.includes(p);
+        const permitido = periodoLibStr.includes('Todos os Períodos') || periodoLibStr.includes(p);
         if (permitido) {
           htmlChecks += `
             <label class="flex items-center gap-2 text-sm font-semibold text-slate-700 cursor-pointer">
@@ -1689,12 +1724,10 @@
       });
 
       if (!htmlChecks) {
-        htmlChecks = `<p class="text-xs text-slate-500 col-span-2">Nenhum período específico listado.</p>`;
+        htmlChecks = `<p class="text-xs text-slate-500 col-span-2">Nenhum período disponível.</p>`;
       }
 
       container.innerHTML = htmlChecks;
-      document.getElementById('modalSlot').classList.remove('hidden');
-      document.getElementById('modalSlot').classList.add('flex');
     }
 
     function fecharModalSlot() { document.getElementById('modalSlot').classList.add('hidden'); }
@@ -1704,6 +1737,7 @@
       const checkboxes = document.querySelectorAll('input[name="periodoCheckProf"]:checked');
       if (checkboxes.length === 0) return alert('Selecione pelo menos um período para a reserva.');
       const periodosSelecionados = Array.from(checkboxes).map(cb => cb.value).join(', ');
+      const turnoDesejado = document.getElementById('slotTurnoDesejado').value;
 
       await fetch('/api/biblioteca', {
         method: 'POST',
@@ -1713,12 +1747,36 @@
           id: document.getElementById('idSlotReserva').value,
           prof: document.getElementById('profSlot').value.trim(),
           turma: document.getElementById('turmaSlot').value.trim(),
-          periodos: periodosSelecionados
+          periodos: periodosSelecionados,
+          turnoGet: turnoDesejado
         })
       });
       fecharModalSlot();
       carregarEspacos();
       alert('Período reservado com sucesso!');
+    }
+
+    async function cancelarReservaSlot(id) {
+      if (!confirm('Deseja realmente cancelar sua reserva e liberar este horário novamente?')) return;
+
+      const slot = espacosGlobal.find(s => s.id === id);
+      if (!slot) return;
+
+      await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          acao: 'reservar_espaco',
+          id: id,
+          prof: '',
+          turma: '',
+          periodos: slot.periodos || 'Todos os Períodos',
+          statusOverride: 'DISPONIVEL'
+        })
+      });
+
+      carregarEspacos();
+      alert('Reserva cancelada com sucesso! O espaço está disponível novamente.');
     }
 
     async function cadastrarAlunoAdmin(e) {
@@ -1790,7 +1848,7 @@
       }
 
       if (!itemExclusaoPendente) return;
-      const { tipoItem, itemId } = itemExclusaoPendente;
+      let { tipoItem, itemId } = itemExclusaoPendente;
 
       await fetch('/api/biblioteca', {
         method: 'POST',
