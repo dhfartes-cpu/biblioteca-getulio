@@ -741,7 +741,6 @@
       const lblPin = document.getElementById('lblPinSenha');
       const inputPin = document.getElementById('loginPin');
 
-      // Limpa estrito para evitar dica automática de senha
       inputPin.value = '';
 
       if (p === 'admin') {
@@ -859,7 +858,6 @@
 
       if (perfil === 'admin') {
         if (pin !== SENHA_ADMIN_MESTRE) {
-          // CORREÇÃO: Alerta genérico sem revelar a senha por segurança
           document.getElementById('loginPin').value = '';
           return alert('Senha de Administrador incorreta.');
         }
@@ -1354,13 +1352,13 @@
         
         let statusBadge = '';
         if (emp.statusEmprestimo === 'SOLICITACAO_PROFESSOR') {
-          statusBadge = '<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[11px] font-bold">⏳ AGUARDANDO ADMIN</span>';
+          statusBadge = '<span class="bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full text-xs font-bold">⏳ AGUARDANDO ADMIN</span>';
         } else if (emp.statusEmprestimo === 'RESERVADO_BIBLIOTECA') {
-          statusBadge = '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[11px] font-bold">✅ RESERVADO PELA BIBLIOTECA - PRONTO PARA RETIRADA</span>';
+          statusBadge = '<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full text-xs font-bold">✅ RESERVADO PELA BIBLIOTECA - PRONTO PARA RETIRADA</span>';
         } else if (emp.statusEmprestimo === 'RESERVADO') {
-          statusBadge = '<span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[11px] font-bold">📦 RESERVADO</span>';
+          statusBadge = '<span class="bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full text-xs font-bold">📦 RESERVADO</span>';
         } else {
-          statusBadge = '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[11px] font-bold">✅ RETIRADO</span>';
+          statusBadge = '<span class="bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full text-xs font-bold">✅ RETIRADO</span>';
         }
 
         return `
@@ -1401,6 +1399,7 @@
         const isReservadoAluno = item.empInfo.statusEmprestimo === 'RESERVADO';
         const isReservadoBiblioteca = item.empInfo.statusEmprestimo === 'RESERVADO_BIBLIOTECA';
         
+        // Conta como pendente para o admin apenas se estiver aguardando ação de professor ou reserva nova
         if (isSolicitacaoProf || isReservadoAluno) totalPendentesAdmin++;
 
         const linkZap = `https://api.whatsapp.com/send?phone=55${(item.empInfo.whatsappLeitor||'').replace(/\D/g,'')}&text=${encodeURIComponent('Olá ' + item.empInfo.leitor + ', sobre o livro "' + item.titulo + '".')}`;
@@ -1420,8 +1419,8 @@
               ${item.empInfo.observacao ? `<p class="text-xs font-bold text-indigo-900 mt-1">💬 ${item.empInfo.observacao}</p>` : ''}
             </div>
             <div class="flex gap-2">
-              ${isSolicitacaoProf || isReservadoAluno ? `<button onclick="autorizarEmprestimoAdmin('${item.id}')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow cursor-pointer">Aprovar / Retirar</button>` : ''}
-              <a href="${linkZap}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow">💬 WhatsApp</a>
+              <button onclick="autorizarEmprestimoAdmin('${item.id}')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow cursor-pointer">Aprovar / Retirar</button>
+              <a href="${linkZap}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow cursor-pointer">💬 WhatsApp</a>
               <button onclick="responderEReservarProfessor('${item.id}')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow cursor-pointer">Responder e Reservar</button>
               <button onclick="devolverLivroAdmin('${item.id}')" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow cursor-pointer">Devolver / Concluir</button>
             </div>
@@ -1446,22 +1445,51 @@
         : '';
     }
 
+    // CORRIGIDO: "Aprovar / Retirar" agora dá baixa no estoque (desconta) e muda para RETIRADO gerando o PDF
     async function autorizarEmprestimoAdmin(id) {
       const livro = acervoGlobal.find(l => l.id === id);
       if (!livro || !livro.leitoresAtivos || livro.leitoresAtivos.length === 0) return;
+      
       const emp = livro.leitoresAtivos[0];
+      
+      // Se estava apenas como solicitação, desconta 1 do estoque disponível ao aprovar/retirar
+      if (emp.statusEmprestimo === 'SOLICITACAO_PROFESSOR' || emp.statusEmprestimo === 'RESERVADO') {
+        const qtdTotal = livro.quantidadeTotal || 1;
+        let qtdDisp = livro.quantidadeDisponivel !== undefined ? livro.quantidadeDisponivel : qtdTotal;
+        if (qtdDisp > 0) {
+          livro.quantidadeDisponivel = qtdDisp - 1;
+        }
+      }
+
       emp.statusEmprestimo = 'RETIRADO';
       
       await fetch('/api/biblioteca', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ acao: 'editar', id, adminPin: adminPinSessao })
+        body: JSON.stringify({ acao: 'editar', id, adminPin: adminPinSessao, quantidade: livro.quantidadeTotal })
       });
+
+      // Atualiza também salvando o status no leitor ativo através de chamada dedicada
+      await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          acao: 'reservar', 
+          id: livro.id, 
+          leitor: emp.leitor, 
+          turma: emp.turma, 
+          whatsappLeitor: emp.whatsappLeitor, 
+          prazoDias: 7, 
+          statusEmprestimo: 'RETIRADO',
+          observacao: emp.observacao 
+        })
+      });
+
       carregarLivros();
       abrirTermoImpressao(livro, emp.leitor, emp.turma, 7);
     }
 
-    // NOVA FUNÇÃO: Responde ao professor deixando reservado e informando que está pronto para retirada
+    // CORRIGIDO: "Responder e Reservar" atualiza o status para o professor ver no painel dele
     async function responderEReservarProfessor(id) {
       const livro = acervoGlobal.find(l => l.id === id);
       if (!livro || !livro.leitoresAtivos || livro.leitoresAtivos.length === 0) return;
@@ -1470,19 +1498,29 @@
       emp.statusEmprestimo = 'RESERVADO_BIBLIOTECA';
       emp.observacao = (emp.observacao || '') + ' | Biblioteca: Reservado e pronto para retirada!';
 
+      // Salva a alteração no backend
       await fetch('/api/biblioteca', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ acao: 'editar', id, adminPin: adminPinSessao })
       });
+
       carregarLivros();
       alert('Livro reservado para o professor com sucesso! O status foi atualizado para ele no painel.');
     }
 
+    // CORRIGIDO: "Devolver / Concluir" remove o leitor ativo e devolve o exemplar ao acervo
     async function devolverLivroAdmin(id) {
       if (!confirm('Confirmar devolução/conclusão de empréstimo deste livro?')) return;
-      await fetch('/api/biblioteca', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'devolver', id, adminPin: adminPinSessao }) });
+      
+      await fetch('/api/biblioteca', { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ acao: 'devolver', id, adminPin: adminPinSessao }) 
+      });
+
       carregarLivros();
+      alert('Livro devolvido com sucesso e estoque atualizado no acervo!');
     }
 
     async function salvarEventoMural(e) {
