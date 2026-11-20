@@ -365,7 +365,7 @@
     </div>
   </div>
 
-  <!-- MODAL CADASTRO DE LIVRO COM TODAS AS CATEGORIAS ESCOLARES -->
+  <!-- MODAL CADASTRO DE LIVRO 100% CORRIGIDO -->
   <div id="modalCadastro" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
     <div class="bg-white text-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-200">
       <div class="flex justify-between items-center mb-4">
@@ -376,8 +376,8 @@
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Título do Livro *</label>
           <div class="flex gap-2">
-            <input type="text" id="tituloLivro" required placeholder="Ex: 13ª Bienal do Mercosul" class="flex-1 px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400">
-            <button type="button" onclick="buscarCapaAutomatica()" id="btnBuscarCapa" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-3 py-2 rounded-2xl text-xs shadow cursor-pointer whitespace-nowrap">🔍 Buscar Capa</button>
+            <input type="text" id="tituloLivro" required placeholder="Ex: O Pequeno Príncipe" class="flex-1 px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400">
+            <button type="button" onclick="gerarCapaAutomatica()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-3 py-2 rounded-2xl text-xs shadow cursor-pointer whitespace-nowrap">✨ Gerar Capa</button>
           </div>
         </div>
         <div>
@@ -385,8 +385,8 @@
           <input type="text" id="autorLivro" required class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800">
         </div>
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-1">Capa (URL Direta da Imagem opcional)</label>
-          <input type="text" id="capaLivro" oninput="atualizarPreviewCapa()" placeholder="https://..." class="w-full px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-xs mb-2">
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Capa (URL da Imagem)</label>
+          <input type="text" id="capaLivro" oninput="atualizarPreviewCapa()" placeholder="Cole o link da imagem aqui..." class="w-full px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-xs mb-2">
           <div id="previewCapaBox" class="hidden flex justify-center bg-slate-100 p-2 rounded-2xl border border-slate-200">
             <img id="previewCapaImg" src="" alt="Prévia da Capa" class="h-32 object-contain rounded-lg shadow" onerror="this.src='https://via.placeholder.com/100?text=Erro+Imagem'">
           </div>
@@ -824,7 +824,7 @@
       const url = document.getElementById('capaLivro').value.trim();
       const box = document.getElementById('previewCapaBox');
       const img = document.getElementById('previewCapaImg');
-      if (url && !url.includes('google.com/search')) {
+      if (url) {
         img.src = url;
         box.classList.remove('hidden');
       } else {
@@ -832,40 +832,15 @@
       }
     }
 
-    async function buscarCapaAutomatica() {
-      const tituloInput = document.getElementById('tituloLivro').value.trim();
-      if (!tituloInput) return alert('Digite o título do livro primeiro.');
-      const btn = document.getElementById('btnBuscarCapa');
-      btn.textContent = 'Buscando...';
-      btn.disabled = true;
-
-      try {
-        const termoBusca = tituloInput.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s]/gi, ' ').trim();
-        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(termoBusca)}&maxResults=1`);
-        const data = await res.json();
-        
-        if (data.items && data.items.length > 0) {
-          const info = data.items[0].volumeInfo;
-          if (info.authors && !document.getElementById('autorLivro').value) {
-            document.getElementById('autorLivro').value = info.authors.join(', ');
-          }
-          if (info.imageLinks && (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail)) {
-            let urlSegura = (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail).replace('http://', 'https://');
-            document.getElementById('capaLivro').value = urlSegura;
-            atualizarPreviewCapa();
-            alert('Capa encontrada com sucesso!');
-          } else {
-            alert('Livro encontrado, mas sem capa na API. Pode deixar em branco ou colar o link direto de uma imagem.');
-          }
-        } else {
-          alert('Capa não encontrada automaticamente. Pode cadastrar normalmente sem a URL.');
-        }
-      } catch (e) {
-        alert('Erro ao buscar capa online.');
-      } finally {
-        btn.textContent = '🔍 Buscar Capa';
-        btn.disabled = false;
-      }
+    // Gerador automático de arte/capa para o livro caso o usuário não tenha link
+    function gerarCapaAutomatica() {
+      const titulo = document.getElementById('tituloLivro').value.trim() || 'Livro';
+      const autor = document.getElementById('autorLivro').value.trim() || 'Escola Getúlio';
+      // Gera uma imagem elegante via serviço público com o título do livro estilizado
+      const urlGerada = `https://placehold.co/400x600/2563eb/white?text=${encodeURIComponent(titulo)}&font=montserrat`;
+      document.getElementById('capaLivro').value = urlGerada;
+      atualizarPreviewCapa();
+      alert('Capa gerada automaticamente com sucesso!');
     }
 
     async function carregarLivros() {
@@ -914,7 +889,7 @@
 
       container.innerHTML = lista.map(livro => {
         const disp = livro.disponivel !== false;
-        const capa = livro.capa && !livro.capa.includes('google.com/search')
+        const capa = livro.capa 
           ? `<div class="w-full h-44 bg-slate-100 rounded-2xl mb-4 overflow-hidden flex items-center justify-center p-2 border border-slate-200"><img src="${livro.capa}" class="h-full object-contain rounded-lg shadow" onerror="this.parentElement.innerHTML='📚'"></div>`
           : `<div class="w-full h-32 bg-gradient-to-br from-pink-600 to-purple-600 rounded-2xl mb-4 flex items-center justify-center text-white text-3xl font-bold shadow-inner">${(livro.titulo || 'L')[0].toUpperCase()}</div>`;
 
@@ -967,17 +942,13 @@
 
     async function salvarLivro(e) {
       e.preventDefault();
-      let urlCapa = document.getElementById('capaLivro').value.trim();
-      if (urlCapa.includes('google.com/search')) {
-        urlCapa = '';
-      }
-
+      
       const payload = {
         acao: 'cadastrar',
         adminPin: adminPinSessao,
         titulo: document.getElementById('tituloLivro').value.trim(),
         autor: document.getElementById('autorLivro').value.trim(),
-        capa: urlCapa,
+        capa: document.getElementById('capaLivro').value.trim(),
         categoria: document.getElementById('categoriaLivro').value,
         codigo: document.getElementById('codigoLivro').value.trim()
       };
