@@ -86,12 +86,12 @@
 
         <div id="boxLoginNome">
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Seu Nome Completo *</label>
-          <input type="text" id="loginNome" placeholder="Digite seu nome completo" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white focus:ring-2 focus:ring-violet-500 focus:outline-none placeholder-slate-500">
+          <input type="text" id="loginNome" placeholder="Digite seu nome completo" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white focus:ring-2 focus:ring-violet-500 focus:outline-none placeholder-slate-500" autocomplete="off">
         </div>
 
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">PIN de Acesso *</label>
-          <input type="password" id="loginPin" required placeholder="••••" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white tracking-widest focus:ring-2 focus:ring-violet-500 focus:outline-none">
+          <input type="password" id="loginPin" required placeholder="••••" autocomplete="current-password" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white tracking-widest focus:ring-2 focus:ring-violet-500 focus:outline-none">
         </div>
 
         <button type="submit" class="w-full bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-500 hover:to-pink-500 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-violet-600/30 transition cursor-pointer">Acessar Sistema</button>
@@ -276,7 +276,7 @@
           </form>
         </div>
 
-        <!-- MURAL DE POSTS DA BIBLIOTECA -->
+        <!-- MURAL DE POSTS DA BIBLIOTECA (EXCLUSIVAMENTE EVENTOS) -->
         <div class="space-y-4">
           <h3 class="text-2xl font-bold text-slate-900 font-display">📚 Mural e Programação da Biblioteca</h3>
           <p class="text-sm text-slate-500">Acompanhe todos os eventos, palestras e atividades agendadas para este mês.</p>
@@ -596,6 +596,20 @@
       const nome = document.getElementById('loginNome').value.trim();
       const pin = document.getElementById('loginPin').value.trim();
 
+      // Validação ultra rigorosa para o Administrador mestre
+      if (perfil === 'admin') {
+        if (pin !== PIN_ADMIN_MESTRE) {
+          return alert('PIN da Administração incorreta. Use o PIN mestre: BiblioGetulio@2027@');
+        }
+        usuarioAtual = { perfil: 'admin', nome: 'Administração da Biblioteca', turma: 'Admin' };
+        adminPinSessao = pin;
+        sessionStorage.setItem('bib_user', JSON.stringify(usuarioAtual));
+        sessionStorage.setItem('bib_admin_pin', pin);
+        iniciarSessaoUI();
+        return;
+      }
+
+      // Login normal para Alunos e Professores
       const res = await fetch('/api/biblioteca', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -604,17 +618,12 @@
       const data = await res.json();
       if (!res.ok) return alert(data.erro || 'Dados inválidos ou perfil incorreto.');
 
-      // Validação rigorosa: impede que aluno entre como professor ou vice-versa
       if (data.usuario.perfil !== perfil) {
         return alert('Acesso negado: o perfil selecionado não confere com este usuário.');
       }
 
       usuarioAtual = data.usuario;
       sessionStorage.setItem('bib_user', JSON.stringify(usuarioAtual));
-      if (perfil === 'admin') {
-        adminPinSessao = pin;
-        sessionStorage.setItem('bib_admin_pin', pin);
-      }
       iniciarSessaoUI();
     }
 
