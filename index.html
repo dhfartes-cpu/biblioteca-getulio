@@ -365,14 +365,15 @@
     </div>
   </div>
 
-  <!-- MODAL CADASTRO DE LIVRO 100% CORRIGIDO -->
+  <!-- MODAL CADASTRO / EDIÇÃO DE LIVRO -->
   <div id="modalCadastro" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
     <div class="bg-white text-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl max-h-[90vh] overflow-y-auto border border-slate-200">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-2xl font-bold text-slate-900 font-display">Novo Livro no Acervo</h3>
+        <h3 id="tituloModalLivro" class="text-2xl font-bold text-slate-900 font-display">Novo Livro no Acervo</h3>
         <button onclick="fecharModalCadastro()" class="text-slate-400 hover:text-slate-700 text-2xl font-bold cursor-pointer">&times;</button>
       </div>
       <form id="formCadastro" onsubmit="salvarLivro(event)" class="space-y-4" autocomplete="off">
+        <input type="hidden" id="idLivroEdit">
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Título do Livro *</label>
           <div class="flex gap-2">
@@ -832,11 +833,8 @@
       }
     }
 
-    // Gerador automático de arte/capa para o livro caso o usuário não tenha link
     function gerarCapaAutomatica() {
       const titulo = document.getElementById('tituloLivro').value.trim() || 'Livro';
-      const autor = document.getElementById('autorLivro').value.trim() || 'Escola Getúlio';
-      // Gera uma imagem elegante via serviço público com o título do livro estilizado
       const urlGerada = `https://placehold.co/400x600/2563eb/white?text=${encodeURIComponent(titulo)}&font=montserrat`;
       document.getElementById('capaLivro').value = urlGerada;
       atualizarPreviewCapa();
@@ -905,6 +903,7 @@
               </div>
               <h3 class="text-lg font-bold text-slate-900 font-display">${livro.titulo}</h3>
               <p class="text-sm text-slate-500 mb-1">por ${livro.autor}</p>
+              <p class="text-xs font-semibold text-indigo-600 mt-1">Prateleira: ${livro.codigo || 'Não inf.'}</p>
             </div>
             <div class="mt-4 pt-3 border-t border-slate-100 flex gap-2">
               ${disp
@@ -913,7 +912,10 @@
                   </button>`
                 : `<button disabled class="flex-1 bg-slate-100 text-slate-400 py-2.5 rounded-xl text-sm font-bold cursor-not-allowed">Indisponível</button>`
               }
-              ${isAdmin ? `<button onclick="solicitarExclusaoAdmin('livro', '${livro.id}')" class="px-3 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-sm cursor-pointer transition" title="Excluir">🗑️</button>` : ''}
+              ${isAdmin ? `
+                <button onclick="abrirModalEditarLivro('${livro.id}')" class="px-3 bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 rounded-xl text-sm cursor-pointer transition" title="Editar">✏️</button>
+                <button onclick="solicitarExclusaoAdmin('livro', '${livro.id}')" class="px-3 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-sm cursor-pointer transition" title="Excluir">🗑️</button>
+              ` : ''}
             </div>
           </div>
         `;
@@ -940,11 +942,42 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function abrirModalCadastro() { 
+      document.getElementById('formCadastro').reset();
+      document.getElementById('idLivroEdit').value = '';
+      document.getElementById('tituloModalLivro').textContent = 'Novo Livro no Acervo';
+      document.getElementById('previewCapaBox').classList.add('hidden');
+      document.getElementById('modalCadastro').classList.remove('hidden'); 
+      document.getElementById('modalCadastro').classList.add('flex'); 
+    }
+
+    function abrirModalEditarLivro(id) {
+      const livro = acervoGlobal.find(l => l.id === id);
+      if (!livro) return;
+
+      document.getElementById('idLivroEdit').value = livro.id;
+      document.getElementById('tituloModalLivro').textContent = 'Editar Livro';
+      document.getElementById('tituloLivro').value = livro.titulo || '';
+      document.getElementById('autorLivro').value = livro.autor || '';
+      document.getElementById('capaLivro').value = livro.capa || '';
+      document.getElementById('categoriaLivro').value = livro.categoria || 'Didático / Geral';
+      document.getElementById('codigoLivro').value = livro.codigo || '';
+      
+      atualizarPreviewCapa();
+      document.getElementById('modalCadastro').classList.remove('hidden');
+      document.getElementById('modalCadastro').classList.add('flex');
+    }
+
+    function fecharModalCadastro() { document.getElementById('modalCadastro').classList.add('hidden'); }
+
     async function salvarLivro(e) {
       e.preventDefault();
-      
+      const idEdit = document.getElementById('idLivroEdit').value;
+      const acaoType = idEdit ? 'editar' : 'cadastrar';
+
       const payload = {
-        acao: 'cadastrar',
+        acao: acaoType,
+        id: idEdit,
         adminPin: adminPinSessao,
         titulo: document.getElementById('tituloLivro').value.trim(),
         autor: document.getElementById('autorLivro').value.trim(),
@@ -964,7 +997,7 @@
         document.getElementById('formCadastro').reset();
         document.getElementById('previewCapaBox').classList.add('hidden');
         carregarLivros();
-        alert('Livro cadastrado com sucesso no acervo!');
+        alert(idEdit ? 'Livro atualizado com sucesso!' : 'Livro cadastrado com sucesso no acervo!');
       } else {
         alert('Erro ao salvar o livro. Verifique os dados.');
       }
@@ -979,6 +1012,8 @@
       document.getElementById('modalReserva').classList.remove('hidden');
       document.getElementById('modalReserva').classList.add('flex');
     }
+
+    function fecharModalReserva() { document.getElementById('modalReserva').classList.add('hidden'); }
 
     async function confirmarReservaLivro(e) {
       e.preventDefault();
@@ -1316,15 +1351,6 @@
       carregarTudoGeral();
       alert('Registro excluído com sucesso.');
     }
-
-    function abrirModalCadastro() { 
-      document.getElementById('formCadastro').reset();
-      document.getElementById('previewCapaBox').classList.add('hidden');
-      document.getElementById('modalCadastro').classList.remove('hidden'); 
-      document.getElementById('modalCadastro').classList.add('flex'); 
-    }
-    function fecharModalCadastro() { document.getElementById('modalCadastro').classList.add('hidden'); }
-    function fecharModalReserva() { document.getElementById('modalReserva').classList.add('hidden'); }
   </script>
 </body>
 </html>
