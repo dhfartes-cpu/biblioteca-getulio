@@ -29,23 +29,24 @@
       overflow: hidden;
     }
 
-    /* Bolhas d'Água Dinâmicas e Reais (movimento em zigue-zague e flutuação orgânica) */
+    /* Bolhas de Sabão Super Realistas, Transparentes e em Movimento Constante com Zigue-Zague */
     .bolha {
       position: absolute;
-      bottom: -60px;
-      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.2) 60%, rgba(255, 255, 255, 0.4) 100%);
+      bottom: -80px;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.05) 55%, rgba(255, 255, 255, 0.25) 100%);
       border-radius: 50%;
-      box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.5);
-      animation: flutuarBolha 6s infinite ease-in-out;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.6), 0 0 10px rgba(255, 255, 255, 0.2);
+      animation: flutuarBolhaReal 7s infinite ease-in-out;
       pointer-events: none;
     }
 
-    @keyframes flutuarBolha {
-      0% { transform: translateY(0) translateX(0) scale(0.9); opacity: 0; }
-      20% { opacity: 0.85; }
-      50% { transform: translateY(-130px) translateX(25px) scale(1.05); }
-      80% { opacity: 0.85; }
-      100% { transform: translateY(-260px) translateX(-20px) scale(1.15); opacity: 0; }
+    @keyframes flutuarBolhaReal {
+      0% { transform: translateY(0) translateX(0) scale(0.8); opacity: 0; }
+      15% { opacity: 0.7; }
+      50% { transform: translateY(-160px) translateX(45px) scale(1.05); opacity: 0.8; }
+      85% { opacity: 0.7; }
+      100% { transform: translateY(-320px) translateX(-35px) scale(1.2); opacity: 0; }
     }
 
     @media print {
@@ -146,21 +147,21 @@
   <!-- APLICATIVO PRINCIPAL -->
   <div id="appPrincipal" class="hidden flex-col min-h-screen bg-patrao-escola text-slate-800">
     
-    <!-- Cabeçalho Dinâmico com Bolhas de Sabão Reais -->
+    <!-- Cabeçalho Dinâmico com Bolhas Reais em Movimento Contínuo -->
     <header class="bg-cabecalho-cores text-white border-b border-white/20 shadow-xl print:hidden relative overflow-hidden" id="cabecalhoBolhas">
-      <!-- Bolhas d'água dinâmicas -->
-      <div class="bolha" style="left: 4%; width: 28px; height: 28px; animation-duration: 5s; animation-delay: 0s;"></div>
-      <div class="bolha" style="left: 14%; width: 52px; height: 52px; animation-duration: 7.5s; animation-delay: 1.5s;"></div>
-      <div class="bolha" style="left: 26%; width: 18px; height: 18px; animation-duration: 4.5s; animation-delay: 0.8s;"></div>
-      <div class="bolha" style="left: 38%; width: 64px; height: 64px; animation-duration: 9s; animation-delay: 2.2s;"></div>
-      <div class="bolha" style="left: 52%; width: 24px; height: 24px; animation-duration: 5.5s; animation-delay: 0.3s;"></div>
-      <div class="bolha" style="left: 65%; width: 42px; height: 42px; animation-duration: 6.8s; animation-delay: 1.2s;"></div>
-      <div class="bolha" style="left: 78%; width: 58px; height: 58px; animation-duration: 8.2s; animation-delay: 3s;"></div>
-      <div class="bolha" style="left: 91%; width: 22px; height: 22px; animation-duration: 5s; animation-delay: 1.8s;"></div>
+      <div class="bolha" style="left: 3%; width: 30px; height: 30px; animation-duration: 6s; animation-delay: 0s;"></div>
+      <div class="bolha" style="left: 12%; width: 50px; height: 50px; animation-duration: 8s; animation-delay: 1.2s;"></div>
+      <div class="bolha" style="left: 22%; width: 20px; height: 20px; animation-duration: 5s; animation-delay: 2.5s;"></div>
+      <div class="bolha" style="left: 35%; width: 65px; height: 65px; animation-duration: 9.5s; animation-delay: 0.5s;"></div>
+      <div class="bolha" style="left: 48%; width: 25px; height: 25px; animation-duration: 5.5s; animation-delay: 3.1s;"></div>
+      <div class="bolha" style="left: 58%; width: 45px; height: 45px; animation-duration: 7s; animation-delay: 1.8s;"></div>
+      <div class="bolha" style="left: 70%; width: 55px; height: 55px; animation-duration: 8.5s; animation-delay: 0.8s;"></div>
+      <div class="bolha" style="left: 82%; width: 35px; height: 35px; animation-duration: 6.5s; animation-delay: 2.2s;"></div>
+      <div class="bolha" style="left: 92%; width: 22px; height: 22px; animation-duration: 5.2s; animation-delay: 1s;"></div>
 
       <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col xl:flex-row items-center justify-between gap-6 relative z-10">
         
-        <!-- Logo Maior e Texto em Linha Única -->
+        <!-- Logo e Texto em Linha Única -->
         <div class="flex items-center gap-5 text-center xl:text-left">
           <div class="w-20 h-20 rounded-2xl bg-white p-2 shadow-xl border-2 border-white/90 flex-shrink-0 flex items-center justify-center">
             <img src="logo-escola.png" alt="Logo Getúlio Vargas" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/80?text=GV'">
@@ -171,7 +172,7 @@
           </div>
         </div>
 
-        <!-- Menu de Abas Soltas (Lado a Lado, Sem Caixa Fechada) -->
+        <!-- Menu de Abas Soltas (Lado a Lado) -->
         <nav class="flex items-center gap-2 flex-wrap justify-center">
           <button onclick="mudarAba('acervo')" id="tabAcervo" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition bg-white text-blue-900 shadow-md cursor-pointer">Acervo</button>
           <button onclick="mudarAba('meus')" id="tabMeus" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white/90 hover:bg-white/20 hover:text-white cursor-pointer">Meus Empréstimos</button>
@@ -278,7 +279,7 @@
           </form>
         </div>
 
-        <!-- MURAL DE POSTS DA BIBLIOTECA (Visível para todos) -->
+        <!-- MURAL DE POSTS DA BIBLIOTECA (Separado do Acervo) -->
         <div class="space-y-4">
           <h3 class="text-2xl font-bold text-slate-900 font-display">📚 Mural e Programação da Biblioteca</h3>
           <p class="text-sm text-slate-500">Acompanhe todos os eventos, palestras e atividades agendadas para este mês.</p>
@@ -506,6 +507,7 @@
 
   <script>
     const CHAVE_MESTRA_PROF = "GETULIO2026";
+    const PIN_ADMIN_MESTRE = "BiblioGetulio@2027@";
     let usuarioAtual = null;
     let adminPinSessao = '';
     let acervoGlobal = [];
@@ -546,7 +548,7 @@
       const boxChave = document.getElementById('boxRegChave');
 
       if (p === 'admin') {
-        lbl.textContent = 'PIN Mestre da Administração *';
+        lbl.textContent = 'Chave Mestra da Administração *';
         boxTurma.style.display = 'none';
         boxChave.style.display = 'block';
       } else if (p === 'professor') {
@@ -569,7 +571,7 @@
       const pin = document.getElementById('regPin').value.trim();
       const chaveDigitada = document.getElementById('regChaveProf').value.trim();
 
-      if (perfil === 'admin' && chaveDigitada !== '1234') return alert('PIN Mestre da Administração incorreto.');
+      if (perfil === 'admin' && chaveDigitada !== PIN_ADMIN_MESTRE) return alert('Chave Mestra da Administração incorreta. Use: BiblioGetulio@2027@');
       if (perfil === 'professor' && chaveDigitada !== CHAVE_MESTRA_PROF) return alert('Chave Mestra de Professor incorreta.');
 
       const payload = { acao: 'registrar_usuario', perfil, nome, turma, whatsapp, email, pin };
@@ -668,7 +670,6 @@
       btn.disabled = true;
 
       try {
-        // Limpa acentos e termos para busca certeira no Google Books
         const termoBusca = tituloInput.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(termoBusca)}&maxResults=1`);
         const data = await res.json();
