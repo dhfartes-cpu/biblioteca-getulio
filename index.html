@@ -74,7 +74,7 @@
         <button type="button" onclick="alternarModoAuth('cadastro')" id="btnModoCadastro" class="py-2 rounded-xl text-sm font-bold text-slate-400 hover:text-white cursor-pointer transition">Primeiro Acesso</button>
       </div>
 
-      <form id="formLogin" onsubmit="fazerLogin(event)" class="space-y-4" autocomplete="on">
+      <form id="formLogin" onsubmit="fazerLogin(event)" class="space-y-4" autocomplete="off">
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Tipo de Acesso</label>
           <select id="loginPerfil" onchange="ajustarCamposLogin()" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white font-semibold focus:ring-2 focus:ring-violet-500 focus:outline-none">
@@ -86,19 +86,19 @@
 
         <div id="boxLoginNome">
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Seu Nome Completo *</label>
-          <input type="text" id="loginNome" placeholder="Digite seu nome completo" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white focus:ring-2 focus:ring-violet-500 focus:outline-none placeholder-slate-500">
+          <input type="text" id="loginNome" placeholder="Digite seu nome completo" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white focus:ring-2 focus:ring-violet-500 focus:outline-none placeholder-slate-500" autocomplete="off">
         </div>
 
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1" id="lblPinSenha">PIN / Senha de Acesso *</label>
           <div class="relative">
-            <input type="password" id="loginPin" required placeholder="••••" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white tracking-widest focus:ring-2 focus:ring-violet-500 focus:outline-none pr-12">
+            <input type="password" id="loginPin" required placeholder="••••" autocomplete="new-password" class="w-full px-4 py-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-white tracking-widest focus:ring-2 focus:ring-violet-500 focus:outline-none pr-12">
             <button type="button" onclick="toggleVisibilidade('loginPin', this)" class="absolute right-3 top-3.5 text-xs text-violet-300 hover:text-white font-bold cursor-pointer">👁️</button>
           </div>
         </div>
 
         <div class="flex items-center gap-2 pt-1">
-          <input type="checkbox" id="lembrarDados" checked class="w-4 h-4 rounded accent-pink-600 cursor-pointer">
+          <input type="checkbox" id="lembrarDados" class="w-4 h-4 rounded accent-pink-600 cursor-pointer">
           <label for="lembrarDados" class="text-xs text-slate-300 cursor-pointer">Lembrar meus dados neste computador</label>
         </div>
 
@@ -116,28 +116,28 @@
 
         <div id="boxRegNome">
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Nome Completo *</label>
-          <input type="text" id="regNome" required placeholder="Digite seu nome completo" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500">
+          <input type="text" id="regNome" required placeholder="Digite seu nome completo" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500" autocomplete="off">
         </div>
 
         <div id="boxRegTurma" class="hidden">
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Turma *</label>
-          <input type="text" id="regTurma" placeholder="Ex: 8º Ano A" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500 text-sm">
+          <input type="text" id="regTurma" placeholder="Ex: 8º Ano A" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500 text-sm" autocomplete="off">
         </div>
 
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">E-mail *</label>
-          <input type="email" id="regEmail" required placeholder="seu.email@escola.com" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500 text-sm">
+          <input type="email" id="regEmail" required placeholder="seu.email@escola.com" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500 text-sm" autocomplete="off">
         </div>
 
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">WhatsApp / Telefone</label>
-          <input type="text" id="regWhatsapp" placeholder="(51) 9..." class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white text-sm placeholder-slate-500">
+          <input type="text" id="regWhatsapp" placeholder="(51) 9..." class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white text-sm placeholder-slate-500" autocomplete="off">
         </div>
 
         <div id="boxRegChave">
           <label class="block text-xs font-bold uppercase text-amber-400 mb-1" id="lblChaveMestra">Chave Mestra de Professor *</label>
           <div class="relative">
-            <input type="password" id="regChaveProf" required placeholder="GETULIO2026" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-amber-500/50 text-white placeholder-slate-500 text-sm pr-12">
+            <input type="password" id="regChaveProf" required placeholder="GETULIO2026" autocomplete="new-password" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-amber-500/50 text-white placeholder-slate-500 text-sm pr-12">
             <button type="button" onclick="toggleVisibilidade('regChaveProf', this)" class="absolute right-3 top-3 text-xs text-amber-300 hover:text-white font-bold cursor-pointer">👁️</button>
           </div>
         </div>
@@ -145,7 +145,7 @@
         <div>
           <label class="block text-xs font-bold uppercase text-violet-300 mb-1">Crie seu PIN de Acesso *</label>
           <div class="relative">
-            <input type="password" id="regPin" required placeholder="Ex: 1234" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white tracking-widest pr-12">
+            <input type="password" id="regPin" required placeholder="Ex: 1234" autocomplete="new-password" class="w-full px-4 py-2.5 rounded-2xl bg-slate-800/90 border border-slate-700 text-white tracking-widest pr-12">
             <button type="button" onclick="toggleVisibilidade('regPin', this)" class="absolute right-3 top-3 text-xs text-violet-300 hover:text-white font-bold cursor-pointer">👁️</button>
           </div>
         </div>
@@ -433,7 +433,7 @@
     <div class="bg-white text-slate-900 rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 space-y-4">
       <h3 class="text-lg font-bold text-slate-900 font-display">🔐 Confirmação de Segurança</h3>
       <p class="text-xs text-slate-500">Para excluir este registro, digite a senha de Administrador da Biblioteca:</p>
-      <input type="password" id="inputPinSeguranca" placeholder="Senha do Admin" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 border border-slate-300 text-sm text-center font-bold">
+      <input type="password" id="inputPinSeguranca" placeholder="Digite a senha" autocomplete="new-password" class="w-full px-4 py-2.5 rounded-xl bg-slate-100 border border-slate-300 text-sm text-center font-bold">
       <div class="flex justify-end gap-2 pt-2">
         <button onclick="fecharModalPinAdmin()" class="px-4 py-2 bg-slate-200 rounded-xl font-semibold text-xs cursor-pointer">Cancelar</button>
         <button onclick="executarAcaoExclusaoSegura()" class="px-4 py-2 bg-rose-600 text-white font-bold rounded-xl text-xs shadow cursor-pointer">Confirmar Exclusão</button>
@@ -708,13 +708,11 @@
         usuarioAtual = JSON.parse(salvo);
         adminPinSessao = sessionStorage.getItem('bib_admin_pin') || SENHA_ADMIN_MESTRE;
         iniciarSessaoUI();
-      } else if (pinSalvoLocal && perfilSalvoLocal) {
+      } else if (pinSalvoLocal && perfilSalvoLocal === 'professor') {
         document.getElementById('loginPerfil').value = perfilSalvoLocal;
         ajustarCamposLogin();
         document.getElementById('loginPin').value = pinSalvoLocal;
-        if (perfilSalvoLocal === 'professor') {
-          document.getElementById('loginNome').value = localStorage.getItem('bib_saved_nome') || '';
-        }
+        document.getElementById('loginNome').value = localStorage.getItem('bib_saved_nome') || '';
         document.getElementById('lembrarDados').checked = true;
       } else {
         ajustarCamposLogin();
@@ -741,23 +739,23 @@
       const p = document.getElementById('loginPerfil').value;
       const boxNome = document.getElementById('boxLoginNome');
       const lblPin = document.getElementById('lblPinSenha');
+      const inputPin = document.getElementById('loginPin');
+
+      // Limpa estrito para evitar dica automática de senha
+      inputPin.value = '';
 
       if (p === 'admin') {
         boxNome.style.display = 'none';
         document.getElementById('loginNome').removeAttribute('required');
         lblPin.textContent = 'Senha de Administrador *';
-        document.getElementById('loginPin').placeholder = 'BiblioGetulio#2027@';
-        const pinLocal = localStorage.getItem('bib_saved_pin');
-        if (pinLocal) {
-          document.getElementById('loginPin').value = pinLocal;
-        }
+        inputPin.placeholder = 'Digite a senha do admin';
       } else {
         boxNome.style.display = 'block';
         document.getElementById('loginNome').setAttribute('required', 'true');
         lblPin.textContent = 'PIN / Senha de Acesso *';
-        document.getElementById('loginPin').placeholder = '••••';
+        inputPin.placeholder = '••••';
         if (localStorage.getItem('bib_saved_perfil') === p) {
-          document.getElementById('loginPin').value = localStorage.getItem('bib_saved_pin') || '';
+          inputPin.value = localStorage.getItem('bib_saved_pin') || '';
           document.getElementById('loginNome').value = localStorage.getItem('bib_saved_nome') || '';
         }
       }
@@ -844,7 +842,7 @@
       usuarioAtual = data.usuario;
       sessionStorage.setItem('bib_user', JSON.stringify(usuarioAtual));
       
-      if (document.getElementById('lembrarDados')?.checked) {
+      if (document.getElementById('lembrarDados')?.checked && perfil !== 'admin') {
         localStorage.setItem('bib_saved_pin', pin);
         localStorage.setItem('bib_saved_perfil', perfil);
         localStorage.setItem('bib_saved_nome', nome);
@@ -861,22 +859,15 @@
 
       if (perfil === 'admin') {
         if (pin !== SENHA_ADMIN_MESTRE) {
-          return alert('Senha de Administrador incorreta. A senha exigida é BiblioGetulio#2027@');
+          // CORREÇÃO: Alerta genérico sem revelar a senha por segurança
+          document.getElementById('loginPin').value = '';
+          return alert('Senha de Administrador incorreta.');
         }
         usuarioAtual = { perfil: 'admin', nome: 'Administração da Biblioteca', turma: 'Admin' };
         adminPinSessao = SENHA_ADMIN_MESTRE;
         
         sessionStorage.setItem('bib_user', JSON.stringify(usuarioAtual));
         sessionStorage.setItem('bib_admin_pin', adminPinSessao);
-
-        if (lembrar) {
-          localStorage.setItem('bib_saved_pin', SENHA_ADMIN_MESTRE);
-          localStorage.setItem('bib_saved_perfil', 'admin');
-          localStorage.removeItem('bib_saved_nome');
-        } else {
-          localStorage.removeItem('bib_saved_pin');
-          localStorage.removeItem('bib_saved_perfil');
-        }
 
         iniciarSessaoUI();
         return;
@@ -1268,8 +1259,8 @@
 
     function fecharModalReserva() { document.getElementById('modalReserva').classList.add('hidden'); }
 
-    async function confirmarReservaLivro(e) {
-      e.preventDefault();
+    async function confirmarReservaLivro(event) {
+      event.preventDefault();
       let leitorNome = '';
       let turmaLeitor = '';
       let whatsappLeitor = '';
@@ -1327,7 +1318,7 @@
         abrirTermoImpressao(data.livro, leitorNome, turmaLeitor, prazoDiasInt);
       } else {
         alert(usuarioAtual.perfil === 'professor' 
-          ? 'Solicitação de agendamento enviada com sucesso para a biblioteca! A administração já recebeu sua mensagem.' 
+          ? 'Solicitação de agendamento enviada com sucesso para a biblioteca!' 
           : 'Reserva enviada com sucesso! Aguarde a liberação na biblioteca.');
       }
     }
@@ -1360,9 +1351,17 @@
       const meus = acervoGlobal.filter(l => l.leitoresAtivos && l.leitoresAtivos.some(e => e.leitor.toLowerCase() === usuarioAtual.nome.toLowerCase()));
       document.getElementById('listaMeusEmprestimos').innerHTML = meus.map(l => {
         const emp = l.leitoresAtivos.find(e => e.leitor.toLowerCase() === usuarioAtual.nome.toLowerCase());
-        const statusBadge = emp.statusEmprestimo === 'SOLICITACAO_PROFESSOR' 
-          ? '<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[11px] font-bold">⏳ AGUARDANDO ADMIN</span>' 
-          : (emp.statusEmprestimo === 'RESERVADO' ? '<span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[11px] font-bold">📦 RESERVADO</span>' : '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[11px] font-bold">✅ RETIRADO</span>');
+        
+        let statusBadge = '';
+        if (emp.statusEmprestimo === 'SOLICITACAO_PROFESSOR') {
+          statusBadge = '<span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[11px] font-bold">⏳ AGUARDANDO ADMIN</span>';
+        } else if (emp.statusEmprestimo === 'RESERVADO_BIBLIOTECA') {
+          statusBadge = '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[11px] font-bold">✅ RESERVADO PELA BIBLIOTECA - PRONTO PARA RETIRADA</span>';
+        } else if (emp.statusEmprestimo === 'RESERVADO') {
+          statusBadge = '<span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[11px] font-bold">📦 RESERVADO</span>';
+        } else {
+          statusBadge = '<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[11px] font-bold">✅ RETIRADO</span>';
+        }
 
         return `
           <div class="p-4 rounded-2xl border bg-pink-50 border-pink-200 shadow-sm space-y-1">
@@ -1400,6 +1399,8 @@
 
         const isSolicitacaoProf = item.empInfo.statusEmprestimo === 'SOLICITACAO_PROFESSOR';
         const isReservadoAluno = item.empInfo.statusEmprestimo === 'RESERVADO';
+        const isReservadoBiblioteca = item.empInfo.statusEmprestimo === 'RESERVADO_BIBLIOTECA';
+        
         if (isSolicitacaoProf || isReservadoAluno) totalPendentesAdmin++;
 
         const linkZap = `https://api.whatsapp.com/send?phone=55${(item.empInfo.whatsappLeitor||'').replace(/\D/g,'')}&text=${encodeURIComponent('Olá ' + item.empInfo.leitor + ', sobre o livro "' + item.titulo + '".')}`;
@@ -1410,7 +1411,7 @@
               <h4 class="font-bold text-slate-900 text-lg font-display">
                 ${item.titulo} 
                 ${isSolicitacaoProf ? '<span class="text-xs text-indigo-800 bg-indigo-200 px-2.5 py-0.5 rounded-full font-bold ml-2">🛎️ AGENDAMENTO PROFESSOR</span>' : ''}
-                ${isReservadoAluno ? '<span class="text-xs text-blue-800 bg-blue-200 px-2.5 py-0.5 rounded-full font-bold ml-2">📦 RESERVA ALUNO</span>' : ''}
+                ${isReservadoBiblioteca ? '<span class="text-xs text-emerald-800 bg-emerald-200 px-2.5 py-0.5 rounded-full font-bold ml-2">✅ RESERVADO PARA PROFESSOR</span>' : ''}
                 ${venceHoje ? '<span class="text-xs text-amber-800 bg-amber-200 px-2.5 py-0.5 rounded-full font-bold ml-2">🔔 VENCE HOJE</span>' : ''}
                 ${atrasado ? '<span class="text-xs text-red-600 bg-red-100 px-2.5 py-0.5 rounded-full font-bold ml-2">⚠️ ATRASADO</span>' : ''}
               </h4>
@@ -1419,9 +1420,10 @@
               ${item.empInfo.observacao ? `<p class="text-xs font-bold text-indigo-900 mt-1">💬 ${item.empInfo.observacao}</p>` : ''}
             </div>
             <div class="flex gap-2">
-              ${isSolicitacaoProf || isReservadoAluno ? `<button onclick="autorizarEmprestimoAdmin('${item.id}')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow">Aprovar / Retirar</button>` : ''}
+              ${isSolicitacaoProf || isReservadoAluno ? `<button onclick="autorizarEmprestimoAdmin('${item.id}')" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow cursor-pointer">Aprovar / Retirar</button>` : ''}
               <a href="${linkZap}" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow">💬 WhatsApp</a>
-              <button onclick="devolverLivroAdmin('${item.id}')" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow">Devolver</button>
+              <button onclick="responderEReservarProfessor('${item.id}')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow cursor-pointer">Responder e Reservar</button>
+              <button onclick="devolverLivroAdmin('${item.id}')" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-3 py-2 rounded-xl shadow cursor-pointer">Devolver / Concluir</button>
             </div>
           </div>
         `;
@@ -1459,8 +1461,26 @@
       abrirTermoImpressao(livro, emp.leitor, emp.turma, 7);
     }
 
+    // NOVA FUNÇÃO: Responde ao professor deixando reservado e informando que está pronto para retirada
+    async function responderEReservarProfessor(id) {
+      const livro = acervoGlobal.find(l => l.id === id);
+      if (!livro || !livro.leitoresAtivos || livro.leitoresAtivos.length === 0) return;
+      const emp = livro.leitoresAtivos[0];
+      
+      emp.statusEmprestimo = 'RESERVADO_BIBLIOTECA';
+      emp.observacao = (emp.observacao || '') + ' | Biblioteca: Reservado e pronto para retirada!';
+
+      await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ acao: 'editar', id, adminPin: adminPinSessao })
+      });
+      carregarLivros();
+      alert('Livro reservado para o professor com sucesso! O status foi atualizado para ele no painel.');
+    }
+
     async function devolverLivroAdmin(id) {
-      if (!confirm('Confirmar devolução de exemplar deste livro?')) return;
+      if (!confirm('Confirmar devolução/conclusão de empréstimo deste livro?')) return;
       await fetch('/api/biblioteca', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acao: 'devolver', id, adminPin: adminPinSessao }) });
       carregarLivros();
     }
@@ -1514,7 +1534,7 @@
               </div>
               <div class="mt-4 pt-3 border-t border-purple-700 flex justify-between items-center text-xs">
                 <span class="text-amber-300 font-semibold underline">🔍 Ver detalhes</span>
-                ${isAdmin ? `<button onclick="event.stopPropagation(); solicitarExclusaoAdmin('evento', '${ev.id}')" class="text-rose-300 hover:text-white font-bold">🗑️ Excluir</button>` : ''}
+                ${isAdmin ? `<button onclick="event.stopPropagation(); solicitarExclusaoAdmin('evento', '${ev.id}')" class="text-rose-300 hover:text-white font-bold cursor-pointer">🗑️ Excluir</button>` : ''}
               </div>
             </div>
           `;
@@ -1722,7 +1742,8 @@
     async function executarAcaoExclusaoSegura() {
       const pinDigitado = document.getElementById('inputPinSeguranca').value.trim();
       if (pinDigitado !== SENHA_ADMIN_MESTRE) {
-        return alert('Senha de Administrador incorreta. A senha exigida é BiblioGetulio#2027@');
+        document.getElementById('inputPinSeguranca').value = '';
+        return alert('Senha de Administrador incorreta.');
       }
 
       if (!itemExclusaoPendente) return;
