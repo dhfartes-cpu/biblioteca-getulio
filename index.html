@@ -22,29 +22,30 @@
       background-size: 24px 24px;
     }
 
-    /* Cabeçalho com Degradê Colorido (Azul -> Purple -> Rosa -> Laranja/Vermelho) */
+    /* Cabeçalho com Degradê Colorido Fluido */
     .bg-cabecalho-cores {
       background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 25%, #9333ea 50%, #ec4899 75%, #f97316 100%);
       position: relative;
       overflow: hidden;
     }
 
-    /* Animação Dinâmica de Bolhas de Sabão Estilo Protetor de Tela */
+    /* Bolhas d'Água Dinâmicas e Reais (movimento em zigue-zague e flutuação orgânica) */
     .bolha {
       position: absolute;
-      bottom: -50px;
-      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1) 60%, rgba(255, 255, 255, 0.3) 100%);
+      bottom: -60px;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.2) 60%, rgba(255, 255, 255, 0.4) 100%);
       border-radius: 50%;
-      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.7), 0 0 8px rgba(255, 255, 255, 0.4);
-      animation: subirBolha 8s infinite linear;
+      box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.5);
+      animation: flutuarBolha 6s infinite ease-in-out;
       pointer-events: none;
     }
 
-    @keyframes subirBolha {
-      0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
-      20% { opacity: 0.8; }
-      80% { opacity: 0.8; }
-      100% { transform: translateY(-220px) translateX(30px) scale(1.1); opacity: 0; }
+    @keyframes flutuarBolha {
+      0% { transform: translateY(0) translateX(0) scale(0.9); opacity: 0; }
+      20% { opacity: 0.85; }
+      50% { transform: translateY(-130px) translateX(25px) scale(1.05); }
+      80% { opacity: 0.85; }
+      100% { transform: translateY(-260px) translateX(-20px) scale(1.15); opacity: 0; }
     }
 
     @media print {
@@ -60,8 +61,8 @@
   <div id="telaAuth" class="min-h-screen flex items-center justify-center p-4 bg-estante-login">
     <div class="bg-slate-900/95 border border-violet-500/30 backdrop-blur-xl rounded-3xl max-w-md w-full p-8 shadow-2xl shadow-violet-950/60 my-6 text-slate-100">
       <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white p-2 mb-3 shadow-lg shadow-violet-500/20 border border-violet-200">
-          <img src="logo-escola.png" alt="Logo Getúlio Vargas" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/80?text=GV'">
+        <div class="inline-flex items-center justify-center w-24 h-24 rounded-2xl bg-white p-2 mb-3 shadow-lg shadow-violet-500/20 border border-violet-200">
+          <img src="logo-escola.png" alt="Logo Getúlio Vargas" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/96?text=GV'">
         </div>
         <h1 class="text-3xl font-bold text-white tracking-wide font-display">Biblioteca Digital</h1>
         <p class="text-xs font-semibold text-violet-400 uppercase tracking-widest mt-1">EMEF Presidente Getúlio Vargas • Gravataí-RS</p>
@@ -145,41 +146,45 @@
   <!-- APLICATIVO PRINCIPAL -->
   <div id="appPrincipal" class="hidden flex-col min-h-screen bg-patrao-escola text-slate-800">
     
-    <!-- Cabeçalho Dinâmico com Bolhas de Sabão -->
+    <!-- Cabeçalho Dinâmico com Bolhas de Sabão Reais -->
     <header class="bg-cabecalho-cores text-white border-b border-white/20 shadow-xl print:hidden relative overflow-hidden" id="cabecalhoBolhas">
-      <!-- Bolhas de sabão dinâmicas flutuando -->
-      <div class="bolha" style="left: 5%; width: 25px; height: 25px; animation-duration: 6s; animation-delay: 0s;"></div>
-      <div class="bolha" style="left: 15%; width: 45px; height: 45px; animation-duration: 9s; animation-delay: 2s;"></div>
-      <div class="bolha" style="left: 30%; width: 15px; height: 15px; animation-duration: 5s; animation-delay: 1s;"></div>
-      <div class="bolha" style="left: 45%; width: 55px; height: 55px; animation-duration: 11s; animation-delay: 3s;"></div>
-      <div class="bolha" style="left: 60%; width: 20px; height: 20px; animation-duration: 7s; animation-delay: 0.5s;"></div>
-      <div class="bolha" style="left: 75%; width: 35px; height: 35px; animation-duration: 8s; animation-delay: 4s;"></div>
-      <div class="bolha" style="left: 88%; width: 50px; height: 50px; animation-duration: 10s; animation-delay: 1.5s;"></div>
+      <!-- Bolhas d'água dinâmicas -->
+      <div class="bolha" style="left: 4%; width: 28px; height: 28px; animation-duration: 5s; animation-delay: 0s;"></div>
+      <div class="bolha" style="left: 14%; width: 52px; height: 52px; animation-duration: 7.5s; animation-delay: 1.5s;"></div>
+      <div class="bolha" style="left: 26%; width: 18px; height: 18px; animation-duration: 4.5s; animation-delay: 0.8s;"></div>
+      <div class="bolha" style="left: 38%; width: 64px; height: 64px; animation-duration: 9s; animation-delay: 2.2s;"></div>
+      <div class="bolha" style="left: 52%; width: 24px; height: 24px; animation-duration: 5.5s; animation-delay: 0.3s;"></div>
+      <div class="bolha" style="left: 65%; width: 42px; height: 42px; animation-duration: 6.8s; animation-delay: 1.2s;"></div>
+      <div class="bolha" style="left: 78%; width: 58px; height: 58px; animation-duration: 8.2s; animation-delay: 3s;"></div>
+      <div class="bolha" style="left: 91%; width: 22px; height: 22px; animation-duration: 5s; animation-delay: 1.8s;"></div>
 
-      <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col xl:flex-row items-center justify-between gap-6 relative z-10">
         
-        <div class="flex items-center gap-4 text-center sm:text-left">
-          <div class="w-16 h-16 rounded-2xl bg-white p-1.5 shadow-xl border-2 border-white/90 flex-shrink-0 flex items-center justify-center">
-            <img src="logo-escola.png" alt="Logo Getúlio Vargas" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/64?text=GV'">
+        <!-- Logo Maior e Texto em Linha Única -->
+        <div class="flex items-center gap-5 text-center xl:text-left">
+          <div class="w-20 h-20 rounded-2xl bg-white p-2 shadow-xl border-2 border-white/90 flex-shrink-0 flex items-center justify-center">
+            <img src="logo-escola.png" alt="Logo Getúlio Vargas" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/80?text=GV'">
           </div>
           <div>
             <h1 class="text-3xl font-extrabold tracking-tight text-white font-display drop-shadow-md">Biblioteca Escolar</h1>
-            <p class="text-pink-100 text-sm font-semibold tracking-wider">EMEF Presidente Getúlio Vargas • Gravataí - RS</p>
+            <p class="text-pink-100 text-sm font-semibold tracking-wide whitespace-nowrap">EMEF Presidente Getúlio Vargas • Gravataí - RS</p>
           </div>
         </div>
 
-        <nav class="flex bg-black/20 backdrop-blur-md p-1.5 rounded-2xl border border-white/25 gap-1.5 flex-wrap justify-center shadow-inner">
+        <!-- Menu de Abas Soltas (Lado a Lado, Sem Caixa Fechada) -->
+        <nav class="flex items-center gap-2 flex-wrap justify-center">
           <button onclick="mudarAba('acervo')" id="tabAcervo" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition bg-white text-blue-900 shadow-md cursor-pointer">Acervo</button>
-          <button onclick="mudarAba('meus')" id="tabMeus" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/20 cursor-pointer">Meus Empréstimos</button>
-          <button onclick="mudarAba('espaco')" id="tabEspaco" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/20 cursor-pointer">Agenda e Espaço</button>
-          <button onclick="mudarAba('retirados')" id="tabRetirados" class="hidden relative px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/20 cursor-pointer">
+          <button onclick="mudarAba('meus')" id="tabMeus" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white/90 hover:bg-white/20 hover:text-white cursor-pointer">Meus Empréstimos</button>
+          <button onclick="mudarAba('espaco')" id="tabEspaco" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white/90 hover:bg-white/20 hover:text-white cursor-pointer">Agenda e Espaço</button>
+          <button onclick="mudarAba('retirados')" id="tabRetirados" class="hidden relative px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white/90 hover:bg-white/20 hover:text-white cursor-pointer">
             Livros Retirados
             <span id="badgeAtraso" class="hidden -top-1 -right-1 absolute bg-red-600 text-white text-[11px] font-black w-5 h-5 rounded-full flex items-center justify-center animate-bounce shadow">!</span>
           </button>
-          <button onclick="mudarAba('gestao')" id="tabGestao" class="hidden px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white hover:bg-white/20 cursor-pointer">Cadastros e Gestão</button>
+          <button onclick="mudarAba('gestao')" id="tabGestao" class="hidden px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition text-white/90 hover:bg-white/20 hover:text-white cursor-pointer">Cadastros e Gestão</button>
         </nav>
 
-        <div class="flex items-center gap-3 bg-black/25 backdrop-blur-md border border-white/25 px-4 py-2.5 rounded-2xl text-xs shadow-inner">
+        <!-- Perfil Logado Deslocado para a Direita -->
+        <div class="flex items-center gap-3 bg-black/25 backdrop-blur-md border border-white/25 px-4 py-2.5 rounded-2xl text-xs shadow-inner xl:ml-auto">
           <div>
             <p id="userNomeHeader" class="font-bold text-white leading-tight"></p>
             <p id="userPerfilHeader" class="text-amber-300 uppercase text-[10px] font-bold tracking-widest mt-0.5"></p>
@@ -364,8 +369,8 @@
           <input type="text" id="autorLivro" required class="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800">
         </div>
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-1">Capa (URL Google Books)</label>
-          <input type="url" id="capaLivro" class="w-full px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-xs mb-2">
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Capa (URL da Imagem)</label>
+          <input type="url" id="capaLivro" placeholder="https://exemplo.com/capa.jpg" class="w-full px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 text-xs mb-2">
           <div id="previewCapaBox" class="hidden flex justify-center bg-slate-100 p-2 rounded-2xl border border-slate-200">
             <img id="previewCapaImg" src="" alt="Prévia" class="h-32 object-contain rounded-lg shadow">
           </div>
@@ -550,7 +555,7 @@
         boxChave.style.display = 'block';
       } else {
         boxTurma.style.display = 'block';
-        boxChave.style.display = 'none'; // Aluno não precisa de chave mestra
+        boxChave.style.display = 'none';
       }
     }
 
@@ -647,38 +652,46 @@
         const sec = document.getElementById(`secao${a}`);
         const tab = document.getElementById(`tab${a}`);
         if (sec) sec.classList.add('hidden');
-        if (tab) tab.className = tab.className.replace('bg-white text-blue-900 shadow-md', 'text-white hover:bg-white/20');
+        if (tab) tab.className = tab.className.replace('bg-white text-blue-900 shadow-md', 'text-white/90 hover:bg-white/20 hover:text-white');
       });
       const nome = aba.charAt(0).toUpperCase() + aba.slice(1);
       document.getElementById(`secao${nome}`).classList.remove('hidden');
       const tabAtiva = document.getElementById(`tab${nome}`);
-      tabAtiva.className = tabAtiva.className.replace('text-white hover:bg-white/20', 'bg-white text-blue-900 shadow-md');
+      tabAtiva.className = tabAtiva.className.replace('text-white/90 hover:bg-white/20 hover:text-white', 'bg-white text-blue-900 shadow-md');
     }
 
     async function buscarCapaAutomatica() {
-      const titulo = document.getElementById('tituloLivro').value.trim();
-      if (!titulo) return alert('Digite o título do livro primeiro.');
+      const tituloInput = document.getElementById('tituloLivro').value.trim();
+      if (!tituloInput) return alert('Digite o título do livro primeiro.');
       const btn = document.getElementById('btnBuscarCapa');
       btn.textContent = 'Buscando...';
       btn.disabled = true;
 
       try {
-        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(titulo)}&maxResults=1`);
+        // Limpa acentos e termos para busca certeira no Google Books
+        const termoBusca = tituloInput.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(termoBusca)}&maxResults=1`);
         const data = await res.json();
+        
         if (data.items && data.items.length > 0) {
           const info = data.items[0].volumeInfo;
           if (info.authors && !document.getElementById('autorLivro').value) {
             document.getElementById('autorLivro').value = info.authors.join(', ');
           }
-          if (info.imageLinks && info.imageLinks.thumbnail) {
-            const urlSegura = info.imageLinks.thumbnail.replace('http://', 'https://');
+          if (info.imageLinks && (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail)) {
+            const urlSegura = (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail).replace('http://', 'https://');
             document.getElementById('capaLivro').value = urlSegura;
             document.getElementById('previewCapaImg').src = urlSegura;
             document.getElementById('previewCapaBox').classList.remove('hidden');
+            alert('Capa encontrada com sucesso!');
+          } else {
+            alert('Livro encontrado na base do Google, mas sem capa cadastrada. Você pode colar o link de uma imagem da internet no campo de capa.');
           }
+        } else {
+          alert('Capa não encontrada automaticamente. Tente colar o link direto de uma imagem da capa no campo correspondente.');
         }
       } catch (e) {
-        console.error(e);
+        alert('Erro ao buscar capa.');
       } finally {
         btn.textContent = '🔍 Buscar Capa';
         btn.disabled = false;
