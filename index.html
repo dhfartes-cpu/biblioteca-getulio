@@ -1399,7 +1399,7 @@
         const isReservadoAluno = item.empInfo.statusEmprestimo === 'RESERVADO';
         const isReservadoBiblioteca = item.empInfo.statusEmprestimo === 'RESERVADO_BIBLIOTECA';
         
-        // Conta como pendente para o admin apenas se estiver aguardando ação de professor ou reserva nova
+        // Conta como pendente para o admin apenas se estiver aguardando resposta/ação
         if (isSolicitacaoProf || isReservadoAluno) totalPendentesAdmin++;
 
         const linkZap = `https://api.whatsapp.com/send?phone=55${(item.empInfo.whatsappLeitor||'').replace(/\D/g,'')}&text=${encodeURIComponent('Olá ' + item.empInfo.leitor + ', sobre o livro "' + item.titulo + '".')}`;
@@ -1445,31 +1445,14 @@
         : '';
     }
 
-    // CORRIGIDO: "Aprovar / Retirar" agora dá baixa no estoque (desconta) e muda para RETIRADO gerando o PDF
+    // CORRIGIDO: "Aprovar / Retirar" agora apenas gera o PDF de retirada final e marca como RETIRADO
     async function autorizarEmprestimoAdmin(id) {
       const livro = acervoGlobal.find(l => l.id === id);
       if (!livro || !livro.leitoresAtivos || livro.leitoresAtivos.length === 0) return;
       
       const emp = livro.leitoresAtivos[0];
-      
-      // Se estava apenas como solicitação, desconta 1 do estoque disponível ao aprovar/retirar
-      if (emp.statusEmprestimo === 'SOLICITACAO_PROFESSOR' || emp.statusEmprestimo === 'RESERVADO') {
-        const qtdTotal = livro.quantidadeTotal || 1;
-        let qtdDisp = livro.quantidadeDisponivel !== undefined ? livro.quantidadeDisponivel : qtdTotal;
-        if (qtdDisp > 0) {
-          livro.quantidadeDisponivel = qtdDisp - 1;
-        }
-      }
-
       emp.statusEmprestimo = 'RETIRADO';
-      
-      await fetch('/api/biblioteca', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ acao: 'editar', id, adminPin: adminPinSessao, quantidade: livro.quantidadeTotal })
-      });
 
-      // Atualiza também salvando o status no leitor ativo através de chamada dedicada
       await fetch('/api/biblioteca', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1489,29 +1472,54 @@
       abrirTermoImpressao(livro, emp.leitor, emp.turma, 7);
     }
 
-    // CORRIGIDO: "Responder e Reservar" atualiza o status para o professor ver no painel dele
+    // CORRIGIDO: "Responder e Reservar" agora desconta 1 do estoque disponível, muda o status para RESERVADO_BIBLIOTECA e tira a notificação pulando do card
     async function responderEReservarProfessor(id) {
       const livro = acervoGlobal.find(l => l.id === id);
       if (!livro || !livro.leitoresAtivos || livro.leitoresAtivos.length === 0) return;
       const emp = livro.leitoresAtivos[0];
       
+      // Se estava como solicitação, desconta do estoque disponível agora ao reservar
+      if (emp.statusEmprestimo === 'SOLICITACAO_PROFESSOR') {
+        const qtdTotal = livro.quantidadeTotal || 1;
+        let qtdDisp = livro.quantidadeDisponivel !== undefined ? livro.quantidadeDisponivel : qtdTotal;
+        if (qtdDisp > 0) {
+          livro.quantidadeDisponivel = qtdDisp - 1;
+        }
+      }
+
       emp.statusEmprestimo = 'RESERVADO_BIBLIOTECA';
       emp.observacao = (emp.observacao || '') + ' | Biblioteca: Reservado e pronto para retirada!';
 
-      // Salva a alteração no backend
+      // Salva a quantidade atualizada e o status do empréstimo
       await fetch('/api/biblioteca', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ acao: 'editar', id, adminPin: adminPinSessao })
+        body: JSON.stringify({ 
+          acao: 'reservar', 
+          id: livro.id, 
+          leitor: emp.leitor, 
+          turma: emp.turma, 
+          whatsappLeitor: emp.whatsappLeitor, 
+          prazoDias: 7, 
+          statusEmprestimo: 'RESERVADO_BIBLIOTECA',
+          observacao: emp.observacao 
+        })
+      });
+
+      // Atualiza também o estoque total do livro no KV
+      await fetch('/api/biblioteca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ acao: 'editar', id, adminPin: adminPinSessao, quantidade: livro.quantidadeTotal })
       });
 
       carregarLivros();
-      alert('Livro reservado para o professor com sucesso! O status foi atualizado para ele no painel.');
+      alert('Livro reservado para o professor com sucesso! O status foi atualizado no painel dele e o estoque foi baixado.');
     }
 
     // CORRIGIDO: "Devolver / Concluir" remove o leitor ativo e devolve o exemplar ao acervo
     async function devolverLivroAdmin(id) {
-      if (!confirm('Confirmar devolução/conclusão de empréstimo deste livro?')) return;
+      if (!confirm('Confirmar devolução/conclusão de empréstimo desse livro?')) return;
       
       await fetch('/api/biblioteca', { 
         method: 'POST', 
@@ -1754,7 +1762,7 @@
         <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-xs">
           <div>
             <p class="font-bold text-slate-800 text-sm">${a.nome} <span class="text-purple-600 font-semibold">(${a.turma || 'Sem turma'})</span></p>
-            <p class="text-slate-500">Email: ${a.email || 'Não inf.'} • Tel: ${a.whatsapp || 'Não inf.'}</p>
+            <p class="text-slate-500">Email: ${a.email || 'Not inf.'} • Tel: ${a.whatsapp || 'Não inf.'}</p>
           </div>
           <button onclick="solicitarExclusaoAdmin('usuario', '${a.id}')" class="text-rose-600 hover:text-rose-800 font-bold px-2 py-1 bg-rose-50 border border-rose-200 rounded-lg cursor-pointer">🗑️ Excluir</button>
         </div>
