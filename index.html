@@ -1068,7 +1068,9 @@
           : `<div class="w-full h-32 bg-gradient-to-br from-pink-600 to-purple-600 rounded-2xl mb-4 flex items-center justify-center text-white text-3xl font-bold shadow-inner">${(livro.titulo || 'L')[0].toUpperCase()}</div>`;
 
         const infoEdicaoAno = (livro.edicao || livro.ano) ? `<p class="text-xs text-slate-500 mt-0.5">${livro.edicao ? livro.edicao : ''} ${livro.edicao && livro.ano ? '•' : ''} ${livro.ano ? livro.ano : ''}</p>` : '';
-        const botaoLerOnline = livro.pdf ? `<a href="${livro.pdf}" target="_blank" class="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 py-2 rounded-xl text-xs font-bold text-center block transition shadow-sm mb-2">📖 Ler E-book Online</a>` : '';
+        
+        // CORREÇÃO: Exibe o botão de leitura online sempre que houver link no campo `pdf` do livro
+        const botaoLerOnline = (livro.pdf && livro.pdf.trim() !== '') ? `<a href="${livro.pdf}" target="_blank" class="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 py-2 rounded-xl text-xs font-bold text-center block transition shadow-sm mb-2">📖 Ler E-book Online</a>` : '';
 
         return `
           <div class="bg-white/90 backdrop-blur-md border border-slate-200 rounded-3xl p-5 shadow-xl flex flex-col justify-between hover:border-pink-400 transition">
@@ -1303,6 +1305,7 @@
 
       const prazoDiasInt = parseInt(document.getElementById('resPrazoDias').value) || 7;
 
+      // CORREÇÃO CRUCIAL: Passando explicitamente a observação e o status de solicitação
       const payload = {
         acao: 'reservar',
         id: document.getElementById('idLivroReserva').value,
@@ -1329,7 +1332,7 @@
         abrirTermoImpressao(data.livro, leitorNome, turmaLeitor, prazoDiasInt);
       } else {
         alert(usuarioAtual.perfil === 'professor' 
-          ? 'Solicitação de agendamento enviada com sucesso para a biblioteca! A administração irá conferir e liberar.' 
+          ? 'Solicitação de agendamento enviada com sucesso para a biblioteca! A administração já recebeu sua mensagem.' 
           : 'Reserva enviada com sucesso! Aguarde a liberação na biblioteca.');
       }
     }
@@ -1413,7 +1416,7 @@
                 ${item.titulo} 
                 ${isSolicitacaoProf ? '<span class="text-xs text-indigo-800 bg-indigo-200 px-2.5 py-0.5 rounded-full font-bold ml-2">🛎️ AGENDAMENTO PROFESSOR</span>' : ''}
                 ${isReservadoAluno ? '<span class="text-xs text-blue-800 bg-blue-200 px-2.5 py-0.5 rounded-full font-bold ml-2">📦 RESERVA ALUNO</span>' : ''}
-                ${venceHoje ? '<span class="text-xs text-amber-800 bg-amber-200 px-2.5 py-0.5 rounded-full font-bold ml-2">🔔 VENCE HOJE</span>' : ''}
+                ${venceHoje ? '<span class="text-xs text-amber-800 bg-amber-200 px-2 py-0.5 rounded-full font-bold ml-2">🔔 VENCE HOJE</span>' : ''}
                 ${atrasado ? '<span class="text-xs text-red-600 bg-red-100 px-2.5 py-0.5 rounded-full font-bold ml-2">⚠️ ATRASADO</span>' : ''}
               </h4>
               <p class="text-xs text-slate-700">Leitor: <strong>${item.empInfo.leitor}</strong> (${item.empInfo.turma}) • Contato: ${item.empInfo.whatsappLeitor || 'Não inf.'}</p>
@@ -1431,7 +1434,6 @@
 
       document.getElementById('listaRetiradosAdmin').innerHTML = html;
       
-      // ATUALIZA A CAIXINHA DE AVISO (BADGE VERMELHO NO CABEÇALHO DO ADMIN)
       const badgeEl = document.getElementById('badgeSolicitacoesAdmin');
       if (badgeEl) {
         if (totalPendentesAdmin > 0) {
