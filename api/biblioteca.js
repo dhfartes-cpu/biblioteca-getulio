@@ -12,7 +12,6 @@ export default async function handler(req, res) {
   const { tipo } = req.query;
 
   try {
-    // GET: Buscar dados
     if (req.method === 'GET') {
       if (tipo === 'usuarios') {
         const usuarios = (await kv.get('bib_usuarios')) || [];
@@ -27,17 +26,14 @@ export default async function handler(req, res) {
         return res.status(200).json(eventos);
       }
 
-      // Padrão: Retorna o acervo de livros
       const livros = (await kv.get('bib_livros')) || [];
       return res.status(200).json(livros);
     }
 
-    // POST: Ações do sistema (Cadastrar, Editar, Reservar, Excluir)
     if (req.method === 'POST') {
       const body = req.body;
       const acao = body.acao;
 
-      // 1. Cadastrar novo livro
       if (acao === 'cadastrar') {
         const livros = (await kv.get('bib_livros')) || [];
         const novoLivro = {
@@ -47,6 +43,8 @@ export default async function handler(req, res) {
           capa: body.capa || '',
           categoria: body.categoria || 'Geral',
           codigo: body.codigo || 'S/N',
+          edicao: body.edicao || '',
+          ano: body.ano || '',
           disponivel: true,
           leitor: null,
           turma: null,
@@ -59,7 +57,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ sucesso: true, livro: novoLivro });
       }
 
-      // 2. Editar livro existente (NOVO!)
       if (acao === 'editar') {
         const livros = (await kv.get('bib_livros')) || [];
         const index = livros.findIndex(l => l.id === body.id);
@@ -71,14 +68,15 @@ export default async function handler(req, res) {
           autor: body.autor || livros[index].autor,
           capa: body.capa !== undefined ? body.capa : livros[index].capa,
           categoria: body.categoria || livros[index].categoria,
-          codigo: body.codigo || livros[index].codigo
+          codigo: body.codigo || livros[index].codigo,
+          edicao: body.edicao !== undefined ? body.edicao : livros[index].edicao,
+          ano: body.ano !== undefined ? body.ano : livros[index].ano
         };
 
         await kv.set('bib_livros', livros);
         return res.status(200).json({ sucesso: true, livro: livros[index] });
       }
 
-      // 3. Registrar usuário ou aluno
       if (acao === 'registrar_usuario') {
         const usuarios = (await kv.get('bib_usuarios')) || [];
         const existente = usuarios.find(u => u.nome.toLowerCase() === body.nome.toLowerCase() && u.perfil === body.perfil);
@@ -103,7 +101,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ sucesso: true, usuario: body });
       }
 
-      // 4. Login
       if (acao === 'login') {
         const usuarios = (await kv.get('bib_usuarios')) || [];
         const user = usuarios.find(u => u.nome.toLowerCase() === body.nome.toLowerCase() && u.pin === body.pin);
@@ -111,7 +108,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ sucesso: true, usuario: user });
       }
 
-      // 5. Reservar / Retirar Livro
       if (acao === 'reservar') {
         const livros = (await kv.get('bib_livros')) || [];
         const livro = livros.find(l => l.id === body.id);
@@ -133,7 +129,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ sucesso: true, livro });
       }
 
-      // 6. Devolver livro
       if (acao === 'devolver') {
         const livros = (await kv.get('bib_livros')) || [];
         const livro = livros.find(l => l.id === body.id);
@@ -150,7 +145,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ sucesso: true });
       }
 
-      // 7. Configurar Espaço
       if (acao === 'configurar_espaco') {
         const espacos = (await kv.get('bib_espacos')) || [];
         espacos.unshift({
@@ -166,7 +160,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ sucesso: true });
       }
 
-      // 8. Reservar Espaço
       if (acao === 'reservar_espaco') {
         const espacos = (await kv.get('bib_espacos')) || [];
         const esp = espacos.find(e => e.id === body.id);
@@ -180,7 +173,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ sucesso: true });
       }
 
-      // 9. Salvar Evento Mural
       if (acao === 'salvar_evento') {
         const eventos = (await kv.get('bib_eventos')) || [];
         eventos.unshift({
@@ -193,7 +185,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ sucesso: true });
       }
 
-      // 10. Excluir registros
       if (acao === 'excluir') {
         if (body.tipoItem === 'livro') {
           let livros = (await kv.get('bib_livros')) || [];
